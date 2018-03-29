@@ -15,6 +15,21 @@ public:
 		sp = cp = reinterpret_cast<uint8_t*>(data);
 		ep = sp + len;
 	}
+	
+	std::pair<void*, int> GetWrittenBuffer() const
+	{
+		return std::make_pair((void*)sp, int(cp - sp));
+	}
+
+	std::pair<void*, int> GetCurrentBuffer() const
+	{
+		return std::make_pair((void*)cp, int(ep - cp));
+	}
+
+	int GetCurrentLength() const
+	{
+		return int(cp - sp);
+	}
 
 	template<typename T>
 	void Write(T data)
@@ -22,6 +37,14 @@ public:
 		assert(!(cp + sizeof(T) > ep)); // NO write out of bounds
 		std::memcpy(cp, &data, sizeof(T));
 		cp += sizeof(T);
+	}
+	
+	void Write(BufferManipulator& bm)
+	{
+		std::pair<void*, int> buffer = bm.GetWrittenBuffer();
+		assert(!(cp + buffer.second > ep)); // NO write out of bounds
+		std::memcpy(cp, buffer.first, buffer.second);
+		cp += buffer.second;
 	}
 
 	template<typename T>
