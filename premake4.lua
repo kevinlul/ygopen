@@ -1,0 +1,10 @@
+project("ygopen")
+	kind("StaticLib")
+	flags("ExtraWarnings")
+	files({"**.hpp", "**.cpp"})
+	links({"sqlite3", "SDL2"})
+
+	configuration("not windows")
+		buildoptions("-pedantic")
+		links("pthread")
+		includedirs("/usr/include/SDL2")
