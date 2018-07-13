@@ -215,10 +215,7 @@ void Duel::Process()
 			continue;
 		if(lastMessage == DuelMessage::NeedResponse ||
 		   lastMessage == DuelMessage::EndOfDuel)
-		{
-			puts("Response Needed or End of Duel reached.");
-			std::abort();
-		}
+			return;
 	}
 }
 
@@ -312,3 +309,7 @@ void Duel::Message(BufferManipulator bm)
 		obs->OnNotify(bm);
 }
 
+void Duel::AddObserver(DuelObserver* duelObs)
+{
+	observers.push_back(duelObs);
+}

@@ -30,6 +30,8 @@ public:
 	Duel(CoreInterface* core);
 	~Duel();
 
+	void AddObserver(DuelObserver* duelObs);
+
 	void SetPlayersInfo(int startLP, int startHand, int drawCount);
 
 	//void SetDeck(int player, std::vector<unsigned int>& deck);
