@@ -5,9 +5,9 @@
 
 //TODO: Use a DEFINE macro on premake instead, and fallback to these values
 #if defined(__LINUX__) || defined(__MACOSX__)
-static const char* DEFAULT_CORE_NAME = "libcore.so";
+static const char* DEFAULT_CORE_NAME = "libygopen-core.so";
 #else
-static const char* DEFAULT_CORE_NAME = "core.dll";
+static const char* DEFAULT_CORE_NAME = "ygopen-core.dll";
 #endif
 
 template<typename T>

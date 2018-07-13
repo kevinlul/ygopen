@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cassert>
 #include <cstring>
+#include <utility>
 
 class BufferManipulator
 {
@@ -10,25 +11,25 @@ class BufferManipulator
 	uint8_t* cp;
 	uint8_t* ep;
 public:
-	BufferManipulator(void* data, int len)
+	BufferManipulator(void* data, size_t len)
 	{
 		sp = cp = reinterpret_cast<uint8_t*>(data);
 		ep = sp + len;
 	}
 	
-	std::pair<void*, int> GetWrittenBuffer() const
+	std::pair<void*, size_t> GetWrittenBuffer() const
 	{
-		return std::make_pair((void*)sp, int(cp - sp));
+		return std::make_pair((void*)sp, size_t(cp - sp));
 	}
 
-	std::pair<void*, int> GetCurrentBuffer() const
+	std::pair<void*, size_t> GetCurrentBuffer() const
 	{
-		return std::make_pair((void*)cp, int(ep - cp));
+		return std::make_pair((void*)cp, size_t(ep - cp));
 	}
 
-	int GetCurrentLength() const
+	size_t GetCurrentLength() const
 	{
-		return int(cp - sp);
+		return size_t(cp - sp);
 	}
 
 	template<typename T>
@@ -41,7 +42,7 @@ public:
 	
 	void Write(BufferManipulator& bm)
 	{
-		std::pair<void*, int> buffer = bm.GetWrittenBuffer();
+		std::pair<void*, size_t> buffer = bm.GetWrittenBuffer();
 		assert(!(cp + buffer.second > ep)); // NO write out of bounds
 		std::memcpy(cp, buffer.first, buffer.second);
 		cp += buffer.second;
@@ -57,16 +58,21 @@ public:
 		return ret;
 	}
 	
-	void Forward(uint32_t bytes)
+	void Forward(size_t bytes)
 	{
 		assert(!(cp + bytes > ep)); // NO forward out of bounds
 		cp += bytes;
 	}
 
-	void Backward(uint32_t bytes)
+	void Backward(size_t bytes)
 	{
 		assert(!(cp - bytes < sp)); // NO backward out of bounds
 		cp -= bytes;
+	}
+
+	void ToStart()
+	{
+		cp = sp;
 	}
 
 	bool CanAdvance()
