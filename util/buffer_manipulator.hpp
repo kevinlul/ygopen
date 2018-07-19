@@ -5,6 +5,8 @@
 #include <cstring>
 #include <utility>
 
+typedef std::pair<void*, size_t> BasicBuffer;
+
 class BufferManipulator
 {
 	uint8_t* sp;
@@ -17,12 +19,18 @@ public:
 		ep = sp + len;
 	}
 	
-	std::pair<void*, size_t> GetWrittenBuffer() const
+	BufferManipulator(BasicBuffer buffer)
+	{
+		sp = cp = reinterpret_cast<uint8_t*>(buffer.first);
+		ep = sp + buffer.second;
+	}
+	
+	BasicBuffer GetWrittenBuffer() const
 	{
 		return std::make_pair((void*)sp, size_t(cp - sp));
 	}
 
-	std::pair<void*, size_t> GetCurrentBuffer() const
+	BasicBuffer GetCurrentBuffer() const
 	{
 		return std::make_pair((void*)cp, size_t(ep - cp));
 	}
@@ -40,9 +48,16 @@ public:
 		cp += sizeof(T);
 	}
 	
-	void Write(BufferManipulator& bm)
+	void Write(BufferManipulator bm)
 	{
-		std::pair<void*, size_t> buffer = bm.GetWrittenBuffer();
+		BasicBuffer buffer = bm.GetWrittenBuffer();
+		assert(!(cp + buffer.second > ep)); // NO write out of bounds
+		std::memcpy(cp, buffer.first, buffer.second);
+		cp += buffer.second;
+	}
+	
+	void Write(BasicBuffer buffer)
+	{
 		assert(!(cp + buffer.second > ep)); // NO write out of bounds
 		std::memcpy(cp, buffer.first, buffer.second);
 		cp += buffer.second;

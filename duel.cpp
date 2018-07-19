@@ -225,7 +225,7 @@ int Duel::Analyze(unsigned int bufferLen)
 	while(bm.CanAdvance())
 	{
 		// Notify all observers about a new message
-		Message(bm); 
+		Message((void*)buffer, bufferLen); 
 		int msgType = bm.Read<uint8_t>();
 
 		// Depending on the message we continue to read or stop
@@ -303,10 +303,10 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 }
 
 // Messages functions
-void Duel::Message(BufferManipulator bm)
+void Duel::Message(void* buff, size_t length)
 {
 	for(auto obs : observers)
-		obs->OnNotify(bm);
+		obs->OnNotify(buff, length);
 }
 
 void Duel::AddObserver(DuelObserver* duelObs)

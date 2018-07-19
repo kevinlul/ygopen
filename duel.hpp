@@ -1,6 +1,7 @@
 #ifndef __DUEL_HPP__
 #define __DUEL_HPP__
 #include <vector>
+#include <utility>
 
 #include "util/buffer_manipulator.hpp"
 
@@ -21,24 +22,21 @@ class Duel
 	int Analyze(unsigned int bufferLen);
 	int HandleCoreMessage(int msgType, BufferManipulator* bm);
 
-	void Message(BufferManipulator bm);
-
-	void MsgRetry(BufferManipulator* bm);
-	void MsgHint(BufferManipulator* bm);
-
+	void Message(void* buff, size_t length);
 public:
 	Duel(CoreInterface* core);
 	~Duel();
 
 	void AddObserver(DuelObserver* duelObs);
 
+	void Start(int options);
+
+	//TODO: create individual version
 	void SetPlayersInfo(int startLP, int startHand, int drawCount);
+
+	void Process();
 
 	//void SetDeck(int player, std::vector<unsigned int>& deck);
 	//void SetExtraDeck(int player, std::vector<unsigned int>& deck);
-	
-	void Start(int options);
-
-	void Process();
 };
 #endif // __DUEL_HPP__
