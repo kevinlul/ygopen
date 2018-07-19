@@ -16,7 +16,6 @@ class Duel
 	unsigned char buffer[DUEL_BUFFER_SIZE];
 	long pduel;
 
-	//int lastMsgPlayer;
 	std::vector<DuelObserver*> observers;
 
 	int Analyze(unsigned int bufferLen);
@@ -35,6 +34,19 @@ public:
 	void SetPlayersInfo(int startLP, int startHand, int drawCount);
 
 	void Process();
+
+	void NewCard(int code, int owner, int playerID, int location, int sequence, int position);
+	void NewTagCard(int code, int owner, int location);
+	void NewRelayCard(int code, int owner, int location, int playerNumber);
+
+	// Any call to the following functions invalidates the result of the last function called
+	std::pair<void*, size_t> QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache = false);
+	int QueryFieldCount(int playerID, int location);
+	std::pair<void*, size_t> QueryFieldCard(int playerID, int location, int queryFlag, bool useCache = false);
+	std::pair<void*, size_t> QueryFieldInfo();
+	
+	void SetResponseInteger(int val);
+	void SetResponseBuffer(unsigned char* buff);
 
 	//void SetDeck(int player, std::vector<unsigned int>& deck);
 	//void SetExtraDeck(int player, std::vector<unsigned int>& deck);

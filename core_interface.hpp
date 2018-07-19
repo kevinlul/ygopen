@@ -37,8 +37,8 @@ public:
 	int (*get_message)(long, unsigned char*);
 	int (*process)(long);
 	void (*new_card)(long, unsigned int, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
-	//void new_tag_card(long, unsigned int, unsigned char, unsigned char);
-	//void new_relay_card(long, unsigned int, unsigned char, unsigned char, unsigned char);
+	void (*new_tag_card)(long, unsigned int, unsigned char, unsigned char);
+	void (*new_relay_card)(long, unsigned int, unsigned char, unsigned char, unsigned char);
 	int (*query_card)(long, unsigned char, unsigned char, unsigned char, int, unsigned char*, int);
 	int (*query_field_count)(long, unsigned char, unsigned char);
 	int (*query_field_card)(long, unsigned char, unsigned char, int, unsigned char*, int);
