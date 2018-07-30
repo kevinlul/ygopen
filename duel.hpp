@@ -46,7 +46,7 @@ public:
 	std::pair<void*, size_t> QueryFieldInfo();
 	
 	void SetResponseInteger(int val);
-	void SetResponseBuffer(unsigned char* buff);
+	void SetResponseBuffer(void* buff, size_t length);
 
 	//void SetDeck(int player, std::vector<unsigned int>& deck);
 	//void SetExtraDeck(int player, std::vector<unsigned int>& deck);

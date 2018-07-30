@@ -114,11 +114,10 @@ static const std::map<int, int> msgResults =
 	{CoreMessage::SelectUnselect, DuelMessage::NeedResponse}
 };
 
-
 // Fixed-length Core Messages
 static const std::map<int, int> msgLengths =
 { 
-	{CoreMessage::Hint           , 1 + 1 + 4},
+	{CoreMessage::Hint           , 10},
 	{CoreMessage::ShuffleDeck    , 1},
 	{CoreMessage::RefreshDeck    , 1},
 	{CoreMessage::SwapGraveDeck  , 1},
@@ -127,16 +126,16 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::NewTurn        , 1},
 	{CoreMessage::NewPhase       , 2},
 	{CoreMessage::PosChange      , 9},
-	{CoreMessage::Set            , 4 + 4},
-	{CoreMessage::Swap           , 16},
+	{CoreMessage::Set            , 18},
+	{CoreMessage::Swap           , 28},
 	{CoreMessage::FieldDisabled  , 4},
-	{CoreMessage::Summoning      , 8},
+	{CoreMessage::Summoning      , 14},
 	{CoreMessage::Summoned       , 0},
-	{CoreMessage::SpSummoning    , 8},
+	{CoreMessage::SpSummoning    , 14},
 	{CoreMessage::SpSummoned     , 0},
-	{CoreMessage::FlipSummoning  , 8},
+	{CoreMessage::FlipSummoning  , 14},
 	{CoreMessage::FlipSummoned   , 0},
-	{CoreMessage::Chaining       , 20},
+	{CoreMessage::Chaining       , 26},
 	{CoreMessage::Chained        , 1},
 	{CoreMessage::ChainSolving   , 1},
 	{CoreMessage::ChainSolved    , 1},
@@ -145,22 +144,22 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::ChainDisabled  , 1},
 	{CoreMessage::Damage         , 5},
 	{CoreMessage::Recover        , 5},
-	{CoreMessage::Equip          , 8},
+	{CoreMessage::Equip          , 2},
 	{CoreMessage::LpUpdate       , 5},
-	{CoreMessage::Unequip        , 4},
-	{CoreMessage::CardTarget     , 8},
-	{CoreMessage::CancelTarget   , 8},
+	{CoreMessage::Unequip        , 10},
+	{CoreMessage::CardTarget     , 20},
+	{CoreMessage::CancelTarget   , 20},
 	{CoreMessage::PayLpCost      , 5},
 	{CoreMessage::AddCounter     , 7},
 	{CoreMessage::RemoveCounter  , 7},
-	{CoreMessage::Attack         , 8},
-	{CoreMessage::Battle         , 26},
+	{CoreMessage::Attack         , 20},
+	{CoreMessage::Battle         , 38},
 	{CoreMessage::AttackDisabled , 0},
 	{CoreMessage::DamageStepStart, 0},
 	{CoreMessage::DamageStepEnd  , 0},
-	{CoreMessage::MissedEffect   , 8},
+	{CoreMessage::MissedEffect   , 14},
 	{CoreMessage::HandResult     , 1},
-	{CoreMessage::CardHint       , 13},
+	{CoreMessage::CardHint       , 19},
 	{CoreMessage::PlayerHint     , 10},
 	{CoreMessage::MatchKill      , 1}
 };
@@ -262,9 +261,12 @@ void Duel::SetResponseInteger(int val)
 	core->set_responsei(pduel, val);
 }
 
-void Duel::SetResponseBuffer(unsigned char* buff)
+void Duel::SetResponseBuffer(void* buff, size_t length)
 {
-	core->set_responseb(pduel, buff);
+	void* b = std::calloc(1, 64);
+	std::memcpy(b, buff, length);
+	core->set_responseb(pduel, (unsigned char*)b);
+	std::free(b);
 }
 
 int Duel::Analyze(unsigned int bufferLen)
@@ -324,7 +326,6 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 			case CoreMessage::ShuffleExtra:
 			case CoreMessage::CardSelected:
 			case CoreMessage::RandomSelected:
-			case CoreMessage::BecomeTarget:
 			case CoreMessage::Draw:
 				bm->Forward(1);
 				bm->Forward(bm->Read<uint8_t>() * 4);
@@ -340,6 +341,10 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 				bm->Forward(1);
 				bm->Forward(bm->Read<uint8_t>());
 			break;
+			case CoreMessage::BecomeTarget:
+				bm->Forward(bm->Read<uint8_t>() * 10);
+			break;
+			
 			default:
 				puts("\tNon-fixed forwarding not handled");
 				std::abort();
