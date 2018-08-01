@@ -32,7 +32,7 @@ unsigned int CoreAuxiliary::CoreCardReader(unsigned int code, CardData* cd)
 unsigned int CoreAuxiliary::CoreMessageHandler(void* pduel, unsigned int msgType)
 {
 	char buffer[256];
-	ci->get_log_message((long)pduel, (unsigned char*)&buffer);
+	ci->get_log_message((long)pduel, (unsigned char*)buffer);
 	printf("Core Message (%d): %s\n", msgType, buffer);
 	return 0;
 }
