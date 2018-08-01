@@ -7,21 +7,6 @@
 Deck::Deck() : verified(false), usable(false)
 {}
 
-void Deck::SetMainDeck(const std::vector<unsigned int>& deck)
-{
-	main = deck;
-}
-
-void Deck::SetExtraDeck(const std::vector<unsigned int>& deck)
-{
-	extra = deck;
-}
-
-void Deck::SetSideDeck(const std::vector<unsigned int>& deck)
-{
-	side = deck;
-}
-
 unsigned int Deck::Verify(DatabaseManager* dbm)
 {
 	for(auto& card : main)
