@@ -125,8 +125,9 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::DeckTop        , 6},
 	{CoreMessage::NewTurn        , 1},
 	{CoreMessage::NewPhase       , 2},
+	{CoreMessage::Move           , 28},
 	{CoreMessage::PosChange      , 9},
-	{CoreMessage::Set            , 18},
+	{CoreMessage::Set            , 14},
 	{CoreMessage::Swap           , 28},
 	{CoreMessage::FieldDisabled  , 4},
 	{CoreMessage::Summoning      , 14},
@@ -275,7 +276,9 @@ int Duel::Analyze(unsigned int bufferLen)
 	while(bm.CanAdvance())
 	{
 		// Notify all observers about a new message
-		Message((void*)buffer, bufferLen); 
+		auto cb = bm.GetCurrentBuffer();
+		Message((void*)cb.first, cb.second);
+
 		int msgType = bm.Read<uint8_t>();
 
 		// Depending on the message we continue to read or stop
@@ -320,7 +323,7 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 			case CoreMessage::ConfirmExtratop:
 			case CoreMessage::ConfirmCards:
 				bm->Forward(1);
-				bm->Forward(bm->Read<uint8_t>() * 7);
+				bm->Forward(bm->Read<uint8_t>() * 10);
 			break;
 			case CoreMessage::ShuffleHand:
 			case CoreMessage::ShuffleExtra:
@@ -332,9 +335,6 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 			break;
 			case CoreMessage::ShuffleSetCard:
 				bm->Forward(bm->Read<uint8_t>() * 8);
-			break;
-			case CoreMessage::Move:
-				bm->Forward(16);
 			break;
 			case CoreMessage::TossCoin:
 			case CoreMessage::TossDice:
