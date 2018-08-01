@@ -96,7 +96,7 @@ enum CoreMessage
 	CustomMsg          = 180,
 
 	// Extensions
-	SelectUnselect     = 190,
+	SelectUnselect     = 26,
 	ShuffleExtra       = 39,
 	ConfirmExtratop    = 42
 };
