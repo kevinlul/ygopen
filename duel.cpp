@@ -192,17 +192,10 @@ void Duel::Start(int options)
 
 void Duel::Process()
 {
-	uint16_t engineFlag = 0;
-	uint32_t bufferLength = 0;
 	int lastMessage = DuelMessage::Continue;
 	while (true) 
 	{
-		if (engineFlag == 2) // Dont know what 2 means in this context
-			break;
-
-		int result = core->process(pduel);
-		bufferLength = result & 0xFFFF;
-		engineFlag = result >> 16;
+		const int bufferLength = core->process(pduel) & 0xFFFF;
 
 		if (bufferLength > 0)
 		{
@@ -211,10 +204,7 @@ void Duel::Process()
 			lastMessage = Analyze(bufferLength);
 		}
 
-		if(lastMessage == DuelMessage::Continue)
-			continue;
-		if(lastMessage == DuelMessage::NeedResponse ||
-		   lastMessage == DuelMessage::EndOfDuel)
+		if(lastMessage > 0)
 			return;
 	}
 }
@@ -279,11 +269,12 @@ int Duel::Analyze(unsigned int bufferLen)
 		auto cb = bm.GetCurrentBuffer();
 		Message((void*)cb.first, cb.second);
 
-		int msgType = bm.Read<uint8_t>();
+		const int msgType = bm.Read<uint8_t>();
 
-		// Depending on the message we continue to read or stop
-		if(HandleCoreMessage(msgType, &bm) == DuelMessage::NeedResponse)
-			return DuelMessage::NeedResponse;
+		const int msgResult = HandleCoreMessage(msgType, &bm);
+
+		if(msgResult > 0)
+			return msgResult;
 	}
 	return DuelMessage::Continue;
 }
@@ -298,7 +289,7 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 	{
 		if(search->second == DuelMessage::NeedResponse ||
 		   search->second == DuelMessage::EndOfDuel)
-		   return search->second;
+			return search->second;
 	}
 	else
 	{
