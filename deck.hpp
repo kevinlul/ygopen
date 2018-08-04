@@ -16,10 +16,10 @@ public:
 	std::vector<unsigned int> extra;
 	std::vector<unsigned int> side;
 
-	unsigned int Verify(DatabaseManager* dbm);
+	unsigned int Verify(DatabaseManager& dbm);
 	bool IsVerified() const;
 
-	unsigned int CheckUsability(Banlist* bl, const int minmd = 40, const int maxmd = 60, const int mined = 0, const int maxed = 15, const int minsd = 0, const int maxsd = 15);
+	unsigned int CheckUsability(Banlist& bl, const int minmd = 40, const int maxmd = 60, const int mined = 0, const int maxed = 15, const int minsd = 0, const int maxsd = 15);
 	bool CanBeUsed() const;
 };
 #endif // __DECK_HPP__

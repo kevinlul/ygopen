@@ -165,29 +165,27 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::MatchKill      , 1}
 };
 
-Duel::Duel(CoreInterface* core) :
+Duel::Duel(CoreInterface& core) :
 	core(core),
 	pduel(0)
 {
-	assert(!!core);
-
-	pduel = core->create_duel(0); // TODO: randomize this value
+	pduel = core.create_duel(0); // TODO: randomize this value
 }
 
 Duel::~Duel()
 {
-	core->end_duel(pduel);
+	core.end_duel(pduel);
 }
 
 void Duel::SetPlayersInfo(int startLP, int startHand, int drawCount)
 {
-	core->set_player_info(pduel, 0, startLP, startHand, drawCount);
-	core->set_player_info(pduel, 1, startLP, startHand, drawCount);
+	core.set_player_info(pduel, 0, startLP, startHand, drawCount);
+	core.set_player_info(pduel, 1, startLP, startHand, drawCount);
 }
 
 void Duel::Start(int options)
 {
-	core->start_duel(pduel, options);
+	core.start_duel(pduel, options);
 }
 
 void Duel::Process()
@@ -195,12 +193,12 @@ void Duel::Process()
 	int lastMessage = DuelMessage::Continue;
 	while (true) 
 	{
-		const int bufferLength = core->process(pduel) & 0xFFFF;
+		const int bufferLength = core.process(pduel) & 0xFFFF;
 
 		if (bufferLength > 0)
 		{
 			printf("buffer length: %d\n", bufferLength);
-			core->get_message(pduel, (unsigned char*)&buffer);
+			core.get_message(pduel, (unsigned char*)&buffer);
 			lastMessage = Analyze(bufferLength);
 		}
 
@@ -211,52 +209,52 @@ void Duel::Process()
 
 void Duel::NewCard(int code, int owner, int playerID, int location, int sequence, int position)
 {
-	core->new_card(pduel, code, owner, playerID, location, sequence, position);
+	core.new_card(pduel, code, owner, playerID, location, sequence, position);
 }
 
 void Duel::NewTagCard(int code, int owner, int location)
 {
-	core->new_tag_card(pduel, code, owner, location);
+	core.new_tag_card(pduel, code, owner, location);
 }
 
 void Duel::NewRelayCard(int code, int owner, int location, int playerNumber)
 {
-	core->new_relay_card(pduel, code, owner, location, playerNumber);
+	core.new_relay_card(pduel, code, owner, location, playerNumber);
 }
 
 std::pair<void*, size_t> Duel::QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core->query_card(pduel, playerID, location, sequence, queryFlag, buffer, useCache);
+	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, buffer, useCache);
 	return std::make_pair((void*)buffer, bufferLength);
 }
 
 int Duel::QueryFieldCount(int playerID, int location)
 {
-	return core->query_field_count(pduel, playerID, location);
+	return core.query_field_count(pduel, playerID, location);
 }
 
 std::pair<void*, size_t> Duel::QueryFieldCard(int playerID, int location, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core->query_field_card(pduel, playerID, location, queryFlag, buffer, useCache);
+	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, buffer, useCache);
 	return std::make_pair((void*)buffer, bufferLength);
 }
 
 std::pair<void*, size_t> Duel::QueryFieldInfo()
 {
-	const size_t bufferLength = core->query_field_info(pduel, buffer);
+	const size_t bufferLength = core.query_field_info(pduel, buffer);
 	return std::make_pair((void*)buffer, bufferLength);
 }
 
 void Duel::SetResponseInteger(int val)
 {
-	core->set_responsei(pduel, val);
+	core.set_responsei(pduel, val);
 }
 
 void Duel::SetResponseBuffer(void* buff, size_t length)
 {
 	void* b = std::calloc(1, 64);
 	std::memcpy(b, buff, length);
-	core->set_responseb(pduel, (unsigned char*)b);
+	core.set_responseb(pduel, (unsigned char*)b);
 	std::free(b);
 }
 

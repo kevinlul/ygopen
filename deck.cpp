@@ -7,11 +7,11 @@
 Deck::Deck() : verified(false), usable(false)
 {}
 
-unsigned int Deck::Verify(DatabaseManager* dbm)
+unsigned int Deck::Verify(DatabaseManager& dbm)
 {
 	for(auto& card : main)
 	{
-		if(dbm->GetCardDataByCode(card) == nullptr)
+		if(dbm.GetCardDataByCode(card) == nullptr)
 		{
 			verified = false;
 			return card;
@@ -20,7 +20,7 @@ unsigned int Deck::Verify(DatabaseManager* dbm)
 
 	for(auto& card : extra)
 	{
-		if(dbm->GetCardDataByCode(card) == nullptr)
+		if(dbm.GetCardDataByCode(card) == nullptr)
 		{
 			verified = false;
 			return card;
@@ -29,7 +29,7 @@ unsigned int Deck::Verify(DatabaseManager* dbm)
 
 	for(auto& card : side)
 	{
-		if(dbm->GetCardDataByCode(card) == nullptr)
+		if(dbm.GetCardDataByCode(card) == nullptr)
 		{
 			verified = false;
 			return card;
@@ -45,7 +45,7 @@ bool Deck::IsVerified() const
 	return verified;
 }
 
-unsigned int Deck::CheckUsability(Banlist* bl, const int minmd, const int maxmd, const int mined, const int maxed, const int minsd, const int maxsd)
+unsigned int Deck::CheckUsability(Banlist& bl, const int minmd, const int maxmd, const int mined, const int maxed, const int minsd, const int maxsd)
 {
 	if((int)main.size() < minmd || (int)main.size() > maxmd)
 	{
@@ -93,19 +93,19 @@ unsigned int Deck::CheckUsability(Banlist* bl, const int minmd, const int maxmd,
 
 	for(auto& p : deckCardCount)
 	{
-		if(bl->forbidden.find(p.first) != bl->forbidden.end())
+		if(bl.forbidden.find(p.first) != bl.forbidden.end())
 		{
 			usable = false;
 			return p.first;
 		}
 
-		if(bl->limited.find(p.first) != bl->limited.end() && p.second > 1)
+		if(bl.limited.find(p.first) != bl.limited.end() && p.second > 1)
 		{
 			usable = false;
 			return p.first;
 		}
 
-		if(bl->semilimited.find(p.first) != bl->semilimited.end() && p.second > 2)
+		if(bl.semilimited.find(p.first) != bl.semilimited.end() && p.second > 2)
 		{
 			usable = false;
 			return p.first;
@@ -117,7 +117,7 @@ unsigned int Deck::CheckUsability(Banlist* bl, const int minmd, const int maxmd,
 			return p.first;
 		}
 
-		if(bl->GetMode() == Banlist::MODE_WHITELIST && bl->whitelist.find(p.first) == bl->whitelist.end())
+		if(bl.GetMode() == Banlist::MODE_WHITELIST && bl.whitelist.find(p.first) == bl.whitelist.end())
 		{
 			usable = false;
 			return p.first;

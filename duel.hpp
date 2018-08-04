@@ -12,7 +12,7 @@ class DuelObserver;
 
 class Duel
 {
-	CoreInterface* core;
+	CoreInterface& core;
 	unsigned char buffer[DUEL_BUFFER_SIZE];
 	long pduel;
 
@@ -23,7 +23,7 @@ class Duel
 
 	void Message(void* buff, size_t length);
 public:
-	Duel(CoreInterface* core);
+	Duel(CoreInterface& core);
 	~Duel();
 
 	void AddObserver(DuelObserver* duelObs);
