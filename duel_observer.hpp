@@ -5,6 +5,6 @@
 class DuelObserver
 {
 public:
-	virtual void OnNotify(void* buff, size_t length) = 0;
+	virtual void OnNotify(void* buffer, size_t length) = 0;
 };
 #endif // __DUEL_OBSERVER_HPP__
