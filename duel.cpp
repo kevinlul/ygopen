@@ -145,7 +145,7 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::ChainDisabled  , 1},
 	{CoreMessage::Damage         , 5},
 	{CoreMessage::Recover        , 5},
-	{CoreMessage::Equip          , 2},
+	{CoreMessage::Equip          , 20},
 	{CoreMessage::LpUpdate       , 5},
 	{CoreMessage::Unequip        , 10},
 	{CoreMessage::CardTarget     , 20},
