@@ -165,11 +165,11 @@ static const std::map<int, int> msgLengths =
 	{CoreMessage::MatchKill      , 1}
 };
 
-Duel::Duel(CoreInterface& core) :
+Duel::Duel(CoreInterface& core, unsigned int seed) :
 	core(core),
 	pduel(0)
 {
-	pduel = core.create_duel(0); // TODO: randomize this value
+	pduel = core.create_duel(seed);
 }
 
 Duel::~Duel()

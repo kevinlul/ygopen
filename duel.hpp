@@ -23,7 +23,7 @@ class Duel
 
 	void Message(void* buff, size_t length);
 public:
-	Duel(CoreInterface& core);
+	Duel(CoreInterface& core, unsigned int seed);
 	~Duel();
 
 	void AddObserver(DuelObserver* duelObs);
