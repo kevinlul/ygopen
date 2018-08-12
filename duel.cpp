@@ -323,7 +323,8 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 				bm->Forward(bm->Read<uint8_t>() * 4);
 			break;
 			case CoreMessage::ShuffleSetCard:
-				bm->Forward(bm->Read<uint8_t>() * 8);
+				bm->Forward(2);
+				bm->Forward(bm->Read<uint8_t>() * 20);
 			break;
 			case CoreMessage::TossCoin:
 			case CoreMessage::TossDice:
