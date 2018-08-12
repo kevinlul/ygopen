@@ -6,7 +6,7 @@
 #include "card.hpp"
 
 //static const char * errorString  = "???";
-static const char* sqlSelect    = "select * from datas,texts where datas.id=texts.id";
+static const char* sqlSelect = "select * from datas,texts where datas.id=texts.id";
 
 // TODO: databases might be corrupted, add error checking to all functions
 
@@ -110,7 +110,7 @@ bool DatabaseManager::LoadDatabase(const char* fn)
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 
-	std::printf("Number of cards loaded in total: %lu\n", cardData.size()); // TODO: Delete this
+	std::printf("Number of cards loaded in total: %lu\n", cardData.size());
 
 	return true;
 }
