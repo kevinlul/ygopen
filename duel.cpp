@@ -311,13 +311,13 @@ int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
 			case CoreMessage::ConfirmDecktop:
 			case CoreMessage::ConfirmExtratop:
 			case CoreMessage::ConfirmCards:
+			case CoreMessage::RandomSelected:
 				bm->Forward(1);
 				bm->Forward(bm->Read<uint8_t>() * 10);
 			break;
 			case CoreMessage::ShuffleHand:
 			case CoreMessage::ShuffleExtra:
 			case CoreMessage::CardSelected:
-			case CoreMessage::RandomSelected:
 			case CoreMessage::Draw:
 				bm->Forward(1);
 				bm->Forward(bm->Read<uint8_t>() * 4);
