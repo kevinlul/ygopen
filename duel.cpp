@@ -5,7 +5,7 @@
 #include "duel.hpp"
 
 #include "core_interface.hpp"
-#include "core_messages.hpp"
+#include "enums/core_message.hpp"
 
 #include "duel_observer.hpp"
 
