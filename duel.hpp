@@ -7,6 +7,16 @@
 
 #define DUEL_BUFFER_SIZE 4096 // size took from core/duel.cpp
 
+#include "enums/core_message.hpp"
+
+enum class DuelMessage : unsigned char
+{
+	Any,
+	Continue ,
+	NeedResponse,
+	EndOfDuel,
+};
+
 class CoreInterface;
 class DuelObserver;
 
@@ -18,8 +28,8 @@ class Duel
 
 	std::vector<DuelObserver*> observers;
 
-	int Analyze(unsigned int bufferLen);
-	int HandleCoreMessage(int msgType, BufferManipulator* bm);
+	DuelMessage Analyze(unsigned int bufferLen);
+	DuelMessage HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm);
 
 	void Message(void* buff, size_t length);
 public:

@@ -1,6 +1,7 @@
-#ifndef __CORE_MESSAGES_HPP__
-#define __CORE_MESSAGES_HPP__
-enum CoreMessage
+#ifndef __CORE_MESSAGE_HPP__
+#define __CORE_MESSAGE_HPP__
+
+enum class CoreMessage : unsigned int
 {
 	Retry              = 1,
 	Hint               = 2,
@@ -101,4 +102,4 @@ enum CoreMessage
 	ConfirmExtratop    = 42
 };
 
-#endif // __CORE_MESSAGES_HPP__
+#endif // __CORE_MESSAGE_HPP__

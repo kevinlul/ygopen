@@ -5,19 +5,11 @@
 #include "duel.hpp"
 
 #include "core_interface.hpp"
-#include "enums/core_message.hpp"
 
 #include "duel_observer.hpp"
 
-enum DuelMessage
-{
-	Continue = 0,
-	NeedResponse = 1,
-	EndOfDuel = 2,
-};
-
 // TODO: figure out where are those commented messages handled
-static const std::map<int, int> msgResults =
+static const std::map<CoreMessage, DuelMessage> msgResults =
 {
 	{CoreMessage::Retry, DuelMessage::NeedResponse},
 	{CoreMessage::Hint, DuelMessage::Continue},
@@ -115,7 +107,7 @@ static const std::map<int, int> msgResults =
 };
 
 // Fixed-length Core Messages
-static const std::map<int, int> msgLengths =
+static const std::map<CoreMessage, unsigned int> msgLengths =
 { 
 	{CoreMessage::Hint           , 10},
 	{CoreMessage::ShuffleDeck    , 1},
@@ -190,7 +182,7 @@ void Duel::Start(int options)
 
 void Duel::Process()
 {
-	int lastMessage = DuelMessage::Continue;
+	DuelMessage lastMessage = DuelMessage::Continue;
 	while (true) 
 	{
 		const int bufferLength = core.process(pduel) & 0xFFFF;
@@ -202,7 +194,7 @@ void Duel::Process()
 			lastMessage = Analyze(bufferLength);
 		}
 
-		if(lastMessage > 0)
+		if(lastMessage > DuelMessage::Any)
 			return;
 	}
 }
@@ -258,7 +250,7 @@ void Duel::SetResponseBuffer(void* buff, size_t length)
 	std::free(b);
 }
 
-int Duel::Analyze(unsigned int bufferLen)
+DuelMessage Duel::Analyze(unsigned int bufferLen)
 {
 	BufferManipulator bm(buffer, bufferLen);
 	while(bm.CanAdvance())
@@ -267,19 +259,19 @@ int Duel::Analyze(unsigned int bufferLen)
 		auto cb = bm.GetCurrentBuffer();
 		Message((void*)cb.first, cb.second);
 
-		const int msgType = bm.Read<uint8_t>();
+		const CoreMessage msgType = (CoreMessage)bm.Read<uint8_t>();
 
-		const int msgResult = HandleCoreMessage(msgType, &bm);
+		const DuelMessage msgResult = HandleCoreMessage(msgType, &bm);
 
-		if(msgResult > 0)
+		if(msgResult > DuelMessage::Any)
 			return msgResult;
 	}
 	return DuelMessage::Continue;
 }
 
-int Duel::HandleCoreMessage(int msgType, BufferManipulator* bm)
+DuelMessage Duel::HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm)
 {
-	printf("\tMessage: %d\n", msgType);
+	printf("\tMessage: %d\n", (int)msgType);
 	
 	// Check the message response, and return if we need a user input
 	auto search = msgResults.find(msgType);
