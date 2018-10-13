@@ -1,7 +1,7 @@
 #ifndef __ATTRIBUTE_HPP__
 #define __ATTRIBUTE_HPP__
 
-enum Attribute
+enum class Attribute : unsigned int
 {
 	Earth  = 0x1,
 	Water  = 0x2,

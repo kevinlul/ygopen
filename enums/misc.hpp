@@ -1,7 +1,7 @@
 #ifndef __MISC_HPP__
 #define __MISC_HPP__
 
-enum Assume
+enum class Assume : unsigned int
 {
 	Code       = 1,
 	Type       = 2,
@@ -15,7 +15,7 @@ enum Assume
 	LinkMarker = 10
 };
 
-enum LinkMarker
+enum class LinkMarker : unsigned int
 {
 	BottomLeft  = 0x1,
 	Bottom      = 0x2,

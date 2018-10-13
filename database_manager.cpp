@@ -2,7 +2,7 @@
 #include <sqlite3.h>
 #include <cstring>
 
-// extract from ocgcore/card.h
+#include "enums/type.hpp"
 #include "card.hpp"
 
 //static const char * errorString  = "???";
@@ -30,7 +30,7 @@ void DatabaseManager::ReadCardData(sqlite3_stmt* stmt, CardData* cd, CardDataExt
 	cd->type = sqlite3_column_int(stmt, 4);
 	cd->attack = sqlite3_column_int(stmt, 5);
 	cd->defense = sqlite3_column_int(stmt, 6);
-	if(cd->type & TYPE_LINK)
+	if(cd->type & (unsigned int)Type::Link)
 	{
 		cd->link_marker = cd->defense;
 		cd->defense = 0;

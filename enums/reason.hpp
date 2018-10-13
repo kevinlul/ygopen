@@ -1,7 +1,7 @@
 #ifndef __REASON_HPP__
 #define __REASON_HPP__
 
-enum Reason
+enum class Reason : unsigned int
 {
 	Destroy    = 0x1,
 	Release    = 0x2,

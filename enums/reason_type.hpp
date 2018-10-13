@@ -1,7 +1,7 @@
 #ifndef __REASON_TYPE_HPP__
 #define __REASON_TYPE_HPP__
 
-enum SummonType
+enum class SummonType : unsigned int
 {
 	Normal   = 0x10000000,
 	Advance  = 0x11000000, // Tribute Summon

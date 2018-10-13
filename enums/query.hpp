@@ -1,7 +1,7 @@
 #ifndef __QUERY_HPP__
 #define __QUERY_HPP__
 
-enum Query
+enum class Query : unsigned int
 {
 	Code        = 0x1,
 	Position    = 0x2,

@@ -1,7 +1,7 @@
 #ifndef __STATUS_HPP__
 #define __STATUS_HPP__
 
-enum Status
+enum class Status : unsigned int
 {
 	Disabled         = 0x1,
 	ToEnable         = 0x2,

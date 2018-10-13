@@ -1,7 +1,7 @@
 #ifndef __LOCATION_HPP__
 #define __LOCATION_HPP__
 
-enum Location
+enum class Location : unsigned int
 {
 	MainDeck     = 0x1,
 	Hand         = 0x2,

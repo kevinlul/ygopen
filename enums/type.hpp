@@ -1,7 +1,7 @@
 #ifndef __TYPE_HPP__
 #define __TYPE_HPP__
 
-enum Type
+enum class Type : unsigned int
 {
 	Monster       = 0x1,
 	Spell         = 0x2,

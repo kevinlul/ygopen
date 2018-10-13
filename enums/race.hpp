@@ -1,7 +1,7 @@
 #ifndef __RACE_HPP__
 #define __RACE_HPP__
 
-enum Race
+enum class Race : unsigned int
 {
 	Warrior      = 0x1,
 	Spellcaster  = 0x2,
