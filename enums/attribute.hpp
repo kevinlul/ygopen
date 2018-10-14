@@ -1,15 +1,15 @@
 #ifndef __ATTRIBUTE_HPP__
 #define __ATTRIBUTE_HPP__
 
-enum class Attribute : unsigned int
+enum Attribute
 {
-	Earth  = 0x1,
-	Water  = 0x2,
-	Fire   = 0x4,
-	Wind   = 0x8,
-	Light  = 0x10,
-	Dark   = 0x20,
-	Divine = 0x40
+	AttributeEarth  = 0x1,
+	AttributeWater  = 0x2,
+	AttributeFire   = 0x4,
+	AttributeWind   = 0x8,
+	AttributeLight  = 0x10,
+	AttributeDark   = 0x20,
+	AttributeDivine = 0x40
 };
 
 #endif // __ATTRIBUTE_HPP__

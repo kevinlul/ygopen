@@ -1,30 +1,30 @@
 #ifndef __MISC_HPP__
 #define __MISC_HPP__
 
-enum class Assume : unsigned int
+enum class Assume
 {
-	Code       = 1,
-	Type       = 2,
-	Level      = 3,
-	Rank       = 4,
-	Attribute  = 5,
-	Race       = 6,
-	Attack     = 7,
-	Defense    = 8,
-	Link       = 9,
-	LinkMarker = 10
+	AssumeCode       = 1,
+	AssumeType       = 2,
+	AssumeLevel      = 3,
+	AssumeRank       = 4,
+	AssumeAttribute  = 5,
+	AssumeRace       = 6,
+	AssumeAttack     = 7,
+	AssumeDefense    = 8,
+	AssumeLink       = 9,
+	AssumeLinkMarker = 10
 };
 
-enum class LinkMarker : unsigned int
+enum LinkMarker
 {
-	BottomLeft  = 0x1,
-	Bottom      = 0x2,
-	BottomRight = 0x4,
-	Left        = 0x8,
-	Right       = 0x20,
-	TopLeft     = 0x40,
-	Top         = 0x80,
-	TopRight    = 0x100
+	LinkMarkerBottomLeft  = 0x1,
+	LinkMarkerBottom      = 0x2,
+	LinkMarkerBottomRight = 0x4,
+	LinkMarkerLeft        = 0x8,
+	LinkMarkerRight       = 0x20,
+	LinkMarkerTopLeft     = 0x40,
+	LinkMarkerTop         = 0x80,
+	LinkMarkerTopRight    = 0x100
 };
 
 // Flip effect flags

@@ -1,16 +1,16 @@
 #ifndef __POSITION_HPP__
 #define __POSITION_HPP__
 
-enum class Position : unsigned int
+enum Position
 {
-	FaceUpAttack    = 0x1,
-	FaceDownAttack  = 0x2,
-	FaceUpDefense   = 0x4,
-	FaceDownDefense = 0x8,
-	FaceUp          = 0x5,
-	FaceDown        = 0xA,
-	Attack          = 0x3,
-	Defense         = 0xC
+	PositionFaceUpAttack    = 0x1,
+	PositionFaceDownAttack  = 0x2,
+	PositionFaceUpDefense   = 0x4,
+	PositionFaceDownDefense = 0x8,
+	PositionFaceUp          = 0x5,
+	PositionFaceDown        = 0xA,
+	PositionAttack          = 0x3,
+	PositionDefense         = 0xC
 };
 
 #endif // __POSITION_HPP__

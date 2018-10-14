@@ -1,33 +1,33 @@
 #ifndef __TYPE_HPP__
 #define __TYPE_HPP__
 
-enum class Type : unsigned int
+enum Type
 {
-	Monster       = 0x1,
-	Spell         = 0x2,
-	Trap          = 0x4,
-	Normal        = 0x10,
-	Effect        = 0x20,
-	Fusion        = 0x40,
-	Ritual        = 0x80,
-	TrapMonster   = 0x100,
-	Spirit        = 0x200,
-	Union         = 0x400,
-	Dual          = 0x800, // Gemini
-	Tuner         = 0x1000,
-	Synchro       = 0x2000,
-	Token         = 0x4000,
-	QuickPlay     = 0x10000,
-	Continous     = 0x20000,
-	Equip         = 0x40000,
-	Field         = 0x80000,
-	Counter       = 0x100000,
-	Flip          = 0x200000,
-	Toon          = 0x400000,
-	Xyz           = 0x800000,
-	Pendulum      = 0x1000000,
-	SpecialSummon = 0x2000000,
-	Link          = 0x4000000
+	TypeMonster       = 0x1,
+	TypeSpell         = 0x2,
+	TypeTrap          = 0x4,
+	TypeNormal        = 0x10,
+	TypeEffect        = 0x20,
+	TypeFusion        = 0x40,
+	TypeRitual        = 0x80,
+	TypeTrapMonster   = 0x100,
+	TypeSpirit        = 0x200,
+	TypeUnion         = 0x400,
+	TypeDual          = 0x800, // Gemini
+	TypeTuner         = 0x1000,
+	TypeSynchro       = 0x2000,
+	TypeToken         = 0x4000,
+	TypeQuickPlay     = 0x10000,
+	TypeContinous     = 0x20000,
+	TypeEquip         = 0x40000,
+	TypeField         = 0x80000,
+	TypeCounter       = 0x100000,
+	TypeFlip          = 0x200000,
+	TypeToon          = 0x400000,
+	TypeXyz           = 0x800000,
+	TypePendulum      = 0x1000000,
+	TypeSpecialSummon = 0x2000000,
+	TypeLink          = 0x4000000
 };
 
 #endif // __TYPE_HPP__

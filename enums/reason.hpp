@@ -1,35 +1,35 @@
 #ifndef __REASON_HPP__
 #define __REASON_HPP__
 
-enum class Reason : unsigned int
+enum Reason
 {
-	Destroy    = 0x1,
-	Release    = 0x2,
-	Temporary  = 0x4,
-	Material   = 0x8,
-	Summon     = 0x10,
-	Battle     = 0x20,
-	Effect     = 0x40,
-	Cost       = 0x80,
-	Adjust     = 0x100,
-	LostTarget = 0x200,
-	Rule       = 0x400,
-	SpSummon   = 0x800,
-	DisSummon  = 0x1000,
-	Flip       = 0x2000,
-	Discard    = 0x4000,
-	RDamage    = 0x8000,
-	RRecover   = 0x10000,
-	Return     = 0x20000,
-	Fusion     = 0x40000,
-	Synchro    = 0x80000,
-	Ritual     = 0x100000,
-	Xyz        = 0x200000,
-	Replace    = 0x1000000,
-	Draw       = 0x2000000,
-	Redirect   = 0x4000000,
-	// Reveal  = 0x8000000,
-	Link       = 0x10000000
+	ReasonDestroy    = 0x1,
+	ReasonRelease    = 0x2,
+	ReasonTemporary  = 0x4,
+	ReasonMaterial   = 0x8,
+	ReasonSummon     = 0x10,
+	ReasonBattle     = 0x20,
+	ReasonEffect     = 0x40,
+	ReasonCost       = 0x80,
+	ReasonAdjust     = 0x100,
+	ReasonLostTarget = 0x200,
+	ReasonRule       = 0x400,
+	ReasonSpSummon   = 0x800,
+	ReasonDisSummon  = 0x1000,
+	ReasonFlip       = 0x2000,
+	ReasonDiscard    = 0x4000,
+	ReasonRDamage    = 0x8000,
+	ReasonRRecover   = 0x10000,
+	ReasonReturn     = 0x20000,
+	ReasonFusion     = 0x40000,
+	ReasonSynchro    = 0x80000,
+	ReasonRitual     = 0x100000,
+	ReasonXyz        = 0x200000,
+	ReasonReplace    = 0x1000000,
+	ReasonDraw       = 0x2000000,
+	ReasonRedirect   = 0x4000000,
+	// ReasonReveal  = 0x8000000,
+	ReasonLink       = 0x10000000
 };
 
 #endif // __REASAON_HPP__
