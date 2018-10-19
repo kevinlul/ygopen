@@ -194,7 +194,7 @@ void Duel::Process()
 			lastMessage = Analyze(bufferLength);
 		}
 
-		if(lastMessage > DuelMessage::Any)
+		if(lastMessage != DuelMessage::Continue)
 			return;
 	}
 }
@@ -216,8 +216,8 @@ void Duel::NewRelayCard(int code, int owner, int location, int playerNumber)
 
 std::pair<void*, size_t> Duel::QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, buffer, useCache);
-	return std::make_pair((void*)buffer, bufferLength);
+	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, queryBuffer, useCache);
+	return std::make_pair((void*)queryBuffer, bufferLength);
 }
 
 int Duel::QueryFieldCount(int playerID, int location)
@@ -227,14 +227,14 @@ int Duel::QueryFieldCount(int playerID, int location)
 
 std::pair<void*, size_t> Duel::QueryFieldCard(int playerID, int location, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, buffer, useCache);
-	return std::make_pair((void*)buffer, bufferLength);
+	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, queryBuffer, useCache);
+	return std::make_pair((void*)queryBuffer, bufferLength);
 }
 
 std::pair<void*, size_t> Duel::QueryFieldInfo()
 {
-	const size_t bufferLength = core.query_field_info(pduel, buffer);
-	return std::make_pair((void*)buffer, bufferLength);
+	const size_t bufferLength = core.query_field_info(pduel, queryBuffer);
+	return std::make_pair((void*)queryBuffer, bufferLength);
 }
 
 void Duel::SetResponseInteger(int val)
@@ -263,7 +263,7 @@ DuelMessage Duel::Analyze(unsigned int bufferLen)
 
 		const DuelMessage msgResult = HandleCoreMessage(msgType, &bm);
 
-		if(msgResult > DuelMessage::Any)
+		if(msgResult != DuelMessage::Continue)
 			return msgResult;
 	}
 	return DuelMessage::Continue;

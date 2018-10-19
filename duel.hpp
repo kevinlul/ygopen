@@ -9,12 +9,11 @@
 
 #include "enums/core_message.hpp"
 
-enum class DuelMessage : unsigned char
+enum class DuelMessage : int
 {
-	Any,
-	Continue ,
-	NeedResponse,
-	EndOfDuel,
+	Continue = 0,
+	NeedResponse = 1,
+	EndOfDuel = 2,
 };
 
 class CoreInterface;
@@ -24,6 +23,7 @@ class Duel
 {
 	CoreInterface& core;
 	unsigned char buffer[DUEL_BUFFER_SIZE];
+	unsigned char queryBuffer[DUEL_BUFFER_SIZE];
 	long pduel;
 
 	std::vector<DuelObserver*> observers;
