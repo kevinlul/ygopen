@@ -1,29 +1,128 @@
 #include "core_interface.hpp"
 
 #include <cstdio>
-#include <SDL.h>
 
 namespace YGOpen
 {
 
 //TODO: Use a DEFINE macro on premake instead, and fallback to these values
-#if defined(__LINUX__) || defined(__MACOSX__)
-static const char* DEFAULT_CORE_NAME = "libygopen-core.so";
-#else
+#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
 static const char* DEFAULT_CORE_NAME = "ygopen-core.dll";
+#else
+static const char* DEFAULT_CORE_NAME = "libygopen-core.so";
+#endif
+
+
+// "Native" functions below modified from implementations found in SDL2 library
+// Author: Sam Lantinga <slouken@libsdl.org>
+// Date: 26-10-2018
+// Code version: Lastest version at the date (from hg repo)
+// Availability:
+//	https://hg.libsdl.org/SDL/raw-file/691c32a30fb9/src/loadso/windows/SDL_sysloadso.c
+//	https://hg.libsdl.org/SDL/raw-file/691c32a30fb9/src/loadso/dlopen/SDL_sysloadso.c
+
+// Prototypes
+void* NativeLoadObject(const char* file);
+void* NativeLoadFunction(void* handle, const char* name);
+void  NativeUnloadObject(void* handle);
+
+#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
+#include <windows.h>
+
+// NOTE: Might need to handle unicode
+
+void* NativeLoadObject(const char* file)
+{
+// NOTE: We might need a way to identify if the platform is WINRT
+#ifdef __WINRT__
+	/* WinRT only publically supports LoadPackagedLibrary() for loading .dll
+		files.  LoadLibrary() is a private API, and not available for apps
+		(that can be published to MS' Windows Store.)
+	*/
+	void* handle = (void*) LoadPackagedLibrary(tstr, 0);
+#else
+	void* handle = (void*) LoadLibrary(tstr);
+#endif
+
+	/* Generate an error message if all loads failed */
+	if (handle == nullptr)
+	{
+		std::string errStr = std::string("Failed loading ") + file;
+		printf(errStr.c_str());
+	}
+	return handle;
+}
+
+void* NativeLoadFunction(void* handle, const char* name)
+{
+	void* symbol = (void*) GetProcAddress((HMODULE) handle, name);
+	if (symbol == nullptr)
+	{
+		std::string errStr = std::string("Failed loading ") + name;
+		printf(errStr.c_str());
+	}
+	return symbol;
+}
+
+void  NativeUnloadObject(void* handle)
+{
+	if (handle != nullptr)
+		FreeLibrary((HMODULE) handle);
+}
+
+#else
+#include <dlfcn.h>
+
+void* NativeLoadObject(const char* file)
+{
+	void* handle;
+	const char* loaderror;
+
+	/* possible IOS support in far future?
+	#if SDL_VIDEO_DRIVER_UIKIT
+	if (!UIKit_IsSystemVersionAtLeast(8.0)) {
+		SDL_SetError("SDL_LoadObject requires iOS 8+");
+		return NULL;
+	}
+	#endif
+	*/
+
+	handle = dlopen(file, RTLD_NOW|RTLD_LOCAL);
+	loaderror = (char*)dlerror();
+	if (handle == nullptr)
+		printf("Failed loading %s: %s", file, loaderror);
+
+	return (handle);
+}
+
+void* NativeLoadFunction(void* handle, const char* name)
+{
+	void* symbol = dlsym(handle, name);
+	if (symbol == nullptr)
+	{
+		/* append an underscore for platforms that need that. */
+		std::string _name = std::string("_") + name;
+		symbol = dlsym(handle, _name.c_str());
+		if (symbol == nullptr)
+			printf("Failed loading %s: %s", name, (const char*)dlerror());
+	}
+	return (symbol);
+}
+
+void NativeUnloadObject(void* handle)
+{
+	if (handle != nullptr)
+		dlclose(handle);
+}
 #endif
 
 template<typename T>
 T CoreInterface::LoadFunction(void* handle, T* func, const char* name, bool unload)
 {
-	*func = (T)SDL_LoadFunction(handle, name);
-	if(*func == nullptr)
-	{
-		std::puts(SDL_GetError());
-		if(unload)
-			UnloadLibrary();
-	}
-	
+	*func = (T)NativeLoadFunction(handle, name);
+	if(*func == nullptr && unload)
+		UnloadLibrary();
+
 	return *func;
 }
 
@@ -41,20 +140,19 @@ bool CoreInterface::LoadLibrary(const char* path)
 
 	std::string usedPath = path;
 
-	handle = SDL_LoadObject(usedPath.c_str());
+	handle = NativeLoadObject(usedPath.c_str());
+	/* TODO: get current working directory without SDL
 	if(handle == nullptr)
 	{
 		usedPath = SDL_GetBasePath();
 		usedPath += path;
 
-		handle = SDL_LoadObject(usedPath.c_str());
+		handle = NativeLoadObject(usedPath.c_str());
 	}
+	*/
 
 	if(handle == nullptr)
-	{
-		std::puts(SDL_GetError());
 		return false;
-	}
 
 #define LF(x) if(LoadFunction(handle, &x, #x, true) == nullptr) \
               	return false;
@@ -119,7 +217,7 @@ CoreInterface::~CoreInterface()
 void CoreInterface::UnloadLibrary()
 {
 	if(handle)
-		SDL_UnloadObject(handle);
+		NativeUnloadObject(handle);
 	handle = nullptr;
 	activeCorePath = "";
 }
