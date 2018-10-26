@@ -22,8 +22,13 @@ void CoreAuxiliary::SetDatabaseManager(DatabaseManager* dbManager)
 
 unsigned int CoreAuxiliary::CoreCardReader(unsigned int code, CardData* cd)
 {
-	if(dbm == nullptr) // TODO: print reason and memset cd
+	if(dbm == nullptr)
+	{
+		puts("Warning: no DatabaseManager set on CoreAuxiliary");
+		std::memset((void*)cd, 0, sizeof(CardData));
 		return 0;
+	}
+		
 	const CardData* wantedCard = dbm->GetCardDataByCode(code);
 	if(wantedCard == nullptr)
 		std::memset((void*)cd, 0, sizeof(CardData));

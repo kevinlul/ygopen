@@ -191,7 +191,6 @@ void Duel::Process()
 
 		if (bufferLength > 0)
 		{
-			printf("buffer length: %d\n", bufferLength);
 			core.get_message(pduel, (unsigned char*)&buffer);
 			lastMessage = Analyze(bufferLength);
 		}
@@ -273,8 +272,6 @@ DuelMessage Duel::Analyze(unsigned int bufferLen)
 
 DuelMessage Duel::HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm)
 {
-	printf("\tMessage: %d\n", (int)msgType);
-	
 	// Check the message response, and return if we need a user input
 	auto search = msgResults.find(msgType);
 	if(search != msgResults.end())
