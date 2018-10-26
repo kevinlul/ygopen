@@ -43,8 +43,7 @@ public:
 
 	void Start(int options);
 
-	//TODO: create individual version
-	void SetPlayersInfo(int startLP, int startHand, int drawCount);
+	void SetPlayerInfo(int playerID, int startLP, int startHand, int drawCount);
 
 	void Process();
 

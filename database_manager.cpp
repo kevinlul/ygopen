@@ -11,8 +11,6 @@ namespace YGOpen
 //static const char * errorString  = "???";
 static const char* sqlSelect = "select * from datas,texts where datas.id=texts.id";
 
-// TODO: databases might be corrupted, add error checking to all functions
-
 int DatabaseManager::CoreCardReader(unsigned int code, CardData* cd)
 {
 	const CardData* wantedCard = GetCardDataByCode(code);

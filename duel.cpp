@@ -11,7 +11,7 @@
 namespace YGOpen
 {
 
-// TODO: figure out where are those commented messages handled
+// NOTE: commented messages are not sent by the core, but instead are crafted by the server
 static const std::map<CoreMessage, DuelMessage> msgResults =
 {
 	{CoreMessage::Retry, DuelMessage::NeedResponse},
@@ -172,10 +172,9 @@ Duel::~Duel()
 	core.end_duel(pduel);
 }
 
-void Duel::SetPlayersInfo(int startLP, int startHand, int drawCount)
+void Duel::SetPlayerInfo(int playerID, int startLP, int startHand, int drawCount)
 {
-	core.set_player_info(pduel, 0, startLP, startHand, drawCount);
-	core.set_player_info(pduel, 1, startLP, startHand, drawCount);
+	core.set_player_info(pduel, playerID, startLP, startHand, drawCount);
 }
 
 void Duel::Start(int options)
