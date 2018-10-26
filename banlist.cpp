@@ -4,6 +4,9 @@
 #include <exception>
 #include <nlohmann/json.hpp>
 
+namespace YGOpen
+{
+
 Banlist::Banlist() : mode(MODE_BLACKLIST)
 {
 	
@@ -42,3 +45,5 @@ bool Banlist::FromJSON(std::string& str)
 
 	return true;
 }
+
+} // namespace YGOpen

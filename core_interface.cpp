@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <SDL.h>
 
+namespace YGOpen
+{
+
 //TODO: Use a DEFINE macro on premake instead, and fallback to these values
 #if defined(__LINUX__) || defined(__MACOSX__)
 static const char* DEFAULT_CORE_NAME = "libygopen-core.so";
@@ -120,3 +123,5 @@ void CoreInterface::UnloadLibrary()
 	handle = nullptr;
 	activeCorePath = "";
 }
+
+} // namespace YGOpen

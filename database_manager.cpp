@@ -5,6 +5,9 @@
 #include "enums/type.hpp"
 #include "card.hpp"
 
+namespace YGOpen
+{
+
 //static const char * errorString  = "???";
 static const char* sqlSelect = "select * from datas,texts where datas.id=texts.id";
 
@@ -138,3 +141,5 @@ const CardStrings* DatabaseManager::GetCardStringsByCode(unsigned int code) cons
 		return &search->second;
 	return nullptr;
 }
+
+} // namespace YGOpen

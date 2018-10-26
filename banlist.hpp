@@ -3,6 +3,9 @@
 #include <set>
 #include <string>
 
+namespace YGOpen
+{
+
 class Banlist
 {
 	int mode;
@@ -21,5 +24,7 @@ public:
 
 	bool FromJSON(std::string& str);
 };
+
+} // namespace YGOpen
 
 #endif // __BANLIST_HPP__

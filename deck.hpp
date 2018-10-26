@@ -2,6 +2,9 @@
 #define __DECK_HPP__
 #include <vector>
 
+namespace YGOpen
+{
+
 class DatabaseManager;
 class Banlist;
 
@@ -22,4 +25,7 @@ public:
 	unsigned int CheckUsability(Banlist& bl, const int minmd = 40, const int maxmd = 60, const int mined = 0, const int maxed = 15, const int minsd = 0, const int maxsd = 15);
 	bool CanBeUsed() const;
 };
+
+} // namespace YGOpen
+
 #endif // __DECK_HPP__

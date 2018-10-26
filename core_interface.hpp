@@ -4,6 +4,9 @@
 
 #include "card.hpp"
 
+namespace YGOpen
+{
+
 typedef unsigned char* (*script_reader)(const char*, int*);
 typedef unsigned int (*card_reader)(unsigned int, CardData*);
 typedef unsigned int (*message_handler)(void*, unsigned int);
@@ -55,5 +58,7 @@ public:
 	~CoreInterface();
 	void UnloadLibrary(); 
 };
+
+} // namespace YGOpen
 
 #endif // __CORE_INTERFACE__

@@ -7,6 +7,9 @@
 
 struct sqlite3_stmt;
 
+namespace YGOpen
+{
+
 class DatabaseManager
 {
 	std::unordered_map<unsigned int, CardData> cardData;
@@ -24,5 +27,7 @@ public:
 	const CardDataExtra* GetCardDataExtraByCode(unsigned int code) const;
 	const CardStrings* GetCardStringsByCode(unsigned int code) const;
 };
+
+} // namespace YGOpen
 
 #endif // __DATABASE_MANAGER__

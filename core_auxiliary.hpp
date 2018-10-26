@@ -2,6 +2,9 @@
 #define __CORE_AUXILIARY_HPP__
 #include "card.hpp"
 
+namespace YGOpen
+{
+
 class CoreInterface;
 class DatabaseManager;
 
@@ -17,5 +20,7 @@ public:
 	static unsigned int CoreCardReader(unsigned int code, CardData* cd);
 	static unsigned int CoreMessageHandler(void* pduel, unsigned int msgType);
 };
+
+} // namespace YGOpen
 
 #endif // __CORE_AUXILIARY_HPP__

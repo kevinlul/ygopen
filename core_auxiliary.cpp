@@ -4,6 +4,9 @@
 #include "core_interface.hpp"
 #include "database_manager.hpp"
 
+namespace YGOpen
+{
+
 CoreInterface* CoreAuxiliary::ci = nullptr;
 DatabaseManager* CoreAuxiliary::dbm = nullptr;
 
@@ -36,3 +39,5 @@ unsigned int CoreAuxiliary::CoreMessageHandler(void* pduel, unsigned int msgType
 	printf("Core Message (%d): %s\n", msgType, buffer);
 	return 0;
 }
+
+} // namespace YGOpen

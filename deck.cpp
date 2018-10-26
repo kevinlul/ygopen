@@ -4,6 +4,9 @@
 #include "database_manager.hpp"
 #include "banlist.hpp"
 
+namespace YGOpen
+{
+
 Deck::Deck() : verified(false), usable(false)
 {}
 
@@ -132,3 +135,5 @@ bool Deck::CanBeUsed() const
 {
 	return usable;
 }
+
+} // namespace YGOpen

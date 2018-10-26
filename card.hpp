@@ -2,6 +2,9 @@
 #define __CARD_HPP__
 #include <string>
 
+namespace YGOpen
+{
+
 struct CardData
 {
 	unsigned int code;
@@ -32,5 +35,7 @@ struct CardStrings
 	std::string desc;
 	std::string str[16];
 };
+
+} // namespace YGOpen
 
 #endif // __CARD_HPP__

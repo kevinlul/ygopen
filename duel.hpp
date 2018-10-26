@@ -9,6 +9,9 @@
 
 #include "enums/core_message.hpp"
 
+namespace YGOpen
+{
+
 enum class DuelMessage : int
 {
 	Continue = 0,
@@ -61,4 +64,7 @@ public:
 	//void SetDeck(int player, std::vector<unsigned int>& deck);
 	//void SetExtraDeck(int player, std::vector<unsigned int>& deck);
 };
+
+} // namespace YGOpen
+
 #endif // __DUEL_HPP__

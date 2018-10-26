@@ -8,6 +8,9 @@
 
 #include "duel_observer.hpp"
 
+namespace YGOpen
+{
+
 // TODO: figure out where are those commented messages handled
 static const std::map<CoreMessage, DuelMessage> msgResults =
 {
@@ -348,3 +351,5 @@ void Duel::AddObserver(DuelObserver* duelObs)
 {
 	observers.push_back(duelObs);
 }
+
+} // namespace YGOpen
