@@ -100,11 +100,17 @@ bool DatabaseManager::LoadDatabase(const char* fn)
 		{
 			// Card Data
 			ReadCardData(stmt, &cd, &cde);
+			if(cardData.count(cd.code) > 0)
+				cardData.erase(cd.code);
 			cardData.insert(std::make_pair(cd.code, cd));
+			if(cardDataExtra.count(cde.code) > 0)
+				cardDataExtra.erase(cde.code);
 			cardDataExtra.insert(std::make_pair(cde.code, cde));
 
 			// Card Strings
 			ReadCardStrings(stmt, &cs);
+			if(cardStrings.count(cd.code) > 0)
+				cardStrings.erase(cd.code);
 			cardStrings.insert(std::make_pair(cd.code, cs));
 		}
 	}
