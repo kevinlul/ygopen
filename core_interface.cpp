@@ -9,7 +9,7 @@ namespace YGOpen
 #if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
 static const char* DEFAULT_CORE_NAME = "ygopen-core.dll";
 #else
-static const char* DEFAULT_CORE_NAME = "libygopen-core.so";
+static const char* DEFAULT_CORE_NAME = "./libygopen-core.so";
 #endif
 
 
