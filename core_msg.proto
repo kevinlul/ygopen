@@ -1,0 +1,145 @@
+/*
+ * This source file untangles all messages that can be returned
+ * by ocgcore from its get_message() API call by listing what data
+ * each message holds exactly (listing each value size in bytes)
+ * while also providing a protobuf implementation of said message.
+ *
+ * If any message on the core would be modified/added, it must be specified here.
+ */
+
+syntax = "proto3";
+
+import "core_data.proto";
+
+package YGOpen.Core.Msg;
+
+message Msg
+{
+	oneof msg
+	{
+		Retry retry = 16;
+		Hint hint = 17;
+		Waiting waiting = 18;
+		Start start = 19;
+		Win win = 20;
+		UpdateData update_data = 21;
+		UpdateCard update_card = 22;
+		RequestDeck request_deck = 23;
+		SelectBattleCmd select_battlecmd = 24;
+		//NewTurn new_turn ;
+	}
+}
+
+// number: 1 (MSG_RETRY)
+// data: none
+message Retry
+{
+}
+
+// number: 2 (MSG_HINT)
+// data:
+// type (uint8)
+// target_player (uint8)
+// data (int64)
+// NOTE: on operations.cpp:2468,3382 write_buffer32 is used instead of 64. Check needed.
+// TODO: depending on how hints are handled we should be able to use different messages for hint types
+message Hint
+{
+	int32 type = 1;
+	int32 player = 2;
+	oneof data
+	{
+		int64 data64 = 3;
+		int32 data32 = 4;
+	}
+}
+
+// number: 3 (MSG_WAITING)
+// data:
+// TODO: missing on ocgcore
+message Waiting
+{
+}
+
+// number: 4 (MSG_START)
+// data:
+// TODO: missing on ocgcore
+message Start
+{
+}
+
+// number: 5 (MSG_WIN)
+// data:
+// win_player (uint8)
+// win_reason (uint8)
+message Win
+{
+	int32 player = 1;
+	int32 reason = 2;
+}
+
+// number: 6 (MSG_UPDATE_DATA)
+// data:
+// TODO: missing on ocgcore
+message UpdateData
+{
+}
+
+// number: 7 (MSG_UPDATE_CARD)
+// data:
+// TODO: missing on ocgcore
+message UpdateCard
+{
+}
+
+// number: 8 (MSG_REQUEST_DECK)
+// data:
+// TODO: missing on ocgcore
+message RequestDeck
+{
+}
+
+// number: 10 (MSG_SELECT_BATTLECMD)
+// data:
+// playerid (uint8)
+// select_chains.size() (uint8)
+//	repeated code (uint32)
+//	repeated controler (uint8)
+//	repeated sequence (uint32)
+//	repeated peffect->description (uint64)
+// attackable_cards.size() (uint8)
+//	repeated code (uint32)
+//	repeated controler (uint8)
+//	repeated sequence (uint32)
+//	repeated pcard->direct_attackable (uint8)
+// to_m2 (uint8)
+// to_ep (uint8)
+message SelectBattleCmd
+{
+	int32 player = 1;
+	bool able_to_mp2 = 2;
+	bool able_to_ep = 3;
+
+	repeated CardWithEffect cards_w_effect = 4;
+	repeated CardCanAttack cards_can_attack = 5;
+
+	message CardWithEffect
+	{
+		Data.CardLocation info = 1;
+		int64 description = 2;
+	}
+
+	message CardCanAttack
+	{
+		Data.CardLocation info = 1;
+		bool can_attack = 2;
+	}
+}
+
+// number: 40 (MSG_NEW_TURN)
+// data:
+// turn_player (uint8)
+message NewTurn
+{
+	int32 player = 1;
+}
