@@ -24,14 +24,20 @@ message CardOverlay
 
 message CardWithEffect
 {
-	Data.CardInfo info = 1;
-	int64 description = 2;
+	CardInfo info = 1;
+	int64 description = 2; // effect description string id
 }
 
 message CardCanAttack
 {
-	Data.CardInfo info = 1;
-	bool can_attack = 2;
+	CardInfo info = 1;
+	bool can_attack = 2; // can this card attack
+}
+
+message CardTribute
+{
+	CardInfo info = 1;
+	int32 tribute_count = 2; // count this card as X tributes
 }
 
 message Chain

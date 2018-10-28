@@ -280,6 +280,27 @@ message SelectPosition
 	Data.CardInfo card = 2;
 }
 
+// number: 20 (MSG_SELECT_TRIBUTE)
+// data:
+// playerid [uint8]
+// cancelable [uint8]
+// min [uint8]
+// max [uint8]
+// core.select_cards.size() [uint32]
+//	repeated code [uint32]
+//	repeated current.controler [uint8]
+//	repeated current.location [uint8]
+//	repeated current.sequence [uint32]
+//	repeated release_param [uint8]
+message SelectTribute
+{
+	int32 player = 1;
+	bool can_cancel = 2;
+	int32 min_selection = 3;
+	int32 max_selection = 4;
+	repeated Data.CardTribute cards_tributable = 5;
+}
+
 // number: 40 (MSG_NEW_TURN)
 // data:
 // turn_player [uint8]
