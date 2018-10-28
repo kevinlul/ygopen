@@ -28,6 +28,7 @@ message Msg
 		SelectBattleCmd select_battlecmd = 24;
 		SelectIdleCmd select_idlecmd = 25;
 		SelectEffectYn select_effectyn = 26;
+		SelectYesNo select_yesno = 27;
 		NewTurn new_turn = 99;
 	}
 }
@@ -187,6 +188,16 @@ message SelectEffectYn
 {
 	int32 player = 1;
 	Data.CardWithEffect card = 2;
+}
+
+// number: 13 (MSG_SELECT_YESNO)
+// data:
+// playerid [uint8]
+// description [uint64]
+message SelectYesNo
+{
+	int32 player = 1;
+	int64 description = 2;
 }
 
 // number: 40 (MSG_NEW_TURN)
