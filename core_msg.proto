@@ -30,6 +30,7 @@ message Msg
 		SelectEffectYn select_effectyn = 26;
 		SelectYesNo select_yesno = 27;
 		SelectOption select_option = 28;
+		SelectCard select_card = 29;
 		NewTurn new_turn = 99;
 	}
 }
@@ -210,6 +211,22 @@ message SelectOption
 {
 	int32 player = 1;
 	repeated int64 descriptions = 2;
+}
+
+// number: 15 (MSG_SELECT_CARD)
+// data:
+// playerid [uint8]
+// cancelable [uint8]
+// min [uint8]
+// max [uint8]
+// core.select_cards.size() [uint32]
+//	code [uint32]
+//	loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+message SelectCard
+{
+	int32 player = 1;
+	bool can_cancel = 2;
+	repeated Data.CardInfo cards_selectable = 3;
 }
 
 // number: 40 (MSG_NEW_TURN)

@@ -24,12 +24,12 @@ message CardOverlay
 
 message CardWithEffect
 {
-	Data.CardLocation info = 1;
+	Data.CardInfo info = 1;
 	int64 description = 2;
 }
 
 message CardCanAttack
 {
-	Data.CardLocation info = 1;
+	Data.CardInfo info = 1;
 	bool can_attack = 2;
 }
