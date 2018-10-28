@@ -4,9 +4,21 @@ package YGOpen.Core.Data;
 
 message CardLocation
 {
-	//int32 code = 1;
+	int32 code = 1;
 	int32 controler = 2;
 	int32 location = 3;
 	int32 sequence = 4;
 	int32 position = 5;
+}
+
+message CardWithEffect
+{
+	Data.CardLocation info = 1;
+	int64 description = 2;
+}
+
+message CardCanAttack
+{
+	Data.CardLocation info = 1;
+	bool can_attack = 2;
 }
