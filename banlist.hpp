@@ -3,6 +3,8 @@
 #include <set>
 #include <string>
 
+#include <nlohmann/json.hpp>
+
 namespace YGOpen
 {
 
@@ -22,7 +24,7 @@ public:
 
 	int GetMode() const;
 
-	bool FromJSON(std::string& str);
+	bool FromJSON(nlohmann::json& j);
 };
 
 } // namespace YGOpen

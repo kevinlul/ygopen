@@ -17,19 +17,8 @@ int Banlist::GetMode() const
 	return mode;
 }
 
-bool Banlist::FromJSON(std::string& str)
+bool Banlist::FromJSON(nlohmann::json& j)
 {
-	nlohmann::json j;
-	try
-	{
-		j = nlohmann::json::parse(str);
-	}
-	catch(std::exception& e)
-	{
-		std::printf("Exception ocurred when parsing JSON file: %s\n", e.what());
-		return false;
-	}
-
 	std::vector<int> v;
 
 	v = j.at("semilimited").get<std::vector<int>>();
