@@ -31,6 +31,8 @@ message Msg
 		SelectYesNo select_yesno = 27;
 		SelectOption select_option = 28;
 		SelectCard select_card = 29;
+		SelectChain select_chain = 30;
+		SelectPlace select_place = 31;
 		NewTurn new_turn = 99;
 	}
 }
@@ -251,6 +253,18 @@ message SelectChain
 	int32 hint_timing_this_player = 4; // TODO: needs investigation
 	int32 hint_timing_other_player = 5; // TODO: needs investigation
 	repeated Data.Chain chains = 6;
+}
+
+// number: 18 (MSG_SELECT_PLACE)
+// data:
+// playerid [uint8]
+// count [uint8]
+// flag [uint32]
+message SelectPlace
+{
+	int32 player = 1;
+	int32 count = 2;
+	int32 flag = 3;
 }
 
 // number: 40 (MSG_NEW_TURN)
