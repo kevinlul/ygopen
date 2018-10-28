@@ -33,6 +33,8 @@ message Msg
 		SelectCard select_card = 29;
 		SelectChain select_chain = 30;
 		SelectPlace select_place = 31;
+		SelectPosition select_position = 32;
+		
 		NewTurn new_turn = 99;
 	}
 }
@@ -265,6 +267,17 @@ message SelectPlace
 	int32 player = 1;
 	int32 count = 2;
 	int32 flag = 3;
+}
+
+// number: 19 (MSG_SELECT_POSITION)
+// data:
+// playerid [uint8]
+// code [uint32]
+// positions [uint8]
+message SelectPosition
+{
+	int32 player = 1;
+	Data.CardInfo card = 2;
 }
 
 // number: 40 (MSG_NEW_TURN)
