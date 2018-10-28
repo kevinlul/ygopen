@@ -40,6 +40,12 @@ message CardTribute
 	int32 tribute_count = 2; // count this card as X tributes
 }
 
+message CardWithCounter
+{
+	CardInfo info = 1;
+	Counter counter = 2;
+}
+
 message Chain
 {
 	// NOTE: possible values
@@ -49,4 +55,10 @@ message Chain
 	int32 edesc = 1; // TODO: needs investigation
 	int64 description = 2;
 	CardInfo card = 3;
+}
+
+message Counter
+{
+	int32 count = 1;
+	int32 type = 2;
 }

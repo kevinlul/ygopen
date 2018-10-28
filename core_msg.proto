@@ -36,6 +36,7 @@ message Msg
 		SelectPosition select_position = 32;
 		SelectTribute select_tribute = 33;
 		SortChain sort_chain = 34;
+		SelectCounter select_counter = 35;
 		
 		NewTurn new_turn = 99;
 	}
@@ -303,7 +304,7 @@ message SelectTribute
 	repeated Data.CardTribute cards_tributable = 5;
 }
 
-// number: 25 (MSG_SORT_CHAIN)
+// number: 21 (MSG_SORT_CHAIN)
 // data:
 // playerid [uint8]
 // select_cards.size() [uint8]
@@ -317,6 +318,23 @@ message SortChain
 	Data.CardLocation cards_to_sort = 2;
 }
 
+// number: 22 (MSG_SELECT_COUNTER)
+// data:
+// playerid [uint8]
+// countertype [uint16]
+// count [uint16]
+// core.select_cards.size() [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint8]
+//	repeated sequence [uint8]
+//	repeated get_counter(countertype) [uint16]
+message SelectCounter
+{
+	int32 player = 1;
+	Data.Counter counter;
+	repeated Data.CardWithCounter cards_selectable = 4;
+}
 
 // number: 40 (MSG_NEW_TURN)
 // data:
