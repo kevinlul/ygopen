@@ -32,17 +32,10 @@ message CardInfo
 	// MSG_SELECT_COUNTER
 	Counter counter = 9;
 	
-	// If the message has a OverlayInfo message it means that the card itself
-	// is a overlay of a XYZ monster. In that scenario, none of the fields
-	// above should exist (except for code).
-	OverlayInfo overlay = 15;
-}
-
-message OverlayInfo
-{
-	int32 controler = 1;
-	int32 location = 2;
-	int32 sequence = 3;
+	// If the message has overlay_sequence it means that the card itself
+	// is a overlay of a xyz monster. In that scenario, the above messages
+	// represent the overlay's owner data.
+	int32 overlay_sequence = 15;
 }
 
 message Chain
