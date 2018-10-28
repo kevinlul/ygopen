@@ -33,3 +33,14 @@ message CardCanAttack
 	Data.CardInfo info = 1;
 	bool can_attack = 2;
 }
+
+message Chain
+{
+	// NOTE: possible values
+	// #define EDESC_OPERATION 1
+	// #define EDESC_RESET     2
+	// or 0
+	int32 edesc = 1; // TODO: needs investigation
+	int64 description = 2;
+	CardInfo card = 3;
+}

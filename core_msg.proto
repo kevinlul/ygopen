@@ -220,13 +220,35 @@ message SelectOption
 // min [uint8]
 // max [uint8]
 // core.select_cards.size() [uint32]
-//	code [uint32]
-//	loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+//	repeated code [uint32]
+//	repeated loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
 message SelectCard
 {
 	int32 player = 1;
 	bool can_cancel = 2;
 	repeated Data.CardInfo cards_selectable = 3;
+}
+
+// number: 16 (MSG_SELECT_CHAIN)
+// data:
+// playerid [uint8]
+// select_chains.size() [uint8]
+// spe_count [uint8]
+// forced [uint8]
+// pduel->game_field->core.hint_timing[playerid] [uint32]
+// pduel->game_field->core.hint_timing[1 - playerid] [uint32]
+//	repeated EDESC [uint8]
+//	repeated code [uint32]
+//	repeated loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+//	repeated description [uint64]
+message SelectChain
+{
+	int32 player = 1;
+	int32 spe_cout = 2; // TODO: needs investigation
+	bool forced = 3; // TODO: needs investigation
+	int32 hint_timing_this_player = 4; // TODO: needs investigation
+	int32 hint_timing_other_player = 5; // TODO: needs investigation
+	repeated Data.Chain chains = 6;
 }
 
 // number: 40 (MSG_NEW_TURN)
