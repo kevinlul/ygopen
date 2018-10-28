@@ -9,41 +9,40 @@ message CardInfo
 	int32 location = 3;
 	int32 sequence = 4;
 	int32 position = 5;
-	// If the message has a CardOverlay message it means that the card itself
+	
+	// Effect description string id
+	// used by:
+	// MSG_SELECT_BATTLECMD
+	// MSG_SELECT_IDLECMD
+	// MSG_SELECT_EFFECTYN
+	int64 effect_desc = 6;
+	
+	// Can this card attack
+	// used by:
+	// MSG_SELECT_BATTLECMD
+	bool can_attack = 7;
+	
+	// Count this card as X tributes
+	// used by:
+	// MSG_SELECT_TRIBUTE
+	int32 tribute_count = 8;
+	
+	// Counter on the card
+	// used by:
+	// MSG_SELECT_COUNTER
+	Counter counter = 9;
+	
+	// If the message has a OverlayInfo message it means that the card itself
 	// is a overlay of a XYZ monster. In that scenario, none of the fields
 	// above should exist (except for code).
-	CardOverlay overlay = 6;
+	OverlayInfo overlay = 15;
 }
 
-message CardOverlay
+message OverlayInfo
 {
 	int32 controler = 1;
 	int32 location = 2;
 	int32 sequence = 3;
-}
-
-message CardWithEffect
-{
-	CardInfo info = 1;
-	int64 description = 2; // effect description string id
-}
-
-message CardCanAttack
-{
-	CardInfo info = 1;
-	bool can_attack = 2; // can this card attack
-}
-
-message CardTribute
-{
-	CardInfo info = 1;
-	int32 tribute_count = 2; // count this card as X tributes
-}
-
-message CardWithCounter
-{
-	CardInfo info = 1;
-	Counter counter = 2;
 }
 
 message Chain
@@ -59,6 +58,6 @@ message Chain
 
 message Counter
 {
-	int32 count = 1;
-	int32 type = 2;
+	int32 type = 1;
+	int32 count = 2;
 }

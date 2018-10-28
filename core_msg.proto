@@ -132,8 +132,8 @@ message SelectBattleCmd
 	bool able_to_mp2 = 2;
 	bool able_to_ep = 3;
 
-	repeated Data.CardWithEffect cards_w_effect = 4;
-	repeated Data.CardCanAttack cards_can_attack = 5;
+	repeated Data.CardInfo cards_w_effect = 4;
+	repeated Data.CardInfo cards_can_attack = 5;
 }
 
 // number: 11 (MSG_SELECT_IDLECMD)
@@ -184,7 +184,7 @@ message SelectIdleCmd
 	repeated Data.CardInfo cards_repositionable = 7;
 	repeated Data.CardInfo cards_msetable = 8;
 	repeated Data.CardInfo cards_ssetable = 9;
-	repeated Data.CardWithEffect cards_w_effect = 10;
+	repeated Data.CardInfo cards_w_effect = 10;
 }
 
 // number: 12 (MSG_SELECT_EFFECTYN)
@@ -196,7 +196,7 @@ message SelectIdleCmd
 message SelectEffectYn
 {
 	int32 player = 1;
-	Data.CardWithEffect card = 2;
+	Data.CardInfo card = 2;
 }
 
 // number: 13 (MSG_SELECT_YESNO)
@@ -301,7 +301,7 @@ message SelectTribute
 	bool can_cancel = 2;
 	int32 min_selection = 3;
 	int32 max_selection = 4;
-	repeated Data.CardTribute cards_tributable = 5;
+	repeated Data.CardInfo cards_tributable = 5;
 }
 
 // number: 21 (MSG_SORT_CHAIN)
@@ -315,7 +315,7 @@ message SelectTribute
 message SortChain
 {
 	int32 player = 1;
-	Data.CardLocation cards_to_sort = 2;
+	Data.CardInfo cards_to_sort = 2;
 }
 
 // number: 22 (MSG_SELECT_COUNTER)
@@ -332,8 +332,8 @@ message SortChain
 message SelectCounter
 {
 	int32 player = 1;
-	Data.Counter counter;
-	repeated Data.CardWithCounter cards_selectable = 4;
+	Data.Counter counter = 2;
+	repeated Data.CardInfo cards_selectable = 3;
 }
 
 // number: 40 (MSG_NEW_TURN)
