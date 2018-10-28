@@ -226,7 +226,9 @@ message SelectCard
 {
 	int32 player = 1;
 	bool can_cancel = 2;
-	repeated Data.CardInfo cards_selectable = 3;
+	int32 min_selection = 3;
+	int32 max_selection = 4;
+	repeated Data.CardInfo cards_selectable = 5;
 }
 
 // number: 16 (MSG_SELECT_CHAIN)
