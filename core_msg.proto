@@ -27,7 +27,8 @@ message Msg
 		RequestDeck request_deck = 23;
 		SelectBattleCmd select_battlecmd = 24;
 		SelectIdleCmd select_idlecmd = 25;
-		//NewTurn new_turn ;
+		SelectEffectYn select_effectyn = 26;
+		NewTurn new_turn = 99;
 	}
 }
 
@@ -176,6 +177,17 @@ message SelectIdleCmd
 	repeated Data.CardWithEffect cards_w_effect = 10;
 }
 
+// number: 12 (MSG_SELECT_EFFECTYN)
+// data:
+// playerid [uint8]
+// code [uint32]
+// loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+// description [uint64]
+message SelectEffectYn
+{
+	int32 player = 1;
+	Data.CardWithEffect card = 2;
+}
 
 // number: 40 (MSG_NEW_TURN)
 // data:
