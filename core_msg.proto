@@ -29,6 +29,7 @@ message Msg
 		SelectIdleCmd select_idlecmd = 25;
 		SelectEffectYn select_effectyn = 26;
 		SelectYesNo select_yesno = 27;
+		SelectOption select_option = 28;
 		NewTurn new_turn = 99;
 	}
 }
@@ -198,6 +199,17 @@ message SelectYesNo
 {
 	int32 player = 1;
 	int64 description = 2;
+}
+
+// number: 14 (MSG_SELECT_OPTION)
+// data:
+// playerid [uint8]
+// core.select_options.size() [uint8]
+//	repeated description [uint64]
+message SelectOption
+{
+	int32 player = 1;
+	repeated int64 descriptions = 2;
 }
 
 // number: 40 (MSG_NEW_TURN)
