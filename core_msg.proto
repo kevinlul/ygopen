@@ -46,6 +46,7 @@ message Msg
 		ShuffleDeck shuffle_deck = 42;
 		ShuffleHand shuffle_hand = 43;
 		RefreshDeck refresh_deck = 44;
+		SwapGraveDeck swap_grave_deck = 45;
 		
 		NewTurn new_turn = 99;
 	}
@@ -474,6 +475,14 @@ message ShuffleHand
 // TODO: missing on ocgcore
 message RefreshDeck
 {
+}
+
+// number: 35 (MSG_SWAP_GRAVE_DECK)
+// data:
+// playerid [uint8]
+message SwapGraveDeck
+{
+	int32 player = 1;
 }
 
 // number: 40 (MSG_NEW_TURN)
