@@ -37,7 +37,8 @@ message Msg
 		SelectTribute select_tribute = 33;
 		SortChain sort_chain = 34;
 		SelectCounter select_counter = 35;
-		SelectSum select_sum = 36
+		SelectSum select_sum = 36;
+		SelectDisfield select_disfield = 37;
 		
 		NewTurn new_turn = 99;
 	}
@@ -361,6 +362,18 @@ message SelectSum
 	Data.Counter counter = 2;
 	repeated Data.CardInfo cards_must_select = 3;
 	repeated Data.CardInfo cards_selectable = 4;
+}
+
+// number: 24 (MSG_SELECT_DISFIELD) NOTE: same as MSG_SELECT_PLACE
+// data:
+// playerid [uint8]
+// count [uint8]
+// flag [uint32]
+message SelectDisfield
+{
+	int32 player = 1;
+	int32 count = 2;
+	int32 flag = 3;
 }
 
 // number: 40 (MSG_NEW_TURN)
