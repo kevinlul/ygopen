@@ -44,6 +44,7 @@ message Msg
 		ConfirmDecktop confirm_decktop = 40;
 		ConfirmCard confirm_card = 41;
 		ShuffleDeck shuffle_deck = 42;
+		ShuffleHand shuffle_hand = 43;
 		
 		NewTurn new_turn = 99;
 	}
@@ -454,6 +455,17 @@ message ConfirmCard
 message ShuffleDeck
 {
 	int32 player = 1;
+}
+
+// number: 33 (MSG_SHUFFLE_HAND)
+// data:
+// playerid [uint8]
+// svector.size() [uint8]
+//	repeated code [uint32]
+message ShuffleHand
+{
+	int32 player = 1;
+	repeated Data.CardInfo = 2; // NOTE: maybe we can use just a int32 instead
 }
 
 // number: 40 (MSG_NEW_TURN)
