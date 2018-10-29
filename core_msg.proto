@@ -45,6 +45,7 @@ message Msg
 		ConfirmCard confirm_card = 41;
 		ShuffleDeck shuffle_deck = 42;
 		ShuffleHand shuffle_hand = 43;
+		RefreshDeck refresh_deck = 44;
 		
 		NewTurn new_turn = 99;
 	}
@@ -466,6 +467,13 @@ message ShuffleHand
 {
 	int32 player = 1;
 	repeated Data.CardInfo = 2; // NOTE: maybe we can use just a int32 instead
+}
+
+// number: 34 (MSG_REFRESH_DECK)
+// data:
+// TODO: missing on ocgcore
+message RefreshDeck
+{
 }
 
 // number: 40 (MSG_NEW_TURN)
