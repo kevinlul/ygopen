@@ -42,6 +42,7 @@ message Msg
 		SortCard sort_card = 38;
 		SelectUnselectCard select_unselect_card = 39;
 		ConfirmDecktop confirm_decktop = 40;
+		ConfirmCard confirm_card = 41;
 		
 		NewTurn new_turn = 99;
 	}
@@ -426,6 +427,21 @@ message SelectUnselectCard
 //	repeated location [uint8]
 //	repeated sequence [uint8]
 message ConfirmDecktop
+{
+	int32 player = 1;
+	repeated Data.CardInfo cards = 2;
+}
+
+// number: 31 (MSG_CONFIRM_CARDS) NOTE: same as MSG_CONFIRM_DECKTOP
+// data:
+// playerid [uint8]
+// count [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint8]
+//	repeated sequence [uint32]
+// NOTE: on operations.cpp:431 write_buffer8 is used instead of 32. Check needed.
+message ConfirmCard
 {
 	int32 player = 1;
 	repeated Data.CardInfo cards = 2;
