@@ -43,6 +43,7 @@ message Msg
 		SelectUnselectCard select_unselect_card = 39;
 		ConfirmDecktop confirm_decktop = 40;
 		ConfirmCard confirm_card = 41;
+		ShuffleDeck shuffle_deck = 42;
 		
 		NewTurn new_turn = 99;
 	}
@@ -445,6 +446,14 @@ message ConfirmCard
 {
 	int32 player = 1;
 	repeated Data.CardInfo cards = 2;
+}
+
+// number: 32 (MSG_SHUFFLE_DECK)
+// data:
+// playerid [uint8]
+message ShuffleDeck
+{
+	int32 player = 1;
 }
 
 // number: 40 (MSG_NEW_TURN)
