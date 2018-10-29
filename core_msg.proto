@@ -39,6 +39,7 @@ message Msg
 		SelectCounter select_counter = 35;
 		SelectSum select_sum = 36;
 		SelectDisfield select_disfield = 37;
+		SortCard sort_card = 38;
 		
 		NewTurn new_turn = 99;
 	}
@@ -374,6 +375,20 @@ message SelectDisfield
 	int32 player = 1;
 	int32 count = 2;
 	int32 flag = 3;
+}
+
+// number: 25 (MSG_SORT_CARD) NOTE: same as MSG_SORT_CHAIN
+// data:
+// playerid [uint8]
+// select_cards.size() [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint32]
+//	repeated sequence [uint32]
+message SortCard
+{
+	int32 player = 1;
+	Data.CardInfo cards_to_sort = 2;
 }
 
 // number: 40 (MSG_NEW_TURN)
