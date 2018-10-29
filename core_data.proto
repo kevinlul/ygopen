@@ -32,6 +32,11 @@ message CardInfo
 	// MSG_SELECT_COUNTER
 	Counter counter = 9;
 	
+	// Count this card as X sum to a sum selection
+	// used by:
+	// MSG_SELECT_SUM
+	int32 sum_param = 10;
+	
 	// If the message has overlay_sequence it means that the card itself
 	// is a overlay of a xyz monster. In that scenario, the above messages
 	// represent the overlay's owner data.

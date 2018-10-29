@@ -37,6 +37,7 @@ message Msg
 		SelectTribute select_tribute = 33;
 		SortChain sort_chain = 34;
 		SelectCounter select_counter = 35;
+		SelectSum select_sum = 36
 		
 		NewTurn new_turn = 99;
 	}
@@ -334,6 +335,32 @@ message SelectCounter
 	int32 player = 1;
 	Data.Counter counter = 2;
 	repeated Data.CardInfo cards_selectable = 3;
+}
+
+// number: 23 (MSG_SELECT_SUM)
+// data:
+// playerid [uint8]
+// acc & 0xffff [uint32]
+// min [uint8]
+// max [uint8]
+// core.must_select_cards.size() [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint8]
+//	repeated sequence [uint32]
+//	repeated sum_param [uint32]
+// core.select_cards.size() [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint8]
+//	repeated sequence [uint32]
+//	repeated sum_param [uint32]
+message SelectSum
+{
+	int32 player = 1;
+	Data.Counter counter = 2;
+	repeated Data.CardInfo cards_must_select = 3;
+	repeated Data.CardInfo cards_selectable = 4;
 }
 
 // number: 40 (MSG_NEW_TURN)
