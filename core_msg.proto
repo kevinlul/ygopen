@@ -40,6 +40,7 @@ message Msg
 		SelectSum select_sum = 36;
 		SelectDisfield select_disfield = 37;
 		SortCard sort_card = 38;
+		SelectUnselectCard select_unselect_card = 39;
 		
 		NewTurn new_turn = 99;
 	}
@@ -389,6 +390,30 @@ message SortCard
 {
 	int32 player = 1;
 	Data.CardInfo cards_to_sort = 2;
+}
+
+// number: 26 (MSG_SELECT_UNSELECT_CARD)
+// data:
+// playerid [uint8]
+// buttonok [uint8]
+// cancelable [uint8]
+// min [uint8]
+// max [uint8]
+// core.select_cards.size() [uint32]
+//	repeated code [uint32]
+//	repeated loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+// core.unselect_cards.size() [uint32]
+//	repeated code [uint32]
+//	repeated loc_info tmp_info = pcard->get_info_location(); [sizeof loc_info]
+message SelectUnselectCard
+{
+	int32 player = 1;
+	bool buttonok = 2; // TODO: needs investigation
+	bool can_cancel = 3;
+	int32 min_selection = 4;
+	int32 max_selection = 5;
+	repeated Data.CardInfo cards_selectable = 6;
+	repeated Data.CardInfo cards_unselectable = 7;
 }
 
 // number: 40 (MSG_NEW_TURN)
