@@ -65,6 +65,7 @@ message Msg
 		SpSummoned spsummoned = 61;
 		FlipSummoning flipsummoning = 62;
 		FlipSummoned flipsummoned = 63;
+		Chaining chaining = 64;
 	}
 }
 
@@ -675,3 +676,21 @@ message FlipSummoning
 message FlipSummoned
 {
 }
+
+// number: 70 (MSG_CHAINING)
+// data:
+// code [uint32]
+// loc_info location [sizeof loc_info]
+// triggering_controler [uint8]
+// triggering_location [uint8]
+// triggering_sequence [uint8]
+// description [uint64] // NOTE: effect description
+// current_chain.size() + 1 [uint8]
+message Chaining
+{
+	Data.CardInfo location = 1;
+	Data.CardInfo triggering_location = 2;
+	int64 description = 3;
+	int32 chain_size = 4;
+}
+
