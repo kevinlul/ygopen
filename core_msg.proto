@@ -63,6 +63,8 @@ message Msg
 		Summoned summoned = 59;
 		SpSummoning spsummoning = 60;
 		SpSummoned spsummoned = 61;
+		FlipSummoning flipsummoning = 62;
+		FlipSummoned flipsummoned = 63;
 	}
 }
 
@@ -656,5 +658,20 @@ message SpSummoning
 // number: 63 (MSG_SPSUMMONED) // NOTE: same as MSG_SUMMONED
 // data: none
 message SpSummoned
+{
+}
+
+// number: 64 (MSG_FLIPSUMMONING) // NOTE: same as MSG_SUMMONING
+// data:
+// code [uint32]
+// loc_info current [sizeof loc_info]
+message FlipSummoning
+{
+	Data.CardInfo card = 1;
+}
+
+// number: 65 (MSG_FLIPSUMMONED) // NOTE: same as MSG_SUMMONED
+// data: none
+message FlipSummoned
 {
 }
