@@ -52,6 +52,7 @@ message Msg
 		DeckTop deck_top = 48;
 		ShuffleExtra shuffle_extra = 49;
 		NewTurn new_turn = 50;
+		NewPhase new_phase = 51;
 	}
 }
 
@@ -537,4 +538,12 @@ message ShuffleExtra
 message NewTurn
 {
 	int32 player = 1;
+}
+
+// number: 41 (MSG_NEW_PHASE)
+// data:
+// phase [uint16]
+message NewPhase
+{
+	int32 phase = 1;
 }
