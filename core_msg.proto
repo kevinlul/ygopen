@@ -49,6 +49,7 @@ message Msg
 		SwapGraveDeck swap_grave_deck = 45;
 		ShuffleSetCard shuffle_set_card = 46;
 		ReverseDeck reverse_deck = 47;
+		DeckTop deck_top = 48;
 		
 		NewTurn new_turn = 99;
 	}
@@ -506,6 +507,17 @@ message ShuffleSetCard
 // NOTE: actual information sent by MSG_DECK_TOP
 message ReverseDeck
 {
+}
+
+// number: 38 (MSG_DECK_TOP)
+// data:
+// playerid [uint8]
+// sequence [uint8]
+// code [uint32] // NOTE: POS_FACEUP_DEFENSE is OR'd on last bit
+message DeckTop
+{
+	int32 player = 0;
+	Data.CardInfo card;
 }
 
 // number: 40 (MSG_NEW_TURN)
