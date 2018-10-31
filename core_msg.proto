@@ -58,6 +58,7 @@ message Msg
 		PosChange pos_change = 54;
 		Set set = 55;
 		Swap swap = 56;
+		FieldDisabled field_disabled = 57;
 	}
 }
 
@@ -616,3 +617,10 @@ message Swap
 	Data.CardInfo card2 = 2;
 }
 
+// number: 56 (MSG_FIELD_DISABLED)
+// data:
+// dis [uint32]
+message FieldDisabled
+{
+	int32 dis = 1; // TODO: needs investigation
+}
