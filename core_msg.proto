@@ -56,6 +56,7 @@ message Msg
 		ConfirmExtraTop confirm_extratop = 52;
 		Move move = 53;
 		PosChange pos_change = 54;
+		Set set = 55;
 	}
 }
 
@@ -591,4 +592,13 @@ message PosChange
 {
 	repeated Data.CardInfo previous = 1;
 	repeated Data.CardInfo current = 2;
+}
+
+// number: 54 (MSG_SET)
+// data:
+// code [uint32]
+// loc_info current [sizeof loc_info]
+message Set
+{
+	Data.CardInfo card = 1;
 }
