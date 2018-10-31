@@ -47,6 +47,7 @@ message Msg
 		ShuffleHand shuffle_hand = 43;
 		RefreshDeck refresh_deck = 44;
 		SwapGraveDeck swap_grave_deck = 45;
+		ShuffleSetCard shuffle_set_card = 46;
 		
 		NewTurn new_turn = 99;
 	}
@@ -467,7 +468,7 @@ message ShuffleDeck
 message ShuffleHand
 {
 	int32 player = 1;
-	repeated Data.CardInfo = 2; // NOTE: maybe we can use just a int32 instead
+	repeated Data.CardInfo codes = 2; // NOTE: maybe we can use just a int32 instead
 }
 
 // number: 34 (MSG_REFRESH_DECK)
@@ -483,6 +484,20 @@ message RefreshDeck
 message SwapGraveDeck
 {
 	int32 player = 1;
+}
+
+// number: 36 (MSG_SHUFFLE_SET_CARD)
+// data:
+// location [uint8]
+// count [uint8]
+// repeated loc_info previous [sizeof loc_info]
+// repeated loc_info current [sizeof loc_info]
+message ShuffleSetCard
+{
+	int32 location = 1;
+	// NOTE: number of messages in each repeated field must match
+	repeated Data.CardInfo cards_previous = 2;
+	repeated Data.CardInfo cards_current = 3; // NOTE: might be empty
 }
 
 // number: 40 (MSG_NEW_TURN)

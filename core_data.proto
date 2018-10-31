@@ -32,7 +32,7 @@ message CardInfo
 	// MSG_SELECT_COUNTER
 	Counter counter = 9;
 	
-	// Count this card as X sum to a sum selection
+	// Count this card as X plus to a sum selection
 	// used by:
 	// MSG_SELECT_SUM
 	int32 sum_param = 10;
