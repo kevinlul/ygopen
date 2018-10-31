@@ -61,6 +61,8 @@ message Msg
 		FieldDisabled field_disabled = 57;
 		Summoning summoning = 58;
 		Summoned summoned = 59;
+		SpSummoning spsummoning = 60;
+		SpSummoned spsummoned = 61;
 	}
 }
 
@@ -639,5 +641,20 @@ message Summoning
 // number: 61 (MSG_SUMMONED)
 // data: none
 message Summoned
+{
+}
+
+// number: 62 (MSG_SPSUMMONING) // NOTE: same as MSG_SUMMONING
+// data:
+// code [uint32]
+// loc_info current [sizeof loc_info]
+message SpSummoning
+{
+	Data.CardInfo card = 1;
+}
+
+// number: 63 (MSG_SPSUMMONED) // NOTE: same as MSG_SUMMONED
+// data: none
+message SpSummoned
 {
 }
