@@ -53,6 +53,7 @@ message Msg
 		ShuffleExtra shuffle_extra = 49;
 		NewTurn new_turn = 50;
 		NewPhase new_phase = 51;
+		ConfirmExtraTop confirm_extratop = 52;
 	}
 }
 
@@ -517,8 +518,8 @@ message ReverseDeck
 // code [uint32] // NOTE: POS_FACEUP_DEFENSE is OR'd on last bit
 message DeckTop
 {
-	int32 player = 0;
-	Data.CardInfo card;
+	int32 player = 1;
+	Data.CardInfo card = 2;
 }
 
 // number: 39 (MSG_SHUFFLE_EXTRA) // NOTE: same as MSG_SHUFFLE_HAND
@@ -546,4 +547,18 @@ message NewTurn
 message NewPhase
 {
 	int32 phase = 1;
+}
+
+// number: 42 (MSG_CONFIRM_EXTRATOP)
+// data:
+// playerid [uint8]
+// count [uint8]
+//	repeated code [uint32]
+//	repeated controler [uint8]
+//	repeated location [uint8]
+//	repeated sequence [uint8]
+message ConfirmExtraTop
+{
+	int32 player = 1;
+	repeated Data.CardInfo cards = 2;
 }
