@@ -55,6 +55,7 @@ message Msg
 		NewPhase new_phase = 51;
 		ConfirmExtraTop confirm_extratop = 52;
 		Move move = 53;
+		PosChange pos_change = 54;
 	}
 }
 
@@ -574,6 +575,20 @@ message Move
 {
 	int32 player = 1;
 	int32 reason = 2;
-	repeated Data.CardInfo previous_location = 3;
-	repeated Data.CardInfo current_location = 4;
+	repeated Data.CardInfo previous = 3;
+	repeated Data.CardInfo current = 4;
+}
+
+// number: 53 (MSG_POS_CHANGE)
+// data:
+// code [uint32]
+// current.controler [uint8]
+// current.location [uint8]
+// current.sequence [uint8]
+// previous.position [uint8]
+// current.position [uint8]
+message PosChange
+{
+	repeated Data.CardInfo previous = 1;
+	repeated Data.CardInfo current = 2;
 }
