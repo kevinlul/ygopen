@@ -54,6 +54,7 @@ message Msg
 		NewTurn new_turn = 50;
 		NewPhase new_phase = 51;
 		ConfirmExtraTop confirm_extratop = 52;
+		Move move = 53;
 	}
 }
 
@@ -561,4 +562,18 @@ message ConfirmExtraTop
 {
 	int32 player = 1;
 	repeated Data.CardInfo cards = 2;
+}
+
+// number: 50 (MSG_MOVE)
+// data:
+// code [uint32]
+// loc_info previous [sizeof loc_info]
+// loc_info current [sizeof loc_info]
+// reason [uint32]
+message Move
+{
+	int32 player = 1;
+	int32 reason = 2;
+	repeated Data.CardInfo previous_location = 3;
+	repeated Data.CardInfo current_location = 4;
 }
