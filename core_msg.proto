@@ -66,6 +66,7 @@ message Msg
 		FlipSummoning flipsummoning = 62;
 		FlipSummoned flipsummoned = 63;
 		Chaining chaining = 64;
+		Chained chained = 65;
 	}
 }
 
@@ -692,5 +693,13 @@ message Chaining
 	Data.CardInfo triggering_location = 2;
 	int64 description = 3;
 	int32 chain_size = 4;
+}
+
+// number: 71 (MSG_CHAINED)
+// data:
+// chain_count [uint8]
+message Chained
+{
+	int32 chain_count = 1;
 }
 
