@@ -51,8 +51,7 @@ message Msg
 		ReverseDeck reverse_deck = 47;
 		DeckTop deck_top = 48;
 		ShuffleExtra shuffle_extra = 49;
-		
-		NewTurn new_turn = 99;
+		NewTurn new_turn = 50;
 	}
 }
 
