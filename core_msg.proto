@@ -59,6 +59,7 @@ message Msg
 		Set set = 55;
 		Swap swap = 56;
 		FieldDisabled field_disabled = 57;
+		Summoning summoning = 58;
 	}
 }
 
@@ -623,4 +624,13 @@ message Swap
 message FieldDisabled
 {
 	int32 dis = 1; // TODO: needs investigation
+}
+
+// number: 60 (MSG_SUMMONING) // NOTE: same as MSG_SET
+// data:
+// code [uint32]
+// loc_info current [sizeof loc_info]
+message Set
+{
+	Data.CardInfo card = 1;
 }
