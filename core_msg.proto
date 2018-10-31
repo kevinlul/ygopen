@@ -48,6 +48,7 @@ message Msg
 		RefreshDeck refresh_deck = 44;
 		SwapGraveDeck swap_grave_deck = 45;
 		ShuffleSetCard shuffle_set_card = 46;
+		ReverseDeck reverse_deck = 47;
 		
 		NewTurn new_turn = 99;
 	}
@@ -498,6 +499,13 @@ message ShuffleSetCard
 	// NOTE: number of messages in each repeated field must match
 	repeated Data.CardInfo cards_previous = 2;
 	repeated Data.CardInfo cards_current = 3; // NOTE: might be empty
+}
+
+// number: 37 (MSG_REVERSE_DECK)
+// data: none
+// NOTE: actual information sent by MSG_DECK_TOP
+message ReverseDeck
+{
 }
 
 // number: 40 (MSG_NEW_TURN)
