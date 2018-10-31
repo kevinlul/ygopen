@@ -50,6 +50,7 @@ message Msg
 		ShuffleSetCard shuffle_set_card = 46;
 		ReverseDeck reverse_deck = 47;
 		DeckTop deck_top = 48;
+		ShuffleExtra shuffle_extra = 49;
 		
 		NewTurn new_turn = 99;
 	}
@@ -518,6 +519,17 @@ message DeckTop
 {
 	int32 player = 0;
 	Data.CardInfo card;
+}
+
+// number: 39 (MSG_SHUFFLE_EXTRA) // NOTE: same as MSG_SHUFFLE_HAND
+// data:
+// playerid [uint8]
+// svector.size() [uint8]
+//	repeated code [uint32]
+message ShuffleExtra
+{
+	int32 player = 1;
+	repeated Data.CardInfo codes = 2; // NOTE: maybe we can use just a int32 instead
 }
 
 // number: 40 (MSG_NEW_TURN)
