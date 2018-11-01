@@ -75,6 +75,7 @@ message Msg
 		CardSelected card_selected = 71;
 		RandomSelected random_selected = 72;
 		BecomeTarget become_target = 73;
+		Draw draw = 74;
 	}
 }
 
@@ -777,3 +778,13 @@ message BecomeTarget
 	repeated Data.CardInfo card = 2;
 }
 
+// number: 90 (MSG_DRAW)
+// data:
+// playerid [uint8]
+// drawed_count [uint8]
+//	repeated code [uint32] // NOTE: has POS_FACEUP OR'd in the last bit
+message Draw
+{
+	int32 player = 1;
+	repeated Data.CardInfo cards = 2;
+}
