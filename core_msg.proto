@@ -68,6 +68,9 @@ message Msg
 		Chaining chaining = 64;
 		Chained chained = 65;
 		ChainSolving chain_solving = 66;
+		ChainSolved chain_solved = 67;
+		ChainEnd chain_end = 68;
+		ChainNegated chain_negated = 69;
 	}
 }
 
@@ -712,3 +715,24 @@ message ChainSolving
 	int32 chain_count = 1;
 }
 
+// number: 73 (MSG_CHAIN_SOLVED) // NOTE: same as MSG_CHAINED
+// data:
+// chain_count [uint8]
+message ChainSolved
+{
+	int32 chain_count = 1;
+}
+
+// number: 74 (MSG_CHAIN_END)
+// data: none
+message ChainEnd
+{
+}
+
+// number: 75 (MSG_CHAIN_NEGATED) // NOTE: same as MSG_CHAINED
+// data:
+// chain_count [uint8]
+message ChainNegated
+{
+	int32 chain_count = 1;
+}
