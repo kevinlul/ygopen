@@ -76,6 +76,7 @@ message Msg
 		RandomSelected random_selected = 72;
 		BecomeTarget become_target = 73;
 		Draw draw = 74;
+		Damage damage = 75;
 	}
 }
 
@@ -787,4 +788,14 @@ message Draw
 {
 	int32 player = 1;
 	repeated Data.CardInfo cards = 2;
+}
+
+// number: 91 (MSG_DAMAGE)
+// data:
+// playerid [uint8]
+// amount [uint32]
+message Damage
+{
+	int32 player = 1;
+	int32 amount = 2;
 }
