@@ -71,6 +71,7 @@ message Msg
 		ChainSolved chain_solved = 67;
 		ChainEnd chain_end = 68;
 		ChainNegated chain_negated = 69;
+		ChainDisabled chain_disabled = 70;
 	}
 }
 
@@ -733,6 +734,14 @@ message ChainEnd
 // data:
 // chain_count [uint8]
 message ChainNegated
+{
+	int32 chain_count = 1;
+}
+
+// number: 76 (MSG_CHAIN_DISABLED) // NOTE: same as MSG_CHAINED
+// data:
+// chain_count [uint8]
+message ChainDisabled
 {
 	int32 chain_count = 1;
 }
