@@ -85,6 +85,7 @@ message Msg
 		CancelTarget cancel_target = 81;
 		PayLpCost pay_lpcost = 82;
 		AddCounter add_counter = 83;
+		RemoveCounter remove_counter= 84
 	}
 }
 
@@ -883,6 +884,19 @@ message PayLpCost
 // current.sequence [uint8]
 // counter_count [uint16]
 message AddCounter
+{
+	Data.Counter counter = 1;
+	Data.CardInfo card = 2;
+}
+
+// number: 102 (MSG_REMOVE_COUNTER) // NOTE: same as MSG_ADD_COUNTER
+// data:
+// counter_type [uint16]
+// current.controler [uint8]
+// current.location [uint8]
+// current.sequence [uint8]
+// counter_count [uint16]
+message RemoveCounter
 {
 	Data.Counter counter = 1;
 	Data.CardInfo card = 2;
