@@ -82,6 +82,7 @@ message Msg
 		LpUpdate lpupdate = 78;
 		Unequip unequip = 79;
 		CardTarget card_target = 80;
+		CancelTarget cancel_target = 81;
 	}
 }
 
@@ -847,6 +848,16 @@ message Unequip
 // loc_info card [sizeof loc_info]
 // loc_info target [sizeof loc_info]
 message CardTarget
+{
+	Data.CardInfo card = 1;
+	Data.CardInfo target = 2;
+}
+
+// number: 97 (MSG_CANCEL_TARGET) // NOTE: same as MSG_CARD_TARGET
+// data:
+// loc_info card [sizeof loc_info]
+// loc_info target [sizeof loc_info]
+message CancelTarget
 {
 	Data.CardInfo card = 1;
 	Data.CardInfo target = 2;
