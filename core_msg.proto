@@ -81,6 +81,7 @@ message Msg
 		Equip equip = 77;
 		LpUpdate lpupdate = 78;
 		Unequip unequip = 79;
+		CardTarget card_target = 80;
 	}
 }
 
@@ -839,4 +840,14 @@ message LpUpdate
 // TODO: missing on ocgcore
 message Unequip
 {
+}
+
+// number: 96 (MSG_CARD_TARGET) // NOTE: same as MSG_EQUIP
+// data:
+// loc_info card [sizeof loc_info]
+// loc_info target [sizeof loc_info]
+message CardTarget
+{
+	Data.CardInfo card = 1;
+	Data.CardInfo target = 2;
 }
