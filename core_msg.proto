@@ -67,6 +67,7 @@ message Msg
 		FlipSummoned flipsummoned = 63;
 		Chaining chaining = 64;
 		Chained chained = 65;
+		ChainSolving chain_solving = 66;
 	}
 }
 
@@ -699,6 +700,14 @@ message Chaining
 // data:
 // chain_count [uint8]
 message Chained
+{
+	int32 chain_count = 1;
+}
+
+// number: 72 (MSG_CHAIN_SOLVING) // NOTE: same as MSG_CHAINED
+// data:
+// chain_count [uint8]
+message ChainSolving
 {
 	int32 chain_count = 1;
 }
