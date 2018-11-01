@@ -78,6 +78,7 @@ message Msg
 		Draw draw = 74;
 		Damage damage = 75;
 		Recover recover = 76;
+		Equip equip = 77;
 	}
 }
 
@@ -810,3 +811,14 @@ message Recover
 	int32 player = 1;
 	int32 amount = 2;
 }
+
+// number: 93 (MSG_EQUIP)
+// data:
+// loc_info card [sizeof loc_info]
+// loc_info target [sizeof loc_info]
+message Equip
+{
+	Data.CardInfo card = 1;
+	Data.CardInfo target = 2;
+}
+
