@@ -83,6 +83,7 @@ message Msg
 		Unequip unequip = 79;
 		CardTarget card_target = 80;
 		CancelTarget cancel_target = 81;
+		PayLpCost pay_lpcost = 82;
 	}
 }
 
@@ -861,4 +862,14 @@ message CancelTarget
 {
 	Data.CardInfo card = 1;
 	Data.CardInfo target = 2;
+}
+
+// number: 100 (MSG_PAY_LPCOST) // NOTE: same as MSG_DAMAGE
+// data:
+// playerid [uint8]
+// amount [uint32]
+message PayLpCost
+{
+	int32 player = 1;
+	int32 amount = 2;
 }
