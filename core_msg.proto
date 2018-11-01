@@ -73,6 +73,7 @@ message Msg
 		ChainNegated chain_negated = 69;
 		ChainDisabled chain_disabled = 70;
 		CardSelected card_selected = 71;
+		RandomSelected random_selected = 72;
 	}
 }
 
@@ -753,3 +754,15 @@ message ChainDisabled
 message CardSelected
 {
 }
+
+// number: 81 (MSG_RANDOM_SELECTED)
+// data:
+// it->arg1 [uint8]
+// count [uint8]
+//	repeated loc_info cards [sizeof loc_info]
+message RandomSelected
+{
+	int32 arg1 = 1;
+	repeated Data.CardInfo cards = 2;
+}
+
