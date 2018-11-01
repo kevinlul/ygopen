@@ -79,6 +79,7 @@ message Msg
 		Damage damage = 75;
 		Recover recover = 76;
 		Equip equip = 77;
+		LpUpdate lpupdate = 78;
 	}
 }
 
@@ -822,3 +823,12 @@ message Equip
 	Data.CardInfo target = 2;
 }
 
+// number: 94 (MSG_LPUPDATE) // NOTE: same as MSG_DAMAGE
+// data:
+// playerid [uint8]
+// amount [uint32]
+message LpUpdate
+{
+	int32 player = 1;
+	int32 number = 2;
+}
