@@ -85,7 +85,8 @@ message Msg
 		CancelTarget cancel_target = 81;
 		PayLpCost pay_lpcost = 82;
 		AddCounter add_counter = 83;
-		RemoveCounter remove_counter= 84
+		RemoveCounter remove_counter = 84;
+		Attack attack = 85;
 	}
 }
 
@@ -901,3 +902,14 @@ message RemoveCounter
 	Data.Counter counter = 1;
 	Data.CardInfo card = 2;
 }
+
+// number: 110 (MSG_ATTACK)
+// data:
+// loc_info attacker [sizeof loc_info]
+// loc_info attack_target [sizeof loc_info]
+message Attack
+{
+	Data.CardInfo attacker = 1;
+	Data.CardInfo attack_target = 2; // NOTE: can be empty, in which case is a direct attack
+}
+
