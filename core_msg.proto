@@ -80,6 +80,7 @@ message Msg
 		Recover recover = 76;
 		Equip equip = 77;
 		LpUpdate lpupdate = 78;
+		Unequip unequip = 79;
 	}
 }
 
@@ -831,4 +832,11 @@ message LpUpdate
 {
 	int32 player = 1;
 	int32 number = 2;
+}
+
+// number: 95 (MSG_UNEQUIP)
+// data:
+// TODO: missing on ocgcore
+message Unequip
+{
 }
