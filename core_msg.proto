@@ -74,6 +74,7 @@ message Msg
 		ChainDisabled chain_disabled = 70;
 		CardSelected card_selected = 71;
 		RandomSelected random_selected = 72;
+		BecomeTarget become_target = 73;
 	}
 }
 
@@ -764,5 +765,15 @@ message RandomSelected
 {
 	int32 arg1 = 1;
 	repeated Data.CardInfo cards = 2;
+}
+
+// number: 83 (MSG_BECOME_TARGET)
+// data:
+// 1? [uint8] // TODO: needs investigation
+// loc_info card [sizeof loc_info]
+message BecomeTarget
+{
+	int32 arg1 = 1;
+	repeated Data.CardInfo card = 2;
 }
 
