@@ -77,6 +77,7 @@ message Msg
 		BecomeTarget become_target = 73;
 		Draw draw = 74;
 		Damage damage = 75;
+		Recover recover = 76;
 	}
 }
 
@@ -795,6 +796,16 @@ message Draw
 // playerid [uint8]
 // amount [uint32]
 message Damage
+{
+	int32 player = 1;
+	int32 amount = 2;
+}
+
+// number: 92 (MSG_RECOVER) // NOTE: same as MSG_DAMAGE
+// data:
+// playerid [uint8]
+// amount [uint32]
+message Recover
 {
 	int32 player = 1;
 	int32 amount = 2;
