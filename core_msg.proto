@@ -87,6 +87,7 @@ message Msg
 		AddCounter add_counter = 83;
 		RemoveCounter remove_counter = 84;
 		Attack attack = 85;
+		Battle battle = 86;
 	}
 }
 
@@ -913,3 +914,24 @@ message Attack
 	Data.CardInfo attack_target = 2; // NOTE: can be empty, in which case is a direct attack
 }
 
+// number: 111 (MSG_BATTLE)
+// data:
+// loc_info attacker [sizeof loc_info]
+// attacker_attack [uint32]
+// attacker_defense [uint32]
+// bd[0] [uint8] // TODO: needs investigation
+// loc_info attack_target [sizeof loc_info]
+// attacker_attack [uint32]
+// attacker_defense [uint32]
+// bd[0] [uint8] // TODO: needs investigation
+message Battle
+{
+	Data.CardInfo attacker = 1;
+	int32 attacker_attack = 2;
+	int32 attacker_defense = 3;
+	int32 attacker_bd = 4;
+	Data.CardInfo attack_target = 4; // NOTE: can be empty, in which case is a direct attack
+	int32 attack_target_attack = 5;
+	int32 attack_target_defense = 6;
+	int32 attack_target_bd = 4;
+}
