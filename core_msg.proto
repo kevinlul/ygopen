@@ -89,6 +89,8 @@ message Msg
 		Attack attack = 85;
 		Battle battle = 86;
 		AttackDisabled attack_disabled = 87;
+		DamageStepStart damage_step_start = 88;
+		DamageStepEnd damage_step_end = 89;
 	}
 }
 
@@ -942,3 +944,16 @@ message Battle
 message AttackDisabled
 {
 }
+
+// number: 113 (MSG_DAMAGE_STEP_START)
+// data: none
+message DamageStepStart
+{
+}
+
+// number: 114 (MSG_DAMAGE_STEP_END)
+// data: none
+message DamageStepEnd
+{
+}
+
