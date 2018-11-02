@@ -99,6 +99,7 @@ message Msg
 		ToosDice toss_dice = 95;
 		Rps rock_paper_scissor = 96;
 		RpsResult rock_paper_scissor_result = 97;
+		AnnounceRace announce_race = 98;
 	}
 }
 
@@ -1033,3 +1034,16 @@ message RpsResult
 	int32 result1 = 1;
 	int32 result2 = 2;
 }
+
+// number: 140 (MSG_ANNOUNCE_RACE)
+// data:
+// playerid [uint8]
+// count [uint8]
+// available [uint32]
+message AnnounceRace
+{
+	int32 player = 1;
+	int32 count = 2; // number of attributes the user can select
+	int32 available = 3; // races available to choose from
+}
+
