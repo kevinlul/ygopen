@@ -91,6 +91,8 @@ message Msg
 		AttackDisabled attack_disabled = 87;
 		DamageStepStart damage_step_start = 88;
 		DamageStepEnd damage_step_end = 89;
+		MissedEffect missed_effect = 90;
+		BeChainTarget be_chain_target = 91;
 	}
 }
 
@@ -956,4 +958,21 @@ message DamageStepStart
 message DamageStepEnd
 {
 }
+
+// number: 120 (MSG_MISSED_EFFECT)
+// data:
+// loc_info card [sizeof loc_info]
+// code [uint32]
+message MissedEffect
+{
+	Data.CardInfo card = 1;
+}
+
+// number: 121 (MSG_BE_CHAIN_TARGET)
+// data:
+// TODO: missing on ocgcore
+message BeChainTarget
+{
+}
+
 
