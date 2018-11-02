@@ -95,6 +95,7 @@ message Msg
 		BeChainTarget be_chain_target = 91;
 		CreateRelation create_relation = 92;
 		ReleaseRelation release_relation = 93;
+		TossCoin toss_coin = 94;
 	}
 }
 
@@ -989,4 +990,15 @@ message CreateRelation
 // TODO: missing on ocgcore
 message ReleaseRelation
 {
+}
+
+// number: 130 (MSG_TOSS_COIN)
+// data:
+// playerid
+// count [uint8]
+//	repeated coin_result [uint8]
+message TossCoin
+{
+	int32 playerid = 1;
+	repeated bool coins = 2;
 }
