@@ -88,6 +88,7 @@ message Msg
 		RemoveCounter remove_counter = 84;
 		Attack attack = 85;
 		Battle battle = 86;
+		AttackDisabled attack_disabled = 87;
 	}
 }
 
@@ -934,4 +935,10 @@ message Battle
 	int32 attack_target_attack = 6;
 	int32 attack_target_defense = 7;
 	int32 attack_target_bd = 8;
+}
+
+// number: 112 (MSG_ATTACK_DISABLED)
+// data: none
+message AttackDisabled
+{
 }
