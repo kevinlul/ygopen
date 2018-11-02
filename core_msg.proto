@@ -96,6 +96,7 @@ message Msg
 		CreateRelation create_relation = 92;
 		ReleaseRelation release_relation = 93;
 		TossCoin toss_coin = 94;
+		ToosDice toss_dice = 95;
 	}
 }
 
@@ -1002,3 +1003,16 @@ message TossCoin
 	int32 playerid = 1;
 	repeated bool coins = 2;
 }
+
+// number: 131 (MSG_TOSS_DICE)
+// data:
+// playerid
+// count [uint8]
+//	repeated coin_result [uint8]
+message TossDice
+{
+	int32 playerid = 1;
+	repeated int32 dice = 2;
+}
+
+
