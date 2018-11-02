@@ -100,6 +100,7 @@ message Msg
 		Rps rock_paper_scissor = 96;
 		RpsResult rock_paper_scissor_result = 97;
 		AnnounceRace announce_race = 98;
+		AnnounceAttrib announce_attribute = 99;
 	}
 }
 
@@ -1047,3 +1048,14 @@ message AnnounceRace
 	int32 available = 3; // races available to choose from
 }
 
+// number: 141 (MSG_ANNOUNCE_ATTRIB)
+// data:
+// playerid [uint8]
+// count [uint8]
+// available [uint32]
+message AnnounceAttrib
+{
+	int32 player = 1;
+	int32 count = 2; // number of attributes the user can select
+	int32 available = 3; // attributes available to choose from
+}
