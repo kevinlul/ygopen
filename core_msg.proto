@@ -104,6 +104,7 @@ message Msg
 		AnnounceCard announce_card = 100;
 		AnnounceNumber announce_number = 101;
 		AnnounceCardFilter announce_card_filter = 102;
+		CardHint card_hint = 103;
 	}
 }
 
@@ -1092,4 +1093,16 @@ message AnnounceCardFilter
 {
 	int32 player = 1;
 	repeated int64 opcodes = 2;
+}
+
+// number: 160 (MSG_CARD_HINT)
+// data:
+// loc_info card [sizeof loc_info]
+// type [uint8]
+// value [uint8]
+message CardHint
+{
+	Data.CardInfo card = 1;
+	int32 type;
+	int32 value;
 }
