@@ -102,6 +102,7 @@ message Msg
 		AnnounceRace announce_race = 98;
 		AnnounceAttrib announce_attribute = 99;
 		AnnounceCard announce_card = 100;
+		AnnounceNumber announce_number = 101;
 	}
 }
 
@@ -1069,4 +1070,14 @@ message AnnounceCard
 {
 	int32 player = 1;
 	int32 types = 2;
+}
+
+// number: 143 (MSG_ANNOUNCE_NUMBER)
+// data:
+// playerid [uint8]
+// core.select_options.size() [uint8]
+message AnnounceNumber
+{
+	int32 player = 1;
+	int32 max = 2;
 }
