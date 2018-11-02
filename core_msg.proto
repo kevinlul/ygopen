@@ -93,6 +93,8 @@ message Msg
 		DamageStepEnd damage_step_end = 89;
 		MissedEffect missed_effect = 90;
 		BeChainTarget be_chain_target = 91;
+		CreateRelation create_relation = 92;
+		ReleaseRelation release_relation = 93;
 	}
 }
 
@@ -975,4 +977,16 @@ message BeChainTarget
 {
 }
 
+// number: 122 (MSG_CREATE_RELATION)
+// data:
+// TODO: missing on ocgcore
+message CreateRelation
+{
+}
 
+// number: 123 (MSG_RELEASE_RELATION)
+// data:
+// TODO: missing on ocgcore
+message ReleaseRelation
+{
+}
