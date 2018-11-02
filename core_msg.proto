@@ -103,6 +103,7 @@ message Msg
 		AnnounceAttrib announce_attribute = 99;
 		AnnounceCard announce_card = 100;
 		AnnounceNumber announce_number = 101;
+		AnnounceCardFilter announce_card_filter = 102;
 	}
 }
 
@@ -1080,4 +1081,15 @@ message AnnounceNumber
 {
 	int32 player = 1;
 	int32 max = 2;
+}
+
+// number: 144 (MSG_ANNOUNCE_CARD_FILTER)
+// data:
+// playerid [uint8]
+// core.select_options.size() [uint8]
+//	repeated opcode [uint64]
+message AnnounceCardFilter
+{
+	int32 player = 1;
+	repeated int64 opcodes = 2;
 }
