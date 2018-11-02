@@ -97,6 +97,7 @@ message Msg
 		ReleaseRelation release_relation = 93;
 		TossCoin toss_coin = 94;
 		ToosDice toss_dice = 95;
+		Rps rock_paper_scissor = 96;
 	}
 }
 
@@ -1015,4 +1016,10 @@ message TossDice
 	repeated int32 dice = 2;
 }
 
-
+// number: 132 (MSG_ROCK_PAPER_SCISSORS)
+// data:
+// playerid [uint8]
+message Rps
+{
+	int32 player = 1;
+}
