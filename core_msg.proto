@@ -930,8 +930,8 @@ message Battle
 	int32 attacker_attack = 2;
 	int32 attacker_defense = 3;
 	int32 attacker_bd = 4;
-	Data.CardInfo attack_target = 4; // NOTE: can be empty, in which case is a direct attack
-	int32 attack_target_attack = 5;
-	int32 attack_target_defense = 6;
-	int32 attack_target_bd = 4;
+	Data.CardInfo attack_target = 5; // NOTE: can be empty, in which case is a direct attack
+	int32 attack_target_attack = 6;
+	int32 attack_target_defense = 7;
+	int32 attack_target_bd = 8;
 }
