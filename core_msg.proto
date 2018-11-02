@@ -98,6 +98,7 @@ message Msg
 		TossCoin toss_coin = 94;
 		ToosDice toss_dice = 95;
 		Rps rock_paper_scissor = 96;
+		RpsResult rock_paper_scissor_result = 97;
 	}
 }
 
@@ -1022,4 +1023,13 @@ message TossDice
 message Rps
 {
 	int32 player = 1;
+}
+
+// number: 133 (MSG_HAND_RES)
+// data:
+// hand0 + (hand1 << 2) [uint8]
+message RpsResult
+{
+	int32 result1 = 1;
+	int32 result2 = 2;
 }
