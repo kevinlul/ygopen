@@ -106,6 +106,7 @@ message Msg
 		AnnounceCardFilter announce_card_filter = 102;
 		CardHint card_hint = 103;
 		TagSwap tag_swap = 104;
+		MatchKill match_kill = 105;
 	}
 }
 
@@ -1124,4 +1125,13 @@ message TagSwap
 	int32 extra_p_count = 2;
 	repeated Data.CardInfo hand_cards = 3;
 	repeated Data.CardInfo extra_cards = 4;
+}
+
+// number: 5 (MSG_MATCH_KILL)
+// data:
+// win_player [uint8]
+// reason_card->data.code [uint32]
+message MatchKill
+{
+	int32 reason_card = 1;
 }
