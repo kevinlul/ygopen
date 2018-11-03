@@ -105,6 +105,7 @@ message Msg
 		AnnounceNumber announce_number = 101;
 		AnnounceCardFilter announce_card_filter = 102;
 		CardHint card_hint = 103;
+		TagSwap tag_swap = 104;
 	}
 }
 
@@ -1103,6 +1104,24 @@ message AnnounceCardFilter
 message CardHint
 {
 	Data.CardInfo card = 1;
-	int32 type;
-	int32 value;
+	int32 type = 2;
+	int32 value = 3;
+}
+
+// number: 161 (MSG_TAG_SWAP)
+// data:
+// playerid [uint8]
+// list_main.size() [uint8]
+// list_extra.size() [uint8]
+// extra_p_count [uint8] // TODO: needs investigation
+// list_hand.size() [uint8]
+// list_main.back()->data.code [uint32] // TODO: can be empty (back of the deck)
+//	repeated list_hand_code [uint32] // NOTE: POS_FACEUP or'd into last bit
+//	repeated list_extra_code [uint32] // NOTE: POS_FACEUP or'd into last bit
+message TagSwap
+{
+	int32 player = 1;
+	int32 extra_p_count = 2;
+	repeated Data.CardInfo hand_cards = 3;
+	repeated Data.CardInfo extra_cards = 4;
 }
