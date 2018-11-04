@@ -13,10 +13,13 @@ message GMsgRequest
 		bool retry = 3; // the last answer was not understood by the core
 
 		SelectCmd select_cmd = 4;
+		SelectYesNo select_yesno = 5;
 	}
 }
 
-// Encapsulates both SelectIdleCmd and SelectBattleCmd into a single message
+// Encapsulates:
+// MSG_SELECT_BATTLECMD
+// MSG_SELECT_IDLECMD
 message SelectCmd
 {
 	enum CmdType
@@ -36,10 +39,27 @@ message SelectCmd
 	bool able_to_ep = 7;  // End Phase
 
 	// Usable cards
-	repeated Data.CardInfo cards_w_effect = 10; // Cards anywhere in the field that can activate a ignition effect
-	repeated Data.CardInfo cards_can_attack = 11; // Cards that can declare an attack
-	repeated Data.CardInfo cards_summonable = 12; // Cards that can be either Normal or Tribute summoned
-	repeated Data.CardInfo cards_repositionable = 13; // Cards that can change Battle Position
-	repeated Data.CardInfo cards_msetable = 14; // Cards that can be set on a Monster Zone
-	repeated Data.CardInfo cards_ssetable = 15; // Cards that can be set on a Spell/Trap Zone
+	repeated Data.CardInfo cards_w_effect = 8; // Cards anywhere in the field that can activate a ignition effect
+	repeated Data.CardInfo cards_can_attack = 9; // Cards that can declare an attack
+	repeated Data.CardInfo cards_summonable = 10; // Cards that can be either Normal or Tribute summoned
+	repeated Data.CardInfo cards_spsummonable = 11; // Cards that can be Special summoned (inherent)
+	repeated Data.CardInfo cards_repositionable = 12; // Cards that can change Battle Position
+	repeated Data.CardInfo cards_msetable = 13; // Cards that can be set on a Monster Zone
+	repeated Data.CardInfo cards_ssetable = 14; // Cards that can be set on a Spell/Trap Zone
+}
+
+// Encapsulates:
+// MSG_SELECT_EFFECTYN
+// MSG_SELECT_YESNO
+message SelectYesNo
+{
+	oneof SelectYesNo
+	{
+		// Asks for a effect by a specific card on a specific zone
+		// Example: From [Monster Zone] activate "Elemental HERO Stratos"?
+		Data.CardInfo card = 1;
+		// Asks for a effect
+		// Example: Banish "Return of the Dragon Lords" from the Graveyard instead?
+		Data.EffectDesc effect_desc = 2;
+	}
 }

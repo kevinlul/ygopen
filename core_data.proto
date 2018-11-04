@@ -15,7 +15,7 @@ message CardInfo
 	// MSG_SELECT_BATTLECMD
 	// MSG_SELECT_IDLECMD
 	// MSG_SELECT_EFFECTYN
-	int64 effect_desc = 6;
+	EffectDesc effect_desc = 6;
 	
 	// Can this card attack
 	// used by:
@@ -41,6 +41,12 @@ message CardInfo
 	// is a overlay of a xyz monster. In that scenario, the above messages
 	// represent the overlay's owner data.
 	int32 overlay_sequence = 15;
+}
+
+message EffectDesc
+{
+	int32 code = 1;
+	int32 string_id = 2;
 }
 
 message Chain
