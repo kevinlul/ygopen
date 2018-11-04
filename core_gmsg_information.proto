@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package YGOpen.Core;
+
+// Game message about information of the game, those are saved unstripped to a replay
+// and they are sent to everyone either stripped or unstripped
+message GMsgInformation
+{
+	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
+	oneof GMsgInformation
+	{
+		// Messages here
+	}
+}

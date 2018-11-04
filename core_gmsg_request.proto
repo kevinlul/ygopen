@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package YGOpen.Core;
+
+message GMsgRequest
+{
+	// bool player = 1; // probably not needed.
+	bool stripped = 2;
+	oneof GMsgRequest
+	{
+		// Messages here
+	}
+}

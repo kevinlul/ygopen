@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package YGOpen.Core;
+
+import "core_gmsg_request.proto";
+import "core_gmsg_information.proto";
+
+// Game message for a specific player, those are not saved on a replay
+// and sometimes require an answer
+message GMsgSpecific
+{
+	bool player = 1;
+	oneof GMsgSpecific
+	{
+		message GMsgRequest request = 2;
+		message GMsgInformation information = 3;
+	}
+}

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package YGOpen.Core;
+
+import "core_gmsg_specific.proto";
+import "core_gmsg_information.proto";
+
+//import "core_query.proto"
+
+// Base Game Message, it can hold any type of message in the game
+message GMsg
+{
+	oneof GMsg
+	{
+		GMsgSpecific specific = 1;
+		GMsgInformation information = 2;
+		//GMsgBoardState board_state = 3; // Probably needed in the future
+	}
+	//repeated Core.Msg.Query before_msg_query = 3;
+	//repeated Core.Msg.Query after_msg_query = 4;
+}
