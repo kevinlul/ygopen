@@ -15,6 +15,7 @@ message GMsgRequest
 		SelectCmd select_cmd = 4;
 		SelectYesNo select_yesno = 5;
 		SelectOption select_option = 6;
+		SelectCards select_cards = 7;
 	}
 }
 
@@ -70,4 +71,41 @@ message SelectYesNo
 message SelectOption
 {
 	repeated Data.EffectDesc effects = 3;
+}
+
+// Encapsulates:
+// MSG_SELECT_CARD
+// MSG_SELECT_TRIBUTE
+// MSG_SELECT_UNSELECT_CARD
+// MSG_SELECT_COUNTER
+message SelectCards
+{
+	enum SelectionType
+	{
+		SELECTION_EFFECT = 0;
+		SELECTION_TRIBUTE = 1;
+		SELECTION_SELECT_UNSELECT = 2;
+		SELECTION_COUNTER = 3;
+	}
+	
+	SelectionType type = 1;
+	
+	// Can the player cancel the selection completely?
+	bool can_cancel = 2;
+	// Can the player finish the selection as is?
+	bool can_accept = 3;
+	// Minimum cards to select
+	int32 min = 4;
+	// Maximum cards to select
+	int32 max = 5;
+	
+	// Counter type and number of counters the player
+	// can distribute among the selectable cards
+	Data.Counter counter = 6;
+	
+	// Cards that can be selected
+	repeated Data.CardInfo cards_selectable = 10;
+	
+	// Cards that are selected and can be unselected
+	repeated Data.CardInfo cards_unselectable = 11;
 }
