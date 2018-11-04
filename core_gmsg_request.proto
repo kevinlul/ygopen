@@ -14,6 +14,7 @@ message GMsgRequest
 
 		SelectCmd select_cmd = 4;
 		SelectYesNo select_yesno = 5;
+		SelectOption select_option = 6;
 	}
 }
 
@@ -60,6 +61,13 @@ message SelectYesNo
 		Data.CardInfo card = 1;
 		// Asks for a effect
 		// Example: Banish "Return of the Dragon Lords" from the Graveyard instead?
-		Data.EffectDesc effect_desc = 2;
+		Data.EffectDesc effect = 2;
 	}
+}
+
+// Encapsulates:
+// MSG_SELECT_OPTION
+message SelectOption
+{
+	repeated Data.EffectDesc effects = 3;
 }
