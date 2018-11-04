@@ -9,6 +9,7 @@ message GMsgInformation
 	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
 	oneof GMsgInformation
 	{
-		// Messages here
+		int32 placeholder = 1;
+		int32 placholder2 = 4;
 	}
 }

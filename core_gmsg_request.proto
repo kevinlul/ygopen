@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "core_data.proto";
+
 package YGOpen.Core;
 
 message GMsgRequest
@@ -8,6 +10,36 @@ message GMsgRequest
 	bool stripped = 2;
 	oneof GMsgRequest
 	{
-		// Messages here
+		bool retry = 3; // the last answer was not understood by the core
+
+		SelectCmd select_cmd = 4;
 	}
+}
+
+// Encapsulates both SelectIdleCmd and SelectBattleCmd into a single message
+message SelectCmd
+{
+	enum CmdType
+	{
+		COMMAND_BATTLE = 0;
+		COMMAND_IDLE = 1;
+	}
+
+	CmdType type = 1;
+
+	// Can the player go to these phases?
+	//bool able_to_dp = 2;  // Draw Phase // NOTE: UNUSED
+	//bool able_to_sp = 3;  // Standby Phase // NOTE: UNUSED
+	//bool able_to_mp1 = 4; // Main Phase 1 // NOTE: UNUSED
+	bool able_to_bp = 5;  // Battle Phase
+	bool able_to_mp2 = 6; // Main Phase 2
+	bool able_to_ep = 7;  // End Phase
+
+	// Usable cards
+	repeated Data.CardInfo cards_w_effect = 10; // Cards anywhere in the field that can activate a ignition effect
+	repeated Data.CardInfo cards_can_attack = 11; // Cards that can declare an attack
+	repeated Data.CardInfo cards_summonable = 12; // Cards that can be either Normal or Tribute summoned
+	repeated Data.CardInfo cards_repositionable = 13; // Cards that can change Battle Position
+	repeated Data.CardInfo cards_msetable = 14; // Cards that can be set on a Monster Zone
+	repeated Data.CardInfo cards_ssetable = 15; // Cards that can be set on a Spell/Trap Zone
 }

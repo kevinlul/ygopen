@@ -12,7 +12,7 @@ message GMsgSpecific
 	bool player = 1;
 	oneof GMsgSpecific
 	{
-		message GMsgRequest request = 2;
-		message GMsgInformation information = 3;
+		GMsgRequest request = 2;
+		GMsgInformation information = 3;
 	}
 }
