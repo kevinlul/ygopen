@@ -5,7 +5,7 @@ package YGOpen.Core.Data;
 message CardInfo
 {
 	int32 code = 1;
-	int32 controler = 2;
+	bool controller = 2;
 	int32 location = 3;
 	int32 sequence = 4;
 	int32 position = 5;

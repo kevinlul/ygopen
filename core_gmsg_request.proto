@@ -6,7 +6,7 @@ package YGOpen.Core;
 
 message GMsgRequest
 {
-	// bool player = 1; // probably not needed.
+	// bool player = 1; // probably not needed
 	bool stripped = 2;
 	oneof GMsgRequest
 	{
@@ -17,6 +17,7 @@ message GMsgRequest
 		SelectOption select_option = 6;
 		SelectCards select_cards = 7;
 		SortCards sort_cards = 8;
+		SelectPlaces select_places = 9;
 	}
 }
 
@@ -118,4 +119,25 @@ message SortCards
 {
 	// Cards that you must place in the order you want them to activate
 	Data.CardInfo cards_to_sort = 1;
+}
+
+// Encapsulates:
+// MSG_SELECT_PLACE
+// MSG_SELECT_DISFIELD
+message SelectPlaces
+{
+	message Place
+	{
+		bool controller = 1;
+		int32 location = 2;
+		int32 sequence = 3;
+	}
+	
+	//Reason reason = 1;
+	
+	// Minimum places to select
+	int32 min = 2;
+	
+	// Places to select from
+	repeated Place places = 3;
 }
