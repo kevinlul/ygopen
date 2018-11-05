@@ -18,6 +18,9 @@ message GMsgRequest
 		SelectCards select_cards = 7;
 		SortCards sort_cards = 8;
 		SelectPlaces select_places = 9;
+		SelectPosition select_position = 10;
+		bool select_rps = 11; // ask player for rock, papper or scissors
+		
 	}
 }
 
@@ -140,4 +143,13 @@ message SelectPlaces
 	
 	// Places to select from
 	repeated Place places = 3;
+}
+
+// Encapsulates:
+// MSG_SELECT_POSITION
+message SelectPosition
+{
+	// Has code of the card
+	// and available positions to choose from AND'd on positions variable
+	Data.CardInfo card = 1;
 }
