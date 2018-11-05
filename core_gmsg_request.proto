@@ -16,6 +16,7 @@ message GMsgRequest
 		SelectYesNo select_yesno = 5;
 		SelectOption select_option = 6;
 		SelectCards select_cards = 7;
+		SortCards sort_cards = 8;
 	}
 }
 
@@ -108,4 +109,13 @@ message SelectCards
 	
 	// Cards that are selected and can be unselected
 	repeated Data.CardInfo cards_unselectable = 11;
+}
+
+// Encapsulates:
+// MSG_SORT_CARD
+// MSG_SORT_CHAIN
+message SortCards
+{
+	// Cards that you must place in the order you want them to activate
+	Data.CardInfo cards_to_sort = 1;
 }
