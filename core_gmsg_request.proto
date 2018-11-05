@@ -21,6 +21,7 @@ message GMsgRequest
 		SelectPosition select_position = 10;
 		bool select_rps = 11; // ask player for rock, papper or scissors
 		DeclareCard declare_card = 12;
+		DeclareMisc declare_misc = 13; // ask for race, attribute or a number
 	}
 }
 
@@ -159,7 +160,7 @@ message SelectPosition
 // MSG_ANNOUNCE_CARD_FILTER
 message DeclareCard
 {
-	enum DeclareOpcodes
+	enum DeclareCardOpcodes
 	{
 		// Values taken from ocgcore/common.h
 		OPCODE_INVALID     = 0x00000000;
@@ -186,6 +187,30 @@ message DeclareCard
 		
 		// Use Reverse Polish Notation to create a list
 		// of operations to determine (client side) the card filter
-		DeclareOpcodes opcodes = 2;
+		DeclareCardOpcodes opcodes = 2;
 	}
+}
+
+// Encapsulates:
+// MSG_ANNOUNCE_RACE
+// MSG_ANNOUNCE_ATTRIB
+// MSG_ANNOUNCE_NUMBER
+message DeclareMisc
+{
+	enum DeclareType
+	{
+		DECLARE_RACE = 0;
+		DECLARE_ATTRIBUTE = 1;
+		DECLARE_NUMBER = 2;
+	}
+	
+	DeclareType type = 1;
+
+	// Number of Attributes or Races you can choose
+	// If type == DECLARE_NUMBER then this is the max value you can select
+	// FIXME: probably use a min/max variables intead
+	int32 count = 2;
+	
+	// Attributes or Races you can choose from (they are OR'd together)
+	int32 available = 3;
 }
