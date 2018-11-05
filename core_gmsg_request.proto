@@ -20,7 +20,7 @@ message GMsgRequest
 		SelectPlaces select_places = 9;
 		SelectPosition select_position = 10;
 		bool select_rps = 11; // ask player for rock, papper or scissors
-		
+		DeclareCard declare_card = 12;
 	}
 }
 
@@ -152,4 +152,40 @@ message SelectPosition
 	// Has code of the card
 	// and available positions to choose from AND'd on positions variable
 	Data.CardInfo card = 1;
+}
+
+// Encapsulates:
+// MSG_ANNOUNCE_CARD
+// MSG_ANNOUNCE_CARD_FILTER
+message DeclareCard
+{
+	enum DeclareOpcodes
+	{
+		// Values taken from ocgcore/common.h
+		OPCODE_INVALID     = 0x00000000;
+		OPCODE_ADD         = 0x40000000;
+		OPCODE_SUB         = 0x40000001;
+		OPCODE_MUL         = 0x40000002;
+		OPCODE_DIV         = 0x40000003;
+		OPCODE_AND         = 0x40000004;
+		OPCODE_OR          = 0x40000005;
+		OPCODE_NEG         = 0x40000006;
+		OPCODE_NOT         = 0x40000007;
+		OPCODE_ISCODE      = 0x40000100;
+		OPCODE_ISSETCARD   = 0x40000101;
+		OPCODE_ISTYPE      = 0x40000102;
+		OPCODE_ISRACE      = 0x40000103;
+		OPCODE_ISATTRIBUTE = 0x40000104;
+	}
+	
+	oneof DeclareCard
+	{
+		// Type(s) of cards to declare from:
+		// Monster, Trap or Spell
+		int32 types = 1;
+		
+		// Use Reverse Polish Notation to create a list
+		// of operations to determine (client side) the card filter
+		DeclareOpcodes opcodes = 2;
+	}
 }
