@@ -13,6 +13,7 @@ message GMsgInformation
 	{
 		ConfirmCards confirm_cards = 3;
 		ShuffleLocation shuffle_location = 4;
+		ShuffleSetCards shuffle_set_cards = 5;
 	}
 }
 // Encapsulates:
@@ -42,5 +43,18 @@ message ShuffleLocation
 	
 	// NOTE: can be empty
 	Data.CardInfo shuffled_order = 3;
+}
+
+// Encapsulates:
+// MSG_SHUFFLE_SET_CARD
+message ShuffleSetCards
+{
+	//int32 location = 1; NOTE: UNUSED
+	
+	// Card positions to shuffle
+	repeated Data.CardInfo cards_previous = 2;
+	
+	// New locations of the shuffle cards, can be empty.
+	repeated Data.CardInfo cards_current = 3;
 }
 
