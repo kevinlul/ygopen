@@ -91,8 +91,9 @@ message SelectCards
 	{
 		SELECTION_EFFECT = 0;
 		SELECTION_TRIBUTE = 1;
-		SELECTION_SELECT_UNSELECT = 2;
-		SELECTION_COUNTER = 3;
+		SELECTION_SUM = 2
+		SELECTION_SELECT_UNSELECT = 3;
+		SELECTION_COUNTER = 4;
 	}
 	
 	SelectionType type = 1;
@@ -106,9 +107,13 @@ message SelectCards
 	// Maximum cards to select
 	int32 max = 5;
 	
+	// Sum needed to satisfy selection
+	// FIXME: explain this value properly
+	int32 sum = 6
+	
 	// Counter type and number of counters the player
 	// can distribute among the selectable cards
-	Data.Counter counter = 6;
+	Data.Counter counter = 7;
 	
 	// Cards that must be selected
 	repeated Data.CardInfo cards_must_select = 10;
