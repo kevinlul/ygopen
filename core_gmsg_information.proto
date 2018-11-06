@@ -15,6 +15,8 @@ message GMsgInformation
 		ShuffleLocation shuffle_location = 4;
 		ShuffleSetCards shuffle_set_cards = 5;
 		UpdateCard update_card = 6;
+		NewTurn new_turn = 7;
+		NewPhase new_phase = 8;
 	}
 }
 // Encapsulates:
@@ -75,5 +77,19 @@ message UpdateCard
 	
 	Data.CardInfo previous = 2;
 	Data.CardInfo current = 3;
+}
+
+// Encapsulates:
+// MSG_NEW_TURN
+message NewTurn
+{
+	bool turn_player = 1;
+}
+
+// Encapsulates:
+// MSG_NEW_PHASE
+message NewPhase
+{
+	int32 phase = 1;
 }
 
