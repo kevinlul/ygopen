@@ -22,12 +22,14 @@ message GMsgInformation
 // Encapsulates:
 // MSG_CONFIRM_DECKTOP
 // MSG_CONFIRM_CARDS
+// MSG_CONFIRM_EXTRATOP
 message ConfirmCards
 {
 	enum ConfirmType
 	{
 		CONFIRM_DECKTOP = 0;
 		CONFIRM_CARDS = 1;
+		CONFIRM_EXTRATOP = 2;
 	}
 
 	ConfirmType type = 1;
@@ -64,19 +66,35 @@ message ShuffleSetCards
 
 // Encapsulates:
 // MSG_DECK_TOP
+// MSG_MOVE
+// MSG_POS_CHANGE
+// MSG_SET
 // Updates a card info and/or location
 message UpdateCard
 {
+	// Defines the behaviour of this message
 	enum UpdateReason
 	{
+		// undefined: assume full update
 		REASON_NO_REASON = 0;
+		// previous: location; current: info
 		REASON_DECK_TOP = 1;
+		// previous: location and info; current: location and info
+		REASON_MOVE = 2;
+		// previous: location; current: info
+		REASON_POS_CHANGE = 3;
+		// previous: location; current: info
+		REASON_SET = 4;
 	}
 	
 	UpdateReason reason = 1;
 	
-	Data.CardInfo previous = 2;
-	Data.CardInfo current = 3;
+	// reason used by MSG_MOVE
+	int32 core_reason = 2;
+	
+	Data.CardInfo previous = 4;
+	Data.CardInfo current = 5;
+}
 }
 
 // Encapsulates:
