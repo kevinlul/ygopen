@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "core_data.proto";
+
 package YGOpen.Core;
 
 // Game message about information of the game, those are saved unstripped to a replay
@@ -9,7 +11,23 @@ message GMsgInformation
 	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
 	oneof GMsgInformation
 	{
-		int32 placeholder = 1;
-		int32 placholder2 = 4;
+		ConfirmCards confirm_cards = 3;
 	}
 }
+// Encapsulates:
+// MSG_CONFIRM_DECKTOP
+// MSG_CONFIRM_CARDS
+message ConfirmCards
+{
+	enum ConfirmType
+	{
+		CONFIRM_DECKTOP = 0;
+		CONFIRM_CARDS = 1;
+	}
+
+	ConfirmType type = 1;
+
+	// Cards to confirm
+	repeated Data.CardInfo cards = 2;
+}
+
