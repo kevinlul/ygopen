@@ -12,6 +12,7 @@ message GMsgInformation
 	oneof GMsgInformation
 	{
 		ConfirmCards confirm_cards = 3;
+		ShuffleLocation shuffle_location = 4;
 	}
 }
 // Encapsulates:
@@ -29,5 +30,17 @@ message ConfirmCards
 
 	// Cards to confirm
 	repeated Data.CardInfo cards = 2;
+}
+
+// Encapsulates:
+// MSG_SHUFFLE_DECK
+// MSG_SHUFFLE_HAND
+message ShuffleLocation
+{
+	bool controller = 1;
+	int32 location = 2;
+	
+	// NOTE: can be empty
+	Data.CardInfo shuffled_order = 3;
 }
 
