@@ -82,6 +82,7 @@ message SelectOption
 // Encapsulates:
 // MSG_SELECT_CARD
 // MSG_SELECT_TRIBUTE
+// MSG_SELECT_SUM
 // MSG_SELECT_UNSELECT_CARD
 // MSG_SELECT_COUNTER
 message SelectCards
@@ -109,11 +110,14 @@ message SelectCards
 	// can distribute among the selectable cards
 	Data.Counter counter = 6;
 	
+	// Cards that must be selected
+	repeated Data.CardInfo cards_must_select = 10;
+	
 	// Cards that can be selected
-	repeated Data.CardInfo cards_selectable = 10;
+	repeated Data.CardInfo cards_selectable = 11;
 	
 	// Cards that are selected and can be unselected
-	repeated Data.CardInfo cards_unselectable = 11;
+	repeated Data.CardInfo cards_unselectable = 12;
 }
 
 // Encapsulates:
@@ -214,3 +218,4 @@ message DeclareMisc
 	// Attributes or Races you can choose from (they are OR'd together)
 	int32 available = 3;
 }
+
