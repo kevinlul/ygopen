@@ -73,6 +73,7 @@ message ShuffleSetCards
 // MSG_MOVE
 // MSG_POS_CHANGE
 // MSG_SET
+// MSG_DRAW
 // Updates a card info and/or location
 message UpdateCard
 {
@@ -81,14 +82,22 @@ message UpdateCard
 	{
 		// undefined: assume full update
 		REASON_NO_REASON = 0;
+		// Shows a card from the top of the deck
 		// previous: location; current: info
 		REASON_DECK_TOP = 1;
-		// previous: location and info; current: location and info
+		// Moves a card from one location to another
+		// previous: location and info or not set; current: location and info
+		// if previous is not set, then creates a card in place (token)
 		REASON_MOVE = 2;
+		// Changes the position of a card in place
 		// previous: location; current: info
 		REASON_POS_CHANGE = 3;
+		// Sets a card in place
 		// previous: location; current: info
 		REASON_SET = 4;
+		// Adds a card from the top of the deck to the hand
+		// previous: nothing; current: info
+		REASON_DRAW = 5;
 	}
 	
 	UpdateReason reason = 1;
