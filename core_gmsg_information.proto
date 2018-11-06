@@ -19,6 +19,7 @@ message GMsgInformation
 		NewPhase new_phase = 8;
 		SwapCards swap_cards = 9;
 		DisableZones disable_zones = 10;
+		SummonCard summon_card = 11;
 	}
 }
 // Encapsulates:
@@ -125,5 +126,30 @@ message NewPhase
 message DisableZones
 {
 	repeated Data.CardInfo locations = 1;
+}
+
+// Encapsulates:
+// MSG_SUMMONING
+// MSG_SUMMONED
+// MSG_SPSUMMONING
+// MSG_SPSUMMONED
+// MSG_FLIPSUMMONING
+// MSG_FLIPSUMMONED
+message SummonCard
+{
+	enum SummonType
+	{
+		SUMMON_NORMAL = 0;
+		SUMMON_SPECIAL = 1;
+		SUMMON_FLIP = 2;
+	}
+	
+	SummonType type = 1;
+	
+	// Is it summoning or was it already summoned?
+	bool summoning = 2;
+	
+	// Card being summoned (only when summoning is true)
+	Data.CardInfo card = 3;
 }
 
