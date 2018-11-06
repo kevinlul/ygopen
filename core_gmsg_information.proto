@@ -18,6 +18,7 @@ message GMsgInformation
 		NewTurn new_turn = 7;
 		NewPhase new_phase = 8;
 		SwapCards swap_cards = 9;
+		DisableZones disable_zones = 10;
 	}
 }
 // Encapsulates:
@@ -117,5 +118,12 @@ message NewTurn
 message NewPhase
 {
 	int32 phase = 1;
+}
+
+// Encapsulates:
+// MSG_FIELD_DISABLED
+message DisableZones
+{
+	repeated Data.CardInfo locations = 1;
 }
 
