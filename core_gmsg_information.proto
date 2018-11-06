@@ -14,6 +14,7 @@ message GMsgInformation
 		ConfirmCards confirm_cards = 3;
 		ShuffleLocation shuffle_location = 4;
 		ShuffleSetCards shuffle_set_cards = 5;
+		UpdateCard update_card = 6;
 	}
 }
 // Encapsulates:
@@ -36,6 +37,7 @@ message ConfirmCards
 // Encapsulates:
 // MSG_SHUFFLE_DECK
 // MSG_SHUFFLE_HAND
+// MSG_SHUFFLE_EXTRA
 message ShuffleLocation
 {
 	bool controller = 1;
@@ -56,5 +58,22 @@ message ShuffleSetCards
 	
 	// New locations of the shuffle cards, can be empty.
 	repeated Data.CardInfo cards_current = 3;
+}
+
+// Encapsulates:
+// MSG_DECK_TOP
+// Updates a card info and/or location
+message UpdateCard
+{
+	enum UpdateReason
+	{
+		REASON_NO_REASON = 0;
+		REASON_DECK_TOP = 1;
+	}
+	
+	UpdateReason reason = 1;
+	
+	Data.CardInfo previous = 2;
+	Data.CardInfo current = 3;
 }
 
