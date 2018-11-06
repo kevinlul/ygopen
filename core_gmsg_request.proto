@@ -22,6 +22,7 @@ message GMsgRequest
 		bool select_rps = 11; // ask player for rock, papper or scissors
 		DeclareCard declare_card = 12;
 		DeclareMisc declare_misc = 13; // ask for race, attribute or a number
+		SelectToChain select_to_chain = 14;
 	}
 }
 
@@ -76,6 +77,7 @@ message SelectYesNo
 // MSG_SELECT_OPTION
 message SelectOption
 {
+	// List of effects description the player can choose
 	repeated Data.EffectDesc effects = 3;
 }
 
@@ -91,7 +93,7 @@ message SelectCards
 	{
 		SELECTION_EFFECT = 0;
 		SELECTION_TRIBUTE = 1;
-		SELECTION_SUM = 2
+		SELECTION_SUM = 2;
 		SELECTION_SELECT_UNSELECT = 3;
 		SELECTION_COUNTER = 4;
 	}
@@ -109,7 +111,7 @@ message SelectCards
 	
 	// Sum needed to satisfy selection
 	// FIXME: explain this value properly
-	int32 sum = 6
+	int32 sum = 6;
 	
 	// Counter type and number of counters the player
 	// can distribute among the selectable cards
@@ -222,5 +224,34 @@ message DeclareMisc
 	
 	// Attributes or Races you can choose from (they are OR'd together)
 	int32 available = 3;
+}
+
+// Encapsulates:
+// MSG_SELECT_CHAIN
+message SelectToChain
+{
+	// holds a chain type along with a card (and its effect)
+	message ChainableCard
+	{
+		// NOTE: possible values
+		// #define EDESC_OPERATION 1
+		// #define EDESC_RESET     2
+		// or 0
+		// Tells the client if the effect is bound or not
+		// to the card location
+		// FIXME: use a bool instead?
+		int32 effect_desc_type = 1;
+		
+		// The card must hold a effect description
+		Data.CardInfo card = 2;
+	}
+
+	// Is any effect mandatory
+	bool forced = 1;
+	
+	//int32 spe_count = 2; // NOTE: might not be required
+
+	// Cards that can be chained or resolved
+	repeated ChainableCard cards_w_effect = 3;
 }
 

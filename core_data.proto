@@ -15,6 +15,7 @@ message CardInfo
 	// MSG_SELECT_BATTLECMD
 	// MSG_SELECT_IDLECMD
 	// MSG_SELECT_EFFECTYN
+	// MSG_SELECT_CHAIN
 	EffectDesc effect_desc = 6;
 	
 	// Can this card attack
@@ -47,17 +48,6 @@ message EffectDesc
 {
 	int32 code = 1;
 	int32 string_id = 2;
-}
-
-message Chain
-{
-	// NOTE: possible values
-	// #define EDESC_OPERATION 1
-	// #define EDESC_RESET     2
-	// or 0
-	int32 edesc = 1; // TODO: needs investigation
-	int64 description = 2;
-	CardInfo card = 3;
 }
 
 message Counter
