@@ -17,6 +17,7 @@ message GMsgInformation
 		UpdateCard update_card = 6;
 		NewTurn new_turn = 7;
 		NewPhase new_phase = 8;
+		SwapCards swap_cards = 9;
 	}
 }
 // Encapsulates:
@@ -95,6 +96,13 @@ message UpdateCard
 	Data.CardInfo previous = 4;
 	Data.CardInfo current = 5;
 }
+
+// Encapsulates:
+// MSG_SWAP
+message SwapCards
+{
+	Data.CardInfo card1 = 1;
+	Data.CardInfo card2 = 2;
 }
 
 // Encapsulates:
