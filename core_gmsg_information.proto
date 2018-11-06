@@ -20,6 +20,7 @@ message GMsgInformation
 		SwapCards swap_cards = 9;
 		DisableZones disable_zones = 10;
 		SummonCard summon_card = 11;
+		ChainAction chain_action = 12;
 	}
 }
 // Encapsulates:
@@ -151,5 +152,37 @@ message SummonCard
 	
 	// Card being summoned (only when summoning is true)
 	Data.CardInfo card = 3;
+}
+
+
+// Encapsulates:
+// MSG_CHAINING
+// MSG_CHAINED
+// MSG_CHAIN_SOLVING
+// MSG_CHAIN_SOLVED
+// MSG_CHAIN_END
+// MSG_CHAIN_NEGATED
+// MSG_CHAIN_DISABLED
+message ChainAction
+{
+	enum ActionType
+	{
+		ACTION_CHAINING = 0;
+		ACTION_CHAINED = 1;
+		ACTION_CHAIN_SOLVING = 2;
+		ACTION_CHAIN_SOLVED = 3;
+		ACTION_CHAIN_END = 4;
+		ACTION_CHAIN_NEGATED = 5;
+		ACTION_CHAIN_DISABLED = 6;
+	}
+	
+	ActionType type = 1;
+	
+	// used for ACTION_CHAINING
+	Data.CardInfo location = 2;
+	Data.CardInfo card = 3;
+	
+	// ACTION_CHAIN_END might not have it
+	int32 chain_number = 4;
 }
 
