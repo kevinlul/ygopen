@@ -22,6 +22,7 @@ message GMsgInformation
 		SummonCard summon_card = 11;
 		ChainAction chain_action = 12;
 		SelectedCards selected_cards = 13;
+		Draw draw = 14;
 	}
 }
 // Encapsulates:
@@ -74,7 +75,6 @@ message ShuffleSetCards
 // MSG_MOVE
 // MSG_POS_CHANGE
 // MSG_SET
-// MSG_DRAW
 // Updates a card info and/or location
 message UpdateCard
 {
@@ -96,9 +96,6 @@ message UpdateCard
 		// Sets a card in place
 		// previous: location; current: info
 		REASON_SET = 4;
-		// Adds a card from the top of the deck to the hand
-		// previous: nothing; current: info
-		REASON_DRAW = 5;
 	}
 	
 	UpdateReason reason = 1;
@@ -227,5 +224,13 @@ message SelectedCards
 	Data.CardInfo targeting_card = 3;
 
 	repeated Data.CardInfo cards = 4;
+}
+
+// Encapsulates:
+// MSG_DRAW
+message Draw
+{
+	bool player = 1;
+	repeated Data.CardInfo cards = 2;
 }
 
