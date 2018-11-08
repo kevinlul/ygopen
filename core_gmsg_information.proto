@@ -28,6 +28,7 @@ message GMsgInformation
 		OnAttack on_attack = 17;
 		Result result = 18;
 		MiscAction misc_action = 19;
+		SwapPlayer swap_player = 20;
 	}
 }
 // Encapsulates:
@@ -344,4 +345,15 @@ message MiscAction
 	
 	// used by ACTION_MISSED_TIMING
 	Data.CardInfo card = 3;
+}
+
+// Encapsulates:
+// MSG_TAG_SWAP
+message SwapPlayer
+{
+	bool player = 1;
+	int32 main_deck_count = 2;
+	int32 extra_deck_count = 3;
+	int32 hand_count = 4;
+	int32 player_number = 5;
 }
