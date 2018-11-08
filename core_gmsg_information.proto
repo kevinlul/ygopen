@@ -21,6 +21,7 @@ message GMsgInformation
 		DisableZones disable_zones = 10;
 		SummonCard summon_card = 11;
 		ChainAction chain_action = 12;
+		SelectedCards selected_cards = 13;
 	}
 }
 // Encapsulates:
@@ -193,5 +194,38 @@ message ChainAction
 	
 	// ACTION_CHAIN_END might not have it
 	int32 chain_number = 4;
+}
+
+// Encapsulates:
+// MSG_RANDOM_SELECTED
+// MSG_BECOME_TARGET
+// MSG_EQUIP
+// MSG_UNEQUIP
+// MSG_CARD_TARGET
+// MSG_CANCEL_TARGET
+message SelectedCards
+{
+	enum SelectionType
+	{
+		// Randomly selected cards (dont create relation)
+		SELECTION_RANDOM = 0;
+		SELECTION_BECOME = 1;
+		
+		// Cards selected by another card (creates relation)
+		SELECTION_CARD_TARGET = 2;
+		SELECTION_CARD_EQUIP = 3;
+		
+		// Cards unselected by another card (removes relation)
+		SELECTION_CARD_DETARGET = 4;
+		//SELECTION_CARD_UNEQUIP = 5; // NOTE: UNUSED but implemented on duelclient.cpp
+	}
+
+	SelectionType type = 1;
+
+	//bool targeter_player = 2; // NOTE: UNUSED
+
+	Data.CardInfo targeting_card = 3;
+
+	repeated Data.CardInfo cards = 4;
 }
 
