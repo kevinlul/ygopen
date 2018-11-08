@@ -10,33 +10,39 @@ message CardInfo
 	int32 sequence = 4;
 	int32 position = 5;
 	
+	// ATK and DEF of the card
+	// used by:
+	// MSG_BATTLE
+	int32 atk = 6;
+	int32 def = 7;
+	
 	// Effect description string id
 	// used by:
 	// MSG_SELECT_BATTLECMD
 	// MSG_SELECT_IDLECMD
 	// MSG_SELECT_EFFECTYN
 	// MSG_SELECT_CHAIN
-	EffectDesc effect_desc = 6;
+	EffectDesc effect_desc = 8;
 	
 	// Can this card attack
 	// used by:
 	// MSG_SELECT_BATTLECMD
-	bool can_attack = 7;
+	bool can_attack = 9;
 	
 	// Count this card as X tributes
 	// used by:
 	// MSG_SELECT_TRIBUTE
-	int32 tribute_count = 8;
+	int32 tribute_count = 10;
 	
 	// Counter on the card
 	// used by:
 	// MSG_SELECT_COUNTER
-	Counter counter = 9;
+	Counter counter = 11;
 	
 	// Count this card as X plus to a sum selection
 	// used by:
 	// MSG_SELECT_SUM
-	int32 sum_param = 10;
+	int32 sum_param = 12;
 	
 	// If the message has overlay_sequence it means that the card itself
 	// is a overlay of a xyz monster. In that scenario, the above messages
