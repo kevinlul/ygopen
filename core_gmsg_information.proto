@@ -11,26 +11,48 @@ message GMsgInformation
 	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
 	oneof GMsgInformation
 	{
-		ConfirmCards confirm_cards = 3;
-		ShuffleLocation shuffle_location = 4;
-		ShuffleSetCards shuffle_set_cards = 5;
-		UpdateCard update_card = 6;
-		SwapCards swap_cards = 7;
-		NewTurn new_turn = 8;
-		NewPhase new_phase = 9;
-		DisableZones disable_zones = 10;
-		SummonCard summon_card = 11;
-		ChainAction chain_action = 12;
-		SelectedCards selected_cards = 13;
-		Draw draw = 14;
-		LpChange lp_change = 15;
-		CounterChange counter_change = 16;
-		OnAttack on_attack = 17;
-		Result result = 18;
-		MiscAction misc_action = 19;
-		SwapPlayer swap_player = 20;
+		Win win = 3;
+		Hint hint = 4;
+		ConfirmCards confirm_cards = 5;
+		ShuffleLocation shuffle_location = 6;
+		ShuffleSetCards shuffle_set_cards = 7;
+		UpdateCard update_card = 8;
+		SwapCards swap_cards = 9;
+		NewTurn new_turn = 10;
+		NewPhase new_phase = 11;
+		DisableZones disable_zones = 12;
+		SummonCard summon_card = 13;
+		ChainAction chain_action = 14;
+		SelectedCards selected_cards = 15;
+		Draw draw = 16;
+		LpChange lp_change = 17;
+		CounterChange counter_change = 18;
+		OnAttack on_attack = 19;
+		Result result = 20;
+		MiscAction misc_action = 21;
+		SwapPlayer swap_player = 22;
 	}
 }
+
+// Encapsulates:
+// MSG_WIN
+// MSG_MATCH_KILL
+message Win
+{
+	bool player = 1;
+	bool is_match_kill = 2;
+	int32 reason = 3;
+}
+
+// Encapsulates:
+// MSG_HINT
+message Hint
+{
+	// FIXME: make the type a ENUM
+	int32 type = 1;
+	int64 data = 2;
+}
+
 // Encapsulates:
 // MSG_CONFIRM_DECKTOP
 // MSG_CONFIRM_CARDS
