@@ -24,6 +24,7 @@ message GMsgInformation
 		SelectedCards selected_cards = 13;
 		Draw draw = 14;
 		LpChange lp_change = 15;
+		CounterChange counter_change = 16;
 	}
 }
 // Encapsulates:
@@ -255,5 +256,22 @@ message LpChange
 	bool player = 2;
 
 	uint32 amount = 3;
+}
+
+// Encapsulates:
+// MSG_ADD_COUNTER
+// MSG_REMOVE_COUNTER
+message CounterChange
+{
+	enum ChangeType
+	{
+		CHANGE_ADD = 0;
+		CHANGE_REMOVE = 1;
+	}
+	
+	ChangeType type = 1;
+	
+	Data.Counter counter = 2;
+	Data.Counter card = 3;
 }
 
