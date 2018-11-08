@@ -25,6 +25,7 @@ message GMsgInformation
 		Draw draw = 14;
 		LpChange lp_change = 15;
 		CounterChange counter_change = 16;
+		MiscAction misc_action = 17;
 	}
 }
 // Encapsulates:
@@ -275,3 +276,18 @@ message CounterChange
 	Data.Counter card = 3;
 }
 
+// Encapsulates:
+// MSG_SWAP_GRAVE_DECK
+// MSG_REVERSE_DECK
+message MiscAction
+{
+	enum ActionType
+	{
+		ACTION_SWAP_GY_WITH_DECK = 0; // by the effect of: Exchange of the Spirit
+		ACTION_REVERSE_DECK = 1; // by the effect of: Convulsion of Nature
+	}
+	
+	ActionType type = 1;
+	
+	bool player = 2;
+}
