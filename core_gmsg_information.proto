@@ -315,17 +315,33 @@ message Result
 	// in case of RPS, both player hand result
 	repeated int32 results = 3;
 }
+
+// Encapsulates:
+// MSG_ATTACK_DISABLED
+// MSG_DAMAGE_STEP_START
+// MSG_DAMAGE_STEP_END
 // MSG_SWAP_GRAVE_DECK
 // MSG_REVERSE_DECK
 message MiscAction
 {
 	enum ActionType
 	{
-		ACTION_SWAP_GY_WITH_DECK = 0; // by the effect of: Exchange of the Spirit
-		ACTION_REVERSE_DECK = 1; // by the effect of: Convulsion of Nature
+		// Attack of the attacker card was negated
+		ACTION_ATTACK_NEGATED = 0;
+		// Entering and exiting Damage Step
+		ACTION_DAMAGE_STEP_START = 1;
+		ACTION_DAMAGE_STEP_END = 2;
+		// A card missed its timing (when: you can)
+		ACTION_MISSED_TIMING = 3;
+		// Misc
+		ACTION_SWAP_GY_WITH_DECK = 4; // by the effect of: Exchange of the Spirit
+		ACTION_REVERSE_DECK = 5; // by the effect of: Convulsion of Nature
 	}
 	
 	ActionType type = 1;
 	
 	bool player = 2;
+	
+	// used by ACTION_MISSED_TIMING
+	Data.CardInfo card = 3;
 }
