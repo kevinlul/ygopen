@@ -23,6 +23,7 @@ message GMsgInformation
 		ChainAction chain_action = 12;
 		SelectedCards selected_cards = 13;
 		Draw draw = 14;
+		LpChange lp_change = 15;
 	}
 }
 // Encapsulates:
@@ -232,5 +233,27 @@ message Draw
 {
 	bool player = 1;
 	repeated Data.CardInfo cards = 2;
+}
+
+// Encapsulates:
+// MSG_DAMAGE
+// MSG_RECOVER
+// MSG_LPUPDATE
+// MSG_PAY_LPCOST
+message LpChange
+{
+	enum ChangeType
+	{
+		CHANGE_DAMAGE = 0; // substract
+		CHANGE_RECOVER = 1; // sums
+		CHANGE_BECOME = 2; // sets value
+		CHANGE_PAY = 3; // substract
+	}
+	
+	ChangeType type = 1;
+
+	bool player = 2;
+
+	uint32 amount = 3;
 }
 
