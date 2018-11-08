@@ -25,7 +25,9 @@ message GMsgInformation
 		Draw draw = 14;
 		LpChange lp_change = 15;
 		CounterChange counter_change = 16;
-		MiscAction misc_action = 17;
+		OnAttack on_attack = 17;
+		
+		MiscAction misc_action = 19;
 	}
 }
 // Encapsulates:
@@ -277,6 +279,22 @@ message CounterChange
 }
 
 // Encapsulates:
+// MSG_ATTACK
+// MSG_BATTLE
+message OnAttack
+{
+	enum AttackStatus
+	{
+		STATUS_ATTACK_DECLARATION = 0;
+		STATUS_ENTERING_BATTLE_STEP = 1;
+	}
+	AttackStatus status = 1;
+
+	Data.CardInfo attacker = 2;
+	// NOTE: can be empty, in which case is a direct attack
+	Data.CardInfo attack_target = 3;
+}
+
 // MSG_SWAP_GRAVE_DECK
 // MSG_REVERSE_DECK
 message MiscAction
