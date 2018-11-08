@@ -309,7 +309,7 @@ message Result
 	}
 	ResultType type = 1;
 
-	bool player = 2
+	bool player = 2;
 
 	// results of dices or coin tosses
 	// in case of RPS, both player hand result
