@@ -15,9 +15,9 @@ message GMsgInformation
 		ShuffleLocation shuffle_location = 4;
 		ShuffleSetCards shuffle_set_cards = 5;
 		UpdateCard update_card = 6;
-		NewTurn new_turn = 7;
-		NewPhase new_phase = 8;
-		SwapCards swap_cards = 9;
+		SwapCards swap_cards = 7;
+		NewTurn new_turn = 8;
+		NewPhase new_phase = 9;
 		DisableZones disable_zones = 10;
 		SummonCard summon_card = 11;
 		ChainAction chain_action = 12;
@@ -133,6 +133,7 @@ message NewPhase
 
 // Encapsulates:
 // MSG_FIELD_DISABLED
+// NOTE: clears all other disabled zones
 message DisableZones
 {
 	repeated Data.CardInfo locations = 1;
@@ -162,7 +163,6 @@ message SummonCard
 	// Card being summoned (only when summoning is true)
 	Data.CardInfo card = 3;
 }
-
 
 // Encapsulates:
 // MSG_CHAINING
