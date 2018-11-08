@@ -26,7 +26,7 @@ message GMsgInformation
 		LpChange lp_change = 15;
 		CounterChange counter_change = 16;
 		OnAttack on_attack = 17;
-		
+		Result result = 18;
 		MiscAction misc_action = 19;
 	}
 }
@@ -295,6 +295,26 @@ message OnAttack
 	Data.CardInfo attack_target = 3;
 }
 
+// Encapsulates:
+// MSG_TOSS_COIN
+// MSG_TOSS_DICE
+// MSG_HAND_RES
+message Result
+{
+	enum ResultType
+	{
+		RESULT_TOSS_COIN = 0;
+		RESULT_TOSS_DICE = 1;
+		RESULT_RPS = 2;
+	}
+	ResultType type = 1;
+
+	bool player = 2
+
+	// results of dices or coin tosses
+	// in case of RPS, both player hand result
+	repeated int32 results = 3;
+}
 // MSG_SWAP_GRAVE_DECK
 // MSG_REVERSE_DECK
 message MiscAction
