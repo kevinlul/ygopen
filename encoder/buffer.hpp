@@ -1,0 +1,236 @@
+#ifndef __BUFFER_HPP__
+#define __BUFFER_HPP__
+#include <cstdint> // uint8_t
+#include <cstring> // std::memcpy
+#include <utility> // std::forward, std::pair
+
+#if defined(_DEBUG) // Change this with the right debug flag
+#ifndef BUFFER_DEBUG
+#define BUFFER_DEBUG
+#endif // BUFFER_DEBUG
+
+#include <ctime>
+#include <sstream>
+#include <string>
+#include <fstream>
+#include <iomanip> // std::setw
+
+constexpr unsigned n_width = 3;
+const char* reason_unspecified = "Unspecified";
+#endif // defined(_DEBUG)
+
+// TODO: add a note explaining that this file does not follow the main project code style
+// but is more near to that style used on the standard libraries
+
+// TODO: decide if i should move the seek operations to the base functions
+
+namespace YGOpen
+{
+namespace Buffer
+{
+
+// Type used to pass buffers around, keep in mind that
+// this object does not have ownership of the underlying pointer.
+typedef std::pair<void*, std::size_t> basic_buffer;
+
+// Syntatic sugar.
+basic_buffer make_buffer(void*&& buffer, std::size_t&& size)
+{
+	return std::make_pair(std::forward<void*>(buffer), std::forward<std::size_t>(size));
+}
+
+// Defines the type of the positioning variable the buffer manipulator will use.
+typedef int pos_type;
+
+// Types of seeks.
+// beg: from the beggining
+// end: from the end
+// cur: relatively
+typedef enum
+{
+	beg,
+	end,
+	cur
+}seek_dir;
+
+class buffer_base
+{
+protected:
+	uint8_t* sp{nullptr}; // starting pos
+	uint8_t* cp{nullptr}; // current pos
+	uint8_t* ep{nullptr}; // ending pos
+	
+#ifdef BUFFER_DEBUG
+	std::fstream log_file;
+	
+	template<typename ...Params>
+	void log(Params&& ...args)
+	{
+		(log_file << ... << args);
+	}
+#endif // BUFFER_DEBUG
+public:
+	buffer_base()
+	{
+#ifdef BUFFER_DEBUG
+		// Initialize logging feature.
+		time_t rn = std::time(nullptr);
+		char rn_str[100];
+		std::strftime(rn_str, sizeof(rn_str), "%c", std::localtime(&rn));
+		
+		std::stringstream ss;
+		ss << std::to_string(rn)
+		   << "-bufferio-"
+		   << std::hex << "0x" << reinterpret_cast<std::uintptr_t>(this)
+		   << "-debug.log";
+		
+		std::string log_filename = ss.str();
+		log_file.open(log_filename, std::ios::out);
+		
+		ss.str(std::string());
+		ss.clear();
+		
+		log("Logging started at ", rn_str, " this buffer_base was created\n");
+#endif // BUFFER_DEBUG
+	}
+
+	// Sets the working buffer and its boundaries to a new buffer.
+	void open(const basic_buffer& buffer)
+	{
+#ifdef BUFFER_DEBUG
+		log("Setting buffer at ", std::hex, "0x", reinterpret_cast<std::uintptr_t>(buffer.first));
+		log(" with size ", std::dec, buffer.second, ".\n");
+#endif // BUFFER_DEBUG
+		sp = cp = reinterpret_cast<uint8_t*>(buffer.first);
+		ep = sp + buffer.second;
+	}
+
+	buffer_base(const basic_buffer& buffer) : buffer_base()
+	{
+		open(buffer);
+	}
+
+	// Returns the current position of the buffer.
+	pos_type tell() const
+	{
+		return pos_type(cp - sp);
+	}
+
+	// Checks if the buffer has any operation available.
+	bool good() const
+	{
+		return cp >= sp && cp <= ep;
+	}
+
+	// Checks if we consumed the entire buffer already.
+	bool eof() const
+	{
+		return cp == ep;
+	}
+
+	// Move current position.
+	// if dir == seek_dir::beg then the position is restarted to the beggining plus off
+	// if dir == seek_dir::end then the position is set at the end plus off
+	// if dir == seek_dir::cur then the position is added relatively to the current position
+	template<typename ...Reasons>
+	void seek(const pos_type off, const seek_dir dir = seek_dir::beg, [[maybe_unused]] Reasons&& ...args)
+	{
+#ifdef BUFFER_DEBUG
+		log("Moving :", std::setw(n_width), off);
+		if(dir == seek_dir::beg)
+			log(" byte(s) from the beggining");
+		else if(dir == seek_dir::end)
+			log(" byte(s) from the end");
+		else if(dir == seek_dir::cur)
+			log(" byte(s) relatively");
+
+		if(sizeof...(args) == 0)
+			log(", Reason(s): ", reason_unspecified);
+		else
+			log(", Reason(s): ", std::forward<Reasons>(args)...);
+
+		log(".\n");
+#endif // BUFFER_DEBUG
+		if(dir == seek_dir::beg)
+			cp = sp + off;
+		else if(dir == seek_dir::end)
+			cp = ep + off;
+		else if(dir == seek_dir::cur)
+			cp = cp + off;
+	}
+};
+
+class ibuffer : virtual public buffer_base
+{
+	template<typename T>
+	T read_base() const
+	{
+		T ret;
+		std::memcpy(&ret, cp, sizeof(T));
+		return ret;
+	}
+public:
+	ibuffer() : buffer_base() {};
+	ibuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
+
+	// Read any object from the current buffer.
+	// Aditionally, moves the current position forward
+	// the same number of bytes read.
+	template<typename T, typename ...Reasons>
+	T read([[maybe_unused]] Reasons&& ...args)
+	{
+#ifdef BUFFER_DEBUG
+		log("Reading:", std::setw(n_width), sizeof(T), " byte(s)");
+		if(sizeof...(args) == 0)
+			log(", Reason(s): ", reason_unspecified);
+		else
+			log(", Reason(s): ", std::forward<Reasons>(args)...);
+		log(".\n");
+#endif // BUFFER_DEBUG
+		T ret = read_base<T>();
+		seek(sizeof(T), seek_dir::cur, "called from ibuffer::read()");
+		return ret;
+	}
+};
+
+class obuffer : virtual public buffer_base
+{
+	template<typename T>
+	void write_base(T val)
+	{
+		std::memcpy(cp, &val, sizeof(T));
+	}
+public:
+	obuffer() : buffer_base() {};
+	obuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
+
+	// Writes any object to the current buffer.
+	// Aditionally, moves the current position forward
+	// the same number of bytes read.
+	template<typename T, typename ...Reasons>
+	void write(T&& val, [[maybe_unused]] Reasons&& ...args)
+	{
+#ifdef BUFFER_DEBUG
+		log("Writing:", std::setw(n_width), sizeof(T), " byte(s)");
+		if(sizeof...(args) == 0)
+			log(", Reason(s): ", reason_unspecified);
+		else
+			log(", Reason(s): ", std::forward<Reasons>(args)...);
+		log(".\n");
+#endif // BUFFER_DEBUG
+		write_base(std::forward<T>(val));
+		seek(sizeof(T), seek_dir::cur, "called from obuffer::write()");
+	}
+};
+
+class iobuffer : public ibuffer, public obuffer
+{
+public:
+	iobuffer() : buffer_base() {};
+	iobuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
+};
+
+} // namespace Buffer
+} // namespace YGOpen
+
+#endif // __BUFFER_HPP__
