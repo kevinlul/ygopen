@@ -34,9 +34,9 @@ namespace Buffer
 typedef std::pair<void*, std::size_t> basic_buffer;
 
 // Syntatic sugar.
-basic_buffer make_buffer(void*&& buffer, std::size_t&& size)
+basic_buffer make_buffer(void* buffer, std::size_t size)
 {
-	return std::make_pair(std::forward<void*>(buffer), std::forward<std::size_t>(size));
+	return std::pair<void*, std::size_t>(buffer, size);
 }
 
 // Defines the type of the positioning variable the buffer manipulator will use.
