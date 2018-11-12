@@ -1,3 +1,2 @@
 #!/bin/bash
-mkdir out
-protoc --cpp_out=out/ *.proto
+protoc --cpp_out=generated/ *.proto
