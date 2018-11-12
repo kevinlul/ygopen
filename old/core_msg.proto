@@ -942,7 +942,7 @@ message Attack
 // loc_info attack_target [sizeof loc_info]
 // attacker_attack [uint32]
 // attacker_defense [uint32]
-// bd[0] [uint8] // TODO: needs investigation
+// bd[1] [uint8] // TODO: needs investigation
 message Battle
 {
 	Data.CardInfo attacker = 1;
