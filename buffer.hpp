@@ -59,7 +59,7 @@ protected:
 	uint8_t* sp{nullptr}; // starting pos
 	uint8_t* cp{nullptr}; // current pos
 	uint8_t* ep{nullptr}; // ending pos
-	
+public:
 #ifdef BUFFER_DEBUG
 	std::fstream log_file;
 	
@@ -69,7 +69,6 @@ protected:
 		(log_file << ... << args);
 	}
 #endif // BUFFER_DEBUG
-public:
 	buffer_base()
 	{
 #ifdef BUFFER_DEBUG
