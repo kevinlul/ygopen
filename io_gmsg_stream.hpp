@@ -1,7 +1,7 @@
 #ifndef __IO_GMSG_STREAM_HPP__
 #define __IO_GMSG_STREAM_HPP__
 #include <memory> // std::unique_ptr
-#include "gmsg/core_gmsg.pb.h"
+#include "generated/core_gmsg.pb.h"
 
 namespace YGOpen
 {
