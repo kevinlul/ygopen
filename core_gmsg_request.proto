@@ -47,14 +47,16 @@ message SelectCmd
 	bool able_to_mp2 = 6; // Main Phase 2
 	bool able_to_ep = 7;  // End Phase
 
+	bool can_shuffle = 8; // Can the player shuffle its hand
+
 	// Usable cards
-	repeated Data.CardInfo cards_w_effect = 8; // Cards anywhere in the field that can activate a ignition effect
-	repeated Data.CardInfo cards_can_attack = 9; // Cards that can declare an attack
-	repeated Data.CardInfo cards_summonable = 10; // Cards that can be either Normal or Tribute summoned
-	repeated Data.CardInfo cards_spsummonable = 11; // Cards that can be Special summoned (inherent)
-	repeated Data.CardInfo cards_repositionable = 12; // Cards that can change Battle Position
-	repeated Data.CardInfo cards_msetable = 13; // Cards that can be set on a Monster Zone
-	repeated Data.CardInfo cards_ssetable = 14; // Cards that can be set on a Spell/Trap Zone
+	repeated Data.CardInfo cards_w_effect = 9; // Cards anywhere in the field that can activate a ignition effect
+	repeated Data.CardInfo cards_can_attack = 10; // Cards that can declare an attack
+	repeated Data.CardInfo cards_summonable = 11; // Cards that can be either Normal or Tribute summoned
+	repeated Data.CardInfo cards_spsummonable = 12; // Cards that can be Special summoned (inherent)
+	repeated Data.CardInfo cards_repositionable = 13; // Cards that can change Battle Position
+	repeated Data.CardInfo cards_msetable = 14; // Cards that can be set on a Monster Zone
+	repeated Data.CardInfo cards_ssetable = 15; // Cards that can be set on a Spell/Trap Zone
 }
 
 // Encapsulates:
