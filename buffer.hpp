@@ -105,10 +105,20 @@ public:
 		sp = cp = reinterpret_cast<uint8_t*>(buffer.first);
 		ep = sp + buffer.second;
 	}
+	
+	void open(void* buffer, size_t length)
+	{
+		open(make_buffer(buffer, length));
+	}
 
 	buffer_base(const basic_buffer& buffer) : buffer_base()
 	{
 		open(buffer);
+	}
+
+	buffer_base(void* buffer, size_t length) : buffer_base()
+	{
+		open(buffer, length);
 	}
 
 	// Returns the current position of the buffer.
