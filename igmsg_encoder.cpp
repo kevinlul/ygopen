@@ -4,6 +4,17 @@
 
 namespace YGOpen
 {
+// Useful typedefs
+typedef uint8_t  player_t; // used for controller too
+typedef uint32_t cardcount_t;
+typedef uint32_t cardcote_t;
+typedef uint32_t location_t;
+typedef uint32_t sequence_t;
+
+// Types that should be changed (increased) in far future
+typedef uint8_t small_cardcount_t;
+typedef uint8_t small_sequence_t;
+typedef uint8_t small_location_t;
 
 struct IGMsgEncoder::impl
 {
