@@ -9,7 +9,8 @@ namespace YGOpen
 // Game Message Stream Base
 class GMsgStreamBase
 {
-	Core::GMsg lastMessage;
+protected:
+	Core::GMsg lastGMsg;
 };
 
 // Input Game Message Encoder
@@ -18,6 +19,9 @@ class IGMsgEncoder : virtual public GMsgStreamBase
 {
 	struct impl;
 	std::unique_ptr<impl> pimpl;
+	
+	inline void SpecificMsg(Core::GMsg& gmsg, const int msgType);
+	inline void InformationMsg(Core::GMsg& gmsg, const int msgType);
 public:
 	IGMsgEncoder();
 
