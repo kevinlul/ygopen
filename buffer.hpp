@@ -111,9 +111,13 @@ public:
 	}
 
 	// Returns the current position of the buffer.
-	pos_type tell() const
+	// if dir == seek_dir::beg then the returned value is relative to the beggining
+	// otherwise it is relative to the end
+	pos_type tell(const seek_dir dir = seek_dir::beg) const
 	{
-		return pos_type(cp - sp);
+		if(dir == seek_dir::beg)
+			return pos_type(cp - sp);
+		return pos_type(ep - cp);
 	}
 
 	// Checks if the buffer has any operation available.
