@@ -20,7 +20,14 @@ class IGMsgEncoder : virtual public GMsgStreamBase
 	std::unique_ptr<impl> pimpl;
 public:
 	IGMsgEncoder();
+
+	IGMsgEncoder(IGMsgEncoder&&) = delete;
+	IGMsgEncoder(const IGMsgEncoder&) = delete;
+	IGMsgEncoder& operator=(IGMsgEncoder&&) = delete;
+	IGMsgEncoder& operator=(const IGMsgEncoder&) = delete;
+
 	~IGMsgEncoder();
+
 	Core::GMsg Encode(void* buffer, size_t length);
 };
 
