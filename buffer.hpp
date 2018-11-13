@@ -15,6 +15,8 @@
 #include <fstream>
 #include <iomanip> // std::setw
 
+#include <type_traits> // std::is_base_of
+
 constexpr unsigned n_width = 3;
 const char* reason_unspecified = "Unspecified";
 #endif // defined(_DEBUG)
@@ -231,6 +233,35 @@ class iobuffer : public ibuffer, public obuffer
 public:
 	iobuffer() : buffer_base() {};
 	iobuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
+};
+
+template<typename BufferType>
+class buffer_wrapper
+{
+	static_assert(std::is_base_of<buffer_base, BufferType>::value, "BufferType must be base of buffer_base");
+public:
+	buffer_wrapper(BufferType* buf) : buff_ptr(buf)
+	{
+#ifdef BUFFER_DEBUG
+		buff_ptr->log("Wrapper created.\n");
+#endif // BUFFER_DEBUG
+	}
+
+#ifdef BUFFER_DEBUG
+	~buffer_wrapper()
+	{
+		buff_ptr->log("Wrapper destroyed. ");
+		buff_ptr->log("byte(s) read/written: ", buff_ptr->tell(), ". ");
+		buff_ptr->log("byte(s) leftover: ", buff_ptr->tell(seek_dir::end), ".\n");
+	}
+#endif // BUFFER_DEBUG
+
+	BufferType* operator->() const
+	{
+		return buff_ptr;
+	}
+private:
+	BufferType* buff_ptr;
 };
 
 } // namespace Buffer
