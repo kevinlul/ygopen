@@ -7,7 +7,7 @@ namespace YGOpen
 // Useful typedefs
 typedef uint8_t  player_t; // used for controller too
 typedef uint32_t cardcount_t;
-typedef uint32_t cardcote_t;
+typedef uint32_t cardcode_t;
 typedef uint32_t location_t;
 typedef uint32_t sequence_t;
 typedef uint64_t effectdesc_t;
@@ -49,7 +49,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < summonableCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_summonable();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
@@ -59,7 +59,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < spsummonableCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_spsummonable();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
@@ -69,7 +69,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < repositionableCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_spsummonable();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<small_sequence_t>("sequence ", i)); // NOTE: different size
@@ -79,7 +79,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < msetableCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_msetable();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
@@ -89,7 +89,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < ssetableCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_ssetable();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
@@ -99,7 +99,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			for(int i = 0; i < cardsWEffectCardsCount; i++)
 			{
 				auto card = selectCmd->add_cards_w_effect();
-				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_code(wrapper->read<cardcode_t>("card code ", i));
 				card->set_controller(wrapper->read<player_t>("controller ", i));
 				card->set_location(wrapper->read<small_location_t>("location ", i));
 				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
