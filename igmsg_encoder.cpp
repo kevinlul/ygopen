@@ -10,6 +10,7 @@ typedef uint32_t cardcount_t;
 typedef uint32_t cardcote_t;
 typedef uint32_t location_t;
 typedef uint32_t sequence_t;
+typedef uint64_t effectdesc_t;
 
 // Types that should be changed (increased) in far future
 typedef uint8_t small_cardcount_t;
@@ -35,6 +36,82 @@ IGMsgEncoder::~IGMsgEncoder() = default;
 inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 {
 	Buffer::buffer_wrapper<Buffer::ibuffer> wrapper(&pimpl->ib);
+	
+	switch(msgType)
+	{
+		case SelectIdleCmd:
+		{
+			auto specific = gmsg.mutable_specific();
+			specific->set_player(wrapper->read<player_t>("player"));
+			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
+			
+			const auto summonableCardsCount = wrapper->read<small_cardcount_t>("summonable_cards.size()");
+			for(int i = 0; i < summonableCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_summonable();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
+			}
+			
+			const auto spsummonableCardsCount = wrapper->read<small_cardcount_t>("spsummonable_cards.size()");
+			for(int i = 0; i < spsummonableCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_spsummonable();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
+			}
+			
+			const auto repositionableCardsCount = wrapper->read<small_cardcount_t>("repositionable_cards.size()");
+			for(int i = 0; i < repositionableCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_spsummonable();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<small_sequence_t>("sequence ", i)); // NOTE: different size
+			}
+			
+			const auto msetableCardsCount = wrapper->read<small_cardcount_t>("msetable_cards.size()");
+			for(int i = 0; i < msetableCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_msetable();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
+			}
+			
+			const auto ssetableCardsCount = wrapper->read<small_cardcount_t>("ssetable_cards.size()");
+			for(int i = 0; i < ssetableCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_ssetable();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
+			}
+			
+			const auto cardsWEffectCardsCount = wrapper->read<small_cardcount_t>("select_chains.size()");
+			for(int i = 0; i < cardsWEffectCardsCount; i++)
+			{
+				auto card = selectCmd->add_cards_w_effect();
+				card->set_code(wrapper->read<cardcote_t>("card code ", i));
+				card->set_controller(wrapper->read<player_t>("controller ", i));
+				card->set_location(wrapper->read<small_location_t>("location ", i));
+				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
+				GetEDFromU64(card->mutable_effect_desc(), wrapper->read<effectdesc_t>("effectdesc ", i));
+			}
+			
+			selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
+			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
+			selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
+		}
+		break;
+	}
 }
 
 inline void IGMsgEncoder::InformationMsg(Core::GMsg& gmsg, const int msgType)
