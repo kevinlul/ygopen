@@ -151,7 +151,7 @@ public:
 	template<typename ...Reasons>
 	void seek(const pos_type off, const seek_dir dir = seek_dir::beg, [[maybe_unused]] Reasons&& ...args)
 	{
-#ifdef BUFFER_DEBUG
+#ifdef false
 		log("Moving :", std::setw(n_width), off);
 		if(dir == seek_dir::beg)
 			log(" byte(s) from the beggining");
