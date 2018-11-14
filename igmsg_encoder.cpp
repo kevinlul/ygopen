@@ -16,9 +16,15 @@ typedef uint8_t small_cardcount_t;
 typedef uint8_t small_sequence_t;
 typedef uint8_t small_location_t;
 
+void GetEDFromU64(Core::Data::EffectDesc* msg, effectdesc_t ed)
+{
+	msg->set_code(ed >> 4);
+	msg->set_string_id(ed & 0xF);
+}
+
 struct IGMsgEncoder::impl
 {
-	Buffer::ibuffer ib;
+	Buffer::ibuffer ib{};
 };
 
 IGMsgEncoder::IGMsgEncoder() : pimpl(new impl())
@@ -40,7 +46,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 {
 	Core::GMsg gmsg{};
 
-	pimpl->ib.open(Buffer::make_buffer(buffer, length));
+	pimpl->ib.open(buffer, length);
 
 	const auto msgType = pimpl->ib.read<uint8_t>("Encode: message type");
 	switch(msgType)
