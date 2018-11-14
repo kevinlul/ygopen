@@ -69,6 +69,7 @@ public:
 	void log(Params&& ...args)
 	{
 		(log_file << ... << args);
+		log_file.flush();
 	}
 #endif // BUFFER_DEBUG
 	buffer_base()
