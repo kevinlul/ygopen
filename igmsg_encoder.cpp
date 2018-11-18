@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "io_gmsg_stream.hpp"
 #include "buffer.hpp"
 #include "core_message.hpp"
@@ -17,10 +19,42 @@ typedef uint8_t small_cardcount_t;
 typedef uint8_t small_sequence_t;
 typedef uint8_t small_location_t;
 
-void GetEDFromU64(Core::Data::EffectDesc* msg, effectdesc_t ed)
+// reads a effectdesc_t value and places the right content on the given EffectDesc
+void ToEffectDesc(effectdesc_t ed, Core::Data::EffectDesc* msg)
 {
 	msg->set_code(ed >> 4);
 	msg->set_string_id(ed & 0xF);
+}
+
+// Function that returns a new CardInfo.
+// The returned card should be inside of a array,
+// managed by a GMsg; normally the [gmsg]->add_* functions
+typedef std::function<YGOpen::Core::Data::CardInfo*()> CardSpawner;
+
+// Binds a function from a object pointer, without needing to write the full object path.
+// NOTE: Can be improved but this works right now.
+#define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
+
+// Function that reads data from a given wrapper and places the right content on the given card.
+typedef std::function<void(Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)> InlineCardRead;
+
+// Reads a card vector from the given wrapper.
+// a CardSpawner must be given, which should give a new card each time it is called
+// aditionally, two functions before and after the default card read can be given, in case aditional info should be read
+template<typename Count, typename Location, typename Sequence>
+void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead afr = nullptr)
+{
+	const Count count = wrapper->read<Count>(".size()");
+	for(int i = 0; i < (int)count; i++)
+	{
+		YGOpen::Core::Data::CardInfo* card = cs();
+		if(bcr) bcr(wrapper, i, card);
+		card->set_code(wrapper->read<cardcode_t>("card code ", i));
+		card->set_controller(wrapper->read<player_t>("controller ", i));
+		card->set_location(wrapper->read<Location>("location ", i));
+		card->set_sequence(wrapper->read<Sequence>("sequence ", i));
+		if(afr) afr(wrapper, i, card);
+	}
 }
 
 struct IGMsgEncoder::impl
@@ -45,66 +79,27 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			specific->set_player(wrapper->read<player_t>("player"));
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
-			const auto summonableCardsCount = wrapper->read<small_cardcount_t>("summonable_cards.size()");
-			for(int i = 0; i < summonableCardsCount; i++)
-			{
-				auto card = selectCmd->add_cards_summonable();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
-			}
+			CardSpawner add_summonable = BindFromPointer(selectCmd, add_cards_summonable);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
 			
-			const auto spsummonableCardsCount = wrapper->read<small_cardcount_t>("spsummonable_cards.size()");
-			for(int i = 0; i < spsummonableCardsCount; i++)
-			{
-				auto card = selectCmd->add_cards_spsummonable();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
-			}
+			CardSpawner add_spsummonable = BindFromPointer(selectCmd, add_cards_spsummonable);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_spsummonable);
 			
-			const auto repositionableCardsCount = wrapper->read<small_cardcount_t>("repositionable_cards.size()");
-			for(int i = 0; i < repositionableCardsCount; i++)
-			{
-				auto card = selectCmd->add_cards_spsummonable();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<small_sequence_t>("sequence ", i)); // NOTE: different size
-			}
+			CardSpawner add_repositionable = BindFromPointer(selectCmd, add_cards_repositionable);
+			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_repositionable);
 			
-			const auto msetableCardsCount = wrapper->read<small_cardcount_t>("msetable_cards.size()");
-			for(int i = 0; i < msetableCardsCount; i++)
-			{
-				auto card = selectCmd->add_cards_msetable();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
-			}
+			CardSpawner add_msetable = BindFromPointer(selectCmd, add_cards_msetable);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_msetable);
 			
-			const auto ssetableCardsCount = wrapper->read<small_cardcount_t>("ssetable_cards.size()");
-			for(int i = 0; i < ssetableCardsCount; i++)
-			{
-				auto card = selectCmd->add_cards_ssetable();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
-			}
+			CardSpawner add_ssetable = BindFromPointer(selectCmd, add_cards_ssetable);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
 			
-			const auto cardsWEffectCardsCount = wrapper->read<small_cardcount_t>("select_chains.size()");
-			for(int i = 0; i < cardsWEffectCardsCount; i++)
+			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
+			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)
 			{
-				auto card = selectCmd->add_cards_w_effect();
-				card->set_code(wrapper->read<cardcode_t>("card code ", i));
-				card->set_controller(wrapper->read<player_t>("controller ", i));
-				card->set_location(wrapper->read<small_location_t>("location ", i));
-				card->set_sequence(wrapper->read<sequence_t>("sequence ", i));
-				GetEDFromU64(card->mutable_effect_desc(), wrapper->read<effectdesc_t>("effectdesc ", i));
-			}
+				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
+			};
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
 			
 			selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
