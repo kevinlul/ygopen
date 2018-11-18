@@ -24,10 +24,10 @@ message CardInfo
 	// MSG_SELECT_CHAIN
 	EffectDesc effect_desc = 8;
 	
-	// Can this card attack
+	// Can this card attack directly
 	// used by:
 	// MSG_SELECT_BATTLECMD
-	bool can_attack = 9;
+	bool can_attack_directly = 9;
 	
 	// Count this card as X tributes
 	// used by:
@@ -48,6 +48,11 @@ message CardInfo
 	// is a overlay of a xyz monster. In that scenario, the above messages
 	// represent the overlay's owner data.
 	int32 overlay_sequence = 15;
+	
+	// Dirty bit for certain core messages that use it.
+	// used by:
+	// TODO: add msgs that use it and for what they use it
+	bool bit = 20;
 }
 
 message EffectDesc
