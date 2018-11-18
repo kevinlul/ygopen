@@ -38,22 +38,41 @@ typedef std::function<YGOpen::Core::Data::CardInfo*()> CardSpawner;
 // Function that reads data from a given wrapper and places the right content on the given card.
 typedef std::function<void(Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)> InlineCardRead;
 
+// Used to tell ReadCardVector to not read a specific value
+struct do_not_read_t {};
+
 // Reads a card vector from the given wrapper.
 // a CardSpawner must be given, which should give a new card each time it is called
 // aditionally, two functions before and after the default card read can be given, in case aditional info should be read
 template<typename Count, typename Location, typename Sequence>
-void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead afr = nullptr)
+void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
 {
 	const Count count = wrapper->read<Count>(".size()");
 	for(int i = 0; i < (int)count; i++)
 	{
 		YGOpen::Core::Data::CardInfo* card = cs();
+		
+		// Before Card Read
 		if(bcr) bcr(wrapper, i, card);
-		card->set_code(wrapper->read<cardcode_t>("card code ", i));
+
+		// Card Code & Dirty Bit
+		const auto code = wrapper->read<cardcode_t>("card code ", i);
+		card->set_code(code & 0x7FFFFFFF); // Do not include last bit
+		card->set_bit(code & 0x80000000);
+
+		// Controller
 		card->set_controller(wrapper->read<player_t>("controller ", i));
-		card->set_location(wrapper->read<Location>("location ", i));
-		card->set_sequence(wrapper->read<Sequence>("sequence ", i));
-		if(afr) afr(wrapper, i, card);
+		
+		// Location
+		if constexpr(!std::is_same<do_not_read_t, Location>())
+			card->set_location(wrapper->read<Location>("location ", i));
+		
+		// Sequence
+		if constexpr(!std::is_same<do_not_read_t, Sequence>())
+			card->set_sequence(wrapper->read<Sequence>("sequence ", i));
+		
+		// After Card Read
+		if(acr) acr(wrapper, i, card);
 	}
 }
 
