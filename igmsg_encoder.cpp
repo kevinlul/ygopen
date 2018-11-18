@@ -35,7 +35,7 @@ IGMsgEncoder::~IGMsgEncoder() = default;
 
 inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 {
-	Buffer::buffer_wrapper<Buffer::ibuffer> wrapper(&pimpl->ib);
+	Buffer::ibufferw wrapper(&pimpl->ib);
 	
 	switch(msgType)
 	{
@@ -116,7 +116,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 
 inline void IGMsgEncoder::InformationMsg(Core::GMsg& gmsg, const int msgType)
 {
-	Buffer::buffer_wrapper<Buffer::ibuffer> wrapper(&pimpl->ib);
+	Buffer::ibufferw wrapper(&pimpl->ib);
 }
 
 Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
