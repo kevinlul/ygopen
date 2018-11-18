@@ -121,7 +121,6 @@ message Retry
 // type [uint8]
 // target_player [uint8]
 // data [uint64]
-// NOTE: on operations.cpp:2468,3382 write_buffer32 is used instead of 64. Check needed.
 // TODO: depending on how hints are handled we should be able to use different messages for hint types
 message Hint
 {
@@ -185,12 +184,14 @@ message RequestDeck
 // select_chains.size() [uint8]
 //	repeated code [uint32]
 //	repeated controler [uint8]
+//	repeated location [uint8]
 //	repeated sequence [uint32]
 //	repeated peffect->description [uint64]
 // attackable_cards.size() [uint8]
 //	repeated code [uint32]
 //	repeated controler [uint8]
-//	repeated sequence [uint32]
+//	repeated location [uint8]
+//	repeated sequence [uint8]
 //	repeated pcard->direct_attackable [uint8]
 // to_m2 [uint8]
 // to_ep [uint8]
