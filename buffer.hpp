@@ -275,6 +275,10 @@ private:
 	BufferType* buff_ptr;
 };
 
+typedef buffer_wrapper<Buffer::ibuffer> ibufferw;
+typedef buffer_wrapper<Buffer::obuffer> obufferw;
+typedef buffer_wrapper<iobuffer> iobufferw;
+
 } // namespace Buffer
 } // namespace YGOpen
 
