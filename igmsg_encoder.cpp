@@ -79,6 +79,8 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			specific->set_player(wrapper->read<player_t>("player"));
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
+			selectCmd->set_type(Core::SelectCmd::COMMAND_IDLE);
+			
 			CardSpawner add_summonable = BindFromPointer(selectCmd, add_cards_summonable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
 			
