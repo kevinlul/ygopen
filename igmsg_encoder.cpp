@@ -199,6 +199,15 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
 		}
 		break;
+		case SelectOption:
+		{
+			auto selectOption = specific->mutable_request()->mutable_select_option();
+			
+			const auto count = wrapper->read<uint8_t>("number of effects");
+			for(int i = 0; i < count; i++)
+				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
+		}
+		break;
 	}
 }
 
@@ -221,6 +230,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectIdleCmd:
 		case SelectEffectYn:
 		case SelectYesNo:
+		case SelectOption:
 		{
 			SpecificMsg(gmsg, msgType);
 		}
