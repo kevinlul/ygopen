@@ -21,13 +21,20 @@ typedef uint8_t small_sequence_t;
 typedef uint8_t small_location_t;
 
 // reads a effectdesc_t value and places the right content on the given EffectDesc
-void ToEffectDesc(effectdesc_t ed, Core::Data::EffectDesc* msg)
+void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
 {
 	msg->set_code(ed >> 4);
 	msg->set_string_id(ed & 0xF);
 }
 
-// Function that returns a new CardInfo.
+// reads a card code and sets the right values of a Data.CardInfo message
+void ToCardCode(const cardcode_t code, YGOpen::Core::Data::CardInfo* card)
+{
+	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
+	card->set_bit(code & 0x80000000);
+}
+
+// Function prototype that returns a CardInfo (newly created most likely).
 // The returned card should be inside of a array,
 // managed by a GMsg; normally the [gmsg]->add_* functions
 typedef std::function<YGOpen::Core::Data::CardInfo*()> CardSpawner;
@@ -36,11 +43,43 @@ typedef std::function<YGOpen::Core::Data::CardInfo*()> CardSpawner;
 // NOTE: Can be improved but this works right now.
 #define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
 
-// Function that reads data from a given wrapper and places the right content on the given card.
-typedef std::function<void(Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)> InlineCardRead;
+// Function prototype that reads data from a given wrapper and places the right content on the given card.
+typedef std::function<void(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)> InlineCardRead;
 
-// Used to tell ReadCardVector to not read a specific value
+// Used to tell ReadCardLocInfo to not read a specific value, at compile time
 struct do_not_read_t {};
+
+// Reads a single card location info from the given wrapper
+template<typename Controller, typename Location, typename Sequence, typename Position>
+void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+{
+	// Controller
+	if constexpr(!std::is_same<do_not_read_t, Controller>())
+		card->set_controller(wrapper->read<Controller>("controller ", count));
+
+	// Location
+	if constexpr(!std::is_same<do_not_read_t, Location>())
+		card->set_location(wrapper->read<Location>("location ", count));
+
+	// Sequence
+	if constexpr(!std::is_same<do_not_read_t, Sequence>())
+		card->set_sequence(wrapper->read<Sequence>("sequence ", count));
+
+	// Position
+	if constexpr(!std::is_same<do_not_read_t, Position>())
+	{
+		const auto pos = wrapper->read<Position>("position ", count);
+		if(card->location() & 0x80) // if the card is overlay
+		{
+			card->set_overlay_sequence(pos);
+			card->set_position(0x2); // face-up attack
+		}
+		else
+		{
+			card->set_position(pos);
+		}
+	}
+}
 
 // Reads a card vector from the given wrapper.
 // a CardSpawner must be given, which should give a new card each time it is called
@@ -57,21 +96,11 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 		if(bcr) bcr(wrapper, i, card);
 
 		// Card Code & Dirty Bit
-		const auto code = wrapper->read<cardcode_t>("card code ", i);
-		card->set_code(code & 0x7FFFFFFF); // Do not include last bit
-		card->set_bit(code & 0x80000000);
+		ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
 
-		// Controller
-		card->set_controller(wrapper->read<player_t>("controller ", i));
-		
-		// Location
-		if constexpr(!std::is_same<do_not_read_t, Location>())
-			card->set_location(wrapper->read<Location>("location ", i));
-		
-		// Sequence
-		if constexpr(!std::is_same<do_not_read_t, Sequence>())
-			card->set_sequence(wrapper->read<Sequence>("sequence ", i));
-		
+		// Location Info
+		ReadCardLocInfo<player_t, Location, Sequence, do_not_read_t>(wrapper, i, card);
+
 		// After Card Read
 		if(acr) acr(wrapper, i, card);
 	}
