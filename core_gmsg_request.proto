@@ -164,7 +164,7 @@ message SelectPlaces
 message SelectPosition
 {
 	// Has code of the card
-	// and available positions to choose from AND'd on positions variable
+	// and available positions to choose from AND'd on position variable
 	Data.CardInfo card = 1;
 }
 
