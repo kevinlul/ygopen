@@ -192,6 +192,13 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), card->mutable_effect_desc());
 		}
 		break;
+		case SelectYesNo:
+		{
+			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
+			
+			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
+		}
+		break;
 	}
 }
 
@@ -213,6 +220,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectBattleCmd:
 		case SelectIdleCmd:
 		case SelectEffectYn:
+		case SelectYesNo:
 		{
 			SpecificMsg(gmsg, msgType);
 		}
