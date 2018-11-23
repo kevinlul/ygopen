@@ -120,25 +120,26 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 	
+	auto specific = gmsg.mutable_specific();
+	specific->set_player(wrapper->read<player_t>("player"));
+	
 	switch(msgType)
 	{
 		case SelectBattleCmd:
 		{
-			auto specific = gmsg.mutable_specific();
-			specific->set_player(wrapper->read<player_t>("player"));
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
 			selectCmd->set_type(Core::SelectCmd::COMMAND_BATTLE);
 			
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
-			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
 			
 			CardSpawner add_can_attack = BindFromPointer(selectCmd, add_cards_can_attack);
-			InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
 				card->set_can_attack_directly(wrapper->read<uint8_t>("can_attack_directly ", count));
 			};
@@ -150,8 +151,6 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		break;
 		case SelectIdleCmd:
 		{
-			auto specific = gmsg.mutable_specific();
-			specific->set_player(wrapper->read<player_t>("player"));
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
 			selectCmd->set_type(Core::SelectCmd::COMMAND_IDLE);
@@ -172,7 +171,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
 			
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
-			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, int& count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
