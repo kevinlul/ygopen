@@ -12,6 +12,7 @@ typedef uint32_t cardcount_t;
 typedef uint32_t cardcode_t;
 typedef uint32_t location_t;
 typedef uint32_t sequence_t;
+typedef uint32_t position_t;
 typedef uint64_t effectdesc_t;
 
 // Types that should be changed (increased) in far future
@@ -116,8 +117,6 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			
 			selectCmd->set_able_to_mp2(wrapper->read<uint8_t>("to_mp2"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
-			
-			std::cout << selectCmd->DebugString() << std::endl;
 		}
 		break;
 		case SelectIdleCmd:
