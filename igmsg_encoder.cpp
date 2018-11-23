@@ -182,6 +182,16 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
 		}
 		break;
+		case SelectEffectYn:
+		{
+			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
+			
+			auto card = selectYesNo->mutable_card();
+			ToCardCode(wrapper->read<cardcode_t>("card code"), card);
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), card->mutable_effect_desc());
+		}
+		break;
 	}
 }
 
@@ -202,6 +212,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		// Specific messages
 		case SelectBattleCmd:
 		case SelectIdleCmd:
+		case SelectEffectYn:
 		{
 			SpecificMsg(gmsg, msgType);
 		}
