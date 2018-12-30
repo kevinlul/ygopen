@@ -84,7 +84,7 @@ void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::D
 // Reads a card vector from the given wrapper.
 // a CardSpawner must be given, which should give a new card each time it is called
 // aditionally, two functions before and after the default card read can be given, in case aditional info should be read
-template<typename Count, typename Location, typename Sequence>
+template<typename Count, typename Location, typename Sequence, typename Position = do_not_read_t>
 void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
 {
 	const Count count = wrapper->read<Count>(".size()");
@@ -99,7 +99,7 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 		ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
 
 		// Location Info
-		ReadCardLocInfo<player_t, Location, Sequence, do_not_read_t>(wrapper, i, card);
+		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, i, card);
 
 		// After Card Read
 		if(acr) acr(wrapper, i, card);
