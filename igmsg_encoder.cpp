@@ -208,6 +208,21 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
 		}
 		break;
+		case SelectCard:
+		{
+			auto selectCard = specific->mutable_request()->mutable_select_cards();
+			
+			selectCard->set_type(Core::SelectCards::SELECTION_EFFECT);
+			
+			selectCard->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+			
+			selectCard->set_min(wrapper->read<uint8_t>("min"));
+			selectCard->set_max(wrapper->read<uint8_t>("max"));
+			
+			CardSpawner add_selectable = BindFromPointer(selectCard, add_cards_selectable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
+		}
+		break;
 	}
 }
 
@@ -231,6 +246,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectEffectYn:
 		case SelectYesNo:
 		case SelectOption:
+		case SelectCard:
 		{
 			SpecificMsg(gmsg, msgType);
 		}
