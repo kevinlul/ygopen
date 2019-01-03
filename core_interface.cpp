@@ -6,7 +6,7 @@ namespace YGOpen
 {
 
 //TODO: Use a DEFINE macro on premake instead, and fallback to these values
-#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
+#ifdef _WIN32
 static const char* DEFAULT_CORE_NAME = "ygopen-core.dll";
 #else
 static const char* DEFAULT_CORE_NAME = "./libygopen-core.so";
@@ -26,7 +26,7 @@ void* NativeLoadObject(const char* file);
 void* NativeLoadFunction(void* handle, const char* name);
 void  NativeUnloadObject(void* handle);
 
-#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
+#ifdef _WIN32
 #include <windows.h>
 
 // NOTE: Might need to handle unicode
@@ -39,9 +39,9 @@ void* NativeLoadObject(const char* file)
 		files.  LoadLibrary() is a private API, and not available for apps
 		(that can be published to MS' Windows Store.)
 	*/
-	void* handle = (void*) LoadPackagedLibrary(tstr, 0);
+	void* handle = (void*) LoadPackagedLibrary(file, 0);
 #else
-	void* handle = (void*) LoadLibrary(tstr);
+	void* handle = (void*)LoadLibrary(file);
 #endif
 
 	/* Generate an error message if all loads failed */
@@ -121,22 +121,22 @@ T CoreInterface::LoadFunction(void* handle, T* func, const char* name, bool unlo
 {
 	*func = (T)NativeLoadFunction(handle, name);
 	if(*func == nullptr && unload)
-		UnloadLibrary();
+		UnloadCore();
 
 	return *func;
 }
 
-CoreInterface::CoreInterface(bool loadLibrary) :
+CoreInterface::CoreInterface(bool loadCore) :
 	activeCorePath(""),
 	handle(nullptr)
 {
-	if(loadLibrary)
-		LoadLibrary();
+	if(loadCore)
+		LoadCore();
 }
 
-bool CoreInterface::LoadLibrary(const char* path)
+bool CoreInterface::LoadCore(const char* path)
 {
-	UnloadLibrary();
+	UnloadCore();
 
 	std::string usedPath = path;
 
@@ -185,18 +185,18 @@ bool CoreInterface::LoadLibrary(const char* path)
 	return true;
 }
 
-bool CoreInterface::LoadLibrary()
+bool CoreInterface::LoadCore()
 {
-	return LoadLibrary(DEFAULT_CORE_NAME);
+	return LoadCore(DEFAULT_CORE_NAME);
 }
 
-bool CoreInterface::ReloadLibrary()
+bool CoreInterface::ReloadCore()
 {
 	if(handle)
 	{
 		std::string corePath = activeCorePath;
-		UnloadLibrary();
-		return LoadLibrary(corePath.c_str());
+		UnloadCore();
+		return LoadCore(corePath.c_str());
 	}
 
 	puts("Core was not initially loaded. Reload is not possible");
@@ -211,10 +211,10 @@ bool CoreInterface::IsLibraryLoaded()
 
 CoreInterface::~CoreInterface()
 {
-	UnloadLibrary();
+	UnloadCore();
 }
 
-void CoreInterface::UnloadLibrary()
+void CoreInterface::UnloadCore()
 {
 	if(handle)
 		NativeUnloadObject(handle);

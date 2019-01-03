@@ -20,10 +20,10 @@ class CoreInterface
 	T LoadFunction(void* handle, T* func, const char* name, bool unload);
 public:
 	// Core loading
-	CoreInterface(bool loadLibrary);
-	bool LoadLibrary(const char* path);
-	bool LoadLibrary();
-	bool ReloadLibrary();
+	CoreInterface(bool Loadlibrary);
+	bool LoadCore(const char* path);
+	bool LoadCore();
+	bool ReloadCore();
 
 	bool IsLibraryLoaded();
 
@@ -56,7 +56,7 @@ public:
 
 	// Core unloading
 	~CoreInterface();
-	void UnloadLibrary(); 
+	void UnloadCore(); 
 };
 
 } // namespace YGOpen
