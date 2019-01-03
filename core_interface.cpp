@@ -7,7 +7,7 @@ namespace YGOpen
 
 //TODO: Use a DEFINE macro on premake instead, and fallback to these values
 #ifdef _WIN32
-static const char* DEFAULT_CORE_NAME = "ocgcore.dll";
+static const char* DEFAULT_CORE_NAME = "ygopen-core.dll";
 #else
 static const char* DEFAULT_CORE_NAME = "./libygopen-core.so";
 #endif
@@ -39,7 +39,7 @@ void* NativeLoadObject(const char* file)
 		files.  LoadLibrary() is a private API, and not available for apps
 		(that can be published to MS' Windows Store.)
 	*/
-	void* handle = (void*) LoadPackagedLibrary(tstr, 0);
+	void* handle = (void*) LoadPackagedLibrary(file, 0);
 #else
 	void* handle = (void*)LoadLibrary(file);
 #endif
@@ -126,11 +126,11 @@ T CoreInterface::LoadFunction(void* handle, T* func, const char* name, bool unlo
 	return *func;
 }
 
-CoreInterface::CoreInterface(bool loadlibrary) :
+CoreInterface::CoreInterface(bool loadCore) :
 	activeCorePath(""),
 	handle(nullptr)
 {
-	if(loadlibrary)
+	if(loadCore)
 		LoadCore();
 }
 
