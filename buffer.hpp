@@ -222,7 +222,7 @@ public:
 
 	// Writes any object to the current buffer.
 	// Aditionally, moves the current position forward
-	// the same number of bytes read.
+	// the same number of bytes written.
 	template<typename T, typename ...Reasons>
 	void write(T&& val, [[maybe_unused]] Reasons&& ...args)
 	{
