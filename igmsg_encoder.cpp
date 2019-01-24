@@ -223,6 +223,34 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
 		}
 		break;
+		case SelectChain:
+		{
+			auto selectToChain = specific->mutable_request()->mutable_select_to_chain();
+
+			const auto count = wrapper->read<uint8_t>("number of chains");
+
+			wrapper->seek(1, Buffer::seek_dir::cur, "spe_count");
+
+			selectToChain->set_forced(wrapper->read<uint8_t>("forced"));
+
+			wrapper->seek(8, Buffer::seek_dir::cur, "hint_timing x 2");
+
+			// I use a normal loop to collect info for this one
+			// NOTE: can probably be improved upon but i cannot think
+			// of a better way of doing it right now
+			for(int i = 0; i < count; i++)
+			{
+				auto chainCard = selectToChain->add_cards_w_effect();
+
+				chainCard->set_effect_desc_type(wrapper->read<uint8_t>("EDESC ", i));
+				auto card = chainCard->mutable_card();
+
+				ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, card);
+				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", i), card->mutable_effect_desc());
+			}
+		}
+		break;
 	}
 }
 
@@ -247,6 +275,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectYesNo:
 		case SelectOption:
 		case SelectCard:
+		case SelectChain:
 		{
 			SpecificMsg(gmsg, msgType);
 		}
