@@ -119,10 +119,10 @@ IGMsgEncoder::~IGMsgEncoder() = default;
 inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
-	
+
 	auto specific = gmsg.mutable_specific();
 	specific->set_player(wrapper->read<player_t>("player"));
-	
+
 	switch(msgType)
 	{
 		case SelectBattleCmd:
@@ -130,7 +130,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
 			selectCmd->set_type(Core::SelectCmd::COMMAND_BATTLE);
-			
+
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
 			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
@@ -152,31 +152,31 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		case SelectIdleCmd:
 		{
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
-			
+
 			selectCmd->set_type(Core::SelectCmd::COMMAND_IDLE);
-			
+
 			CardSpawner add_summonable = BindFromPointer(selectCmd, add_cards_summonable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
-			
+
 			CardSpawner add_spsummonable = BindFromPointer(selectCmd, add_cards_spsummonable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_spsummonable);
-			
+
 			CardSpawner add_repositionable = BindFromPointer(selectCmd, add_cards_repositionable);
 			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_repositionable);
-			
+
 			CardSpawner add_msetable = BindFromPointer(selectCmd, add_cards_msetable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_msetable);
-			
+
 			CardSpawner add_ssetable = BindFromPointer(selectCmd, add_cards_ssetable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
-			
+
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
 			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
-			
+
 			selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
 			selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
@@ -185,7 +185,7 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		case SelectEffectYn:
 		{
 			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
-			
+
 			auto card = selectYesNo->mutable_card();
 			ToCardCode(wrapper->read<cardcode_t>("card code"), card);
 			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
@@ -195,14 +195,14 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		case SelectYesNo:
 		{
 			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
-			
+
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
 		}
 		break;
 		case SelectOption:
 		{
 			auto selectOption = specific->mutable_request()->mutable_select_option();
-			
+
 			const auto count = wrapper->read<uint8_t>("number of effects");
 			for(int i = 0; i < count; i++)
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
@@ -211,14 +211,14 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		case SelectCard:
 		{
 			auto selectCard = specific->mutable_request()->mutable_select_cards();
-			
+
 			selectCard->set_type(Core::SelectCards::SELECTION_EFFECT);
-			
+
 			selectCard->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
-			
+
 			selectCard->set_min(wrapper->read<uint8_t>("min"));
 			selectCard->set_max(wrapper->read<uint8_t>("max"));
-			
+
 			CardSpawner add_selectable = BindFromPointer(selectCard, add_cards_selectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
 		}
@@ -255,7 +255,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case Win:
 		case MatchKill:
 		{
-			InformationMsg(gmsg, msgType);
+			//InformationMsg(gmsg, msgType);
 		}
 		break;
 		default:
