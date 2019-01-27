@@ -20,8 +20,9 @@ typedef uint64_t effectdesc_t;
 
 // Types that should be changed (increased) in far future
 typedef uint8_t small_cardcount_t;
-typedef uint8_t small_sequence_t;
 typedef uint8_t small_location_t;
+typedef uint8_t small_sequence_t;
+typedef uint8_t small_position_t;
 
 // reads a effectdesc_t value and places the right content on the given EffectDesc
 void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
@@ -306,6 +307,16 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			extractPlacesForPlayer(1, 16);
 		}
 		break;
+		case SelectPosition:
+		{
+			auto selectPosition = specific->mutable_request()->mutable_select_position();
+			
+			auto card = selectPosition->mutable_card();
+			
+			ToCardCode(wrapper->read<cardcode_t>("card code"), card);
+			card->set_position(wrapper->read<small_position_t>("positions"));
+		}
+		break;
 	}
 }
 
@@ -334,6 +345,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectChain:
 		case SelectPlace:
 		// case SelectDisfield:
+		case SelectPosition:
 		{
 			SpecificMsg(gmsg, msgType);
 			
