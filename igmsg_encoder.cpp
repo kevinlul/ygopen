@@ -1,4 +1,7 @@
 #include <functional>
+#include <bitset>
+
+#include <google/protobuf/text_format.h>
 
 #include "io_gmsg_stream.hpp"
 #include "buffer.hpp"
@@ -251,6 +254,58 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			}
 		}
 		break;
+		case SelectPlace:
+		// case SelectDisfield:
+		{
+			// NOTE:
+			// The available positions are always current player places first
+			// and then opponent available places
+			auto selectPlaces = specific->mutable_request()->mutable_select_places();
+
+			selectPlaces->set_min(wrapper->read<uint8_t>("count (min)"));
+
+			std::bitset<32> flag(wrapper->read<uint32_t>("flag"));
+
+			auto extractPlacesForPlayer = [&selectPlaces, &flag](const int player, const int indexStart)
+			{
+				int i = indexStart;
+
+				auto addPlace = [&selectPlaces, player](int location, int sequence)
+				{
+					auto place = selectPlaces->add_places();
+					place->set_controller(player);
+					place->set_location(location);
+					place->set_sequence(sequence);
+				};
+
+				// Monster zones, including extra monster zones
+				// NOTE: both players have extra monster zone
+				for(int sequence = 0;i < indexStart + 7;i++,sequence++)
+					if(!flag[i])
+						addPlace(0x04, sequence); // LOCATION_MZONE
+
+				i++; // UNUSED BIT
+
+				// Spell zones
+				for(int sequence = 0;i < indexStart + 7 + 1 + 5;i++,sequence++)
+					if(!flag[i])
+						addPlace(0x08, sequence); // LOCATION_SZONE
+
+				// Field zone
+				if(!flag[i])
+					addPlace(0x0100, 0); // LOCATION_FZONE
+				i++;
+
+				// Pendulum zones
+				for(int sequence = 0;i < indexStart + 7 + 1 + 5 + 1;i++,sequence++)
+					if(!flag[i])
+						addPlace(0x0200, sequence); // LOCATION_SZONE
+			};
+
+			extractPlacesForPlayer(0, 0);
+			extractPlacesForPlayer(1, 16);
+		}
+		break;
 	}
 }
 
@@ -266,6 +321,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 	pimpl->ib.open(buffer, length);
 
 	const auto msgType = pimpl->ib.read<uint8_t>("Encode: message type");
+	pimpl->ib.log("Message Type: ", (int)msgType, '\n');
 	switch(msgType)
 	{
 		// Specific messages
@@ -276,8 +332,14 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectOption:
 		case SelectCard:
 		case SelectChain:
+		case SelectPlace:
+		// case SelectDisfield:
 		{
 			SpecificMsg(gmsg, msgType);
+			
+			std::string str;
+			google::protobuf::TextFormat::PrintToString(gmsg, &str);
+			std::cout << str << std::endl;
 		}
 		break;
 		// Information messages
