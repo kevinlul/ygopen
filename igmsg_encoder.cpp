@@ -9,20 +9,20 @@
 
 namespace YGOpen
 {
-// Useful typedefs
-typedef uint8_t  player_t; // used for controller too
-typedef uint32_t cardcount_t;
-typedef uint32_t cardcode_t;
-typedef uint32_t location_t;
-typedef uint32_t sequence_t;
-typedef uint32_t position_t;
-typedef uint64_t effectdesc_t;
+// Types that represent the right size type for what they hold
+using player_t = uint8_t; // used for controller too
+using cardcount_t = uint32_t;
+using cardcode_t = uint32_t;
+using location_t = uint32_t;
+using sequence_t = uint32_t;
+using position_t = uint32_t;
+using effectdesc_t = uint64_t;
 
 // Types that should be changed (increased) in far future
-typedef uint8_t small_cardcount_t;
-typedef uint8_t small_location_t;
-typedef uint8_t small_sequence_t;
-typedef uint8_t small_position_t;
+using small_cardcount_t = uint8_t;
+using small_location_t = uint8_t;
+using small_sequence_t = uint8_t;
+using small_position_t = uint8_t;
 
 // reads a effectdesc_t value and places the right content on the given EffectDesc
 void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
@@ -41,14 +41,14 @@ void ToCardCode(const cardcode_t code, YGOpen::Core::Data::CardInfo* card)
 // Function prototype that returns a CardInfo (newly created most likely).
 // The returned card should be inside of a array,
 // managed by a GMsg; normally the [gmsg]->add_* functions
-typedef std::function<YGOpen::Core::Data::CardInfo*()> CardSpawner;
+using CardSpawner = std::function<YGOpen::Core::Data::CardInfo*()>;
 
 // Binds a function from a object pointer, without needing to write the full object path.
 // NOTE: Can be improved but this works right now.
 #define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
 
 // Function prototype that reads data from a given wrapper and places the right content on the given card.
-typedef std::function<void(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)> InlineCardRead;
+using InlineCardRead = std::function<void(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)>;
 
 // Used to tell ReadCardLocInfo to not read a specific value, at compile time
 struct do_not_read_t {};
