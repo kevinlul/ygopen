@@ -317,6 +317,25 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			card->set_position(wrapper->read<small_position_t>("positions"));
 		}
 		break;
+		case SelectTribute:
+		{
+			auto selectTribute = specific->mutable_request()->mutable_select_cards();
+			
+			selectTribute->set_type(Core::SelectCards::SELECTION_TRIBUTE);
+
+			selectTribute->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+
+			selectTribute->set_min(wrapper->read<uint8_t>("min"));
+			selectTribute->set_max(wrapper->read<uint8_t>("max"));
+
+			CardSpawner add_selectable = BindFromPointer(selectTribute, add_cards_selectable);
+			InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			{
+				card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
+			};
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_selectable, nullptr, ReadReleaseParam);
+		}
+		break;
 	}
 }
 
@@ -346,6 +365,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectPlace:
 		// case SelectDisfield:
 		case SelectPosition:
+		case SelectTribute:
 		{
 			SpecificMsg(gmsg, msgType);
 			
