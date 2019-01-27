@@ -135,7 +135,7 @@ message SelectCards
 message SortCards
 {
 	// Cards that you must place in the order you want them to activate
-	Data.CardInfo cards_to_sort = 1;
+	repeated Data.CardInfo cards_to_sort = 1;
 }
 
 // Encapsulates:

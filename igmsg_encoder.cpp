@@ -336,6 +336,14 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_selectable, nullptr, ReadReleaseParam);
 		}
 		break;
+		// case SortCard:
+		case SortChain:
+		{
+			auto sortCards = specific->mutable_request()->mutable_sort_cards();
+			CardSpawner add_cards_to_sort = BindFromPointer(sortCards, add_cards_to_sort);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_cards_to_sort);
+		}
+		break;
 	}
 }
 
