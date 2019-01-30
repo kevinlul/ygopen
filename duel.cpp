@@ -182,7 +182,8 @@ void Duel::Start(int options)
 	core.start_duel(pduel, options);
 }
 
-void Duel::PreloadScript(const std::string& file) {
+void Duel::PreloadScript(const std::string& file)
+{
 	core.preload_script(pduel, (char*)file.c_str(), 0);
 }
 
