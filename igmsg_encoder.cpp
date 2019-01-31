@@ -346,6 +346,29 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_cards_to_sort);
 		}
 		break;
+		case SelectCounter:
+		{
+			auto selectCards = specific->mutable_request()->mutable_select_cards();
+
+			selectCards->set_type(Core::SelectCards::SELECTION_COUNTER);
+
+			selectCards->set_can_cancel(false);
+			selectCards->set_can_accept(false);
+			
+			auto counter = selectCards->mutable_counter();
+			counter->set_type(wrapper->read<uint16_t>("counter_type"));
+			counter->set_count(wrapper->read<uint16_t>("counter_type"));
+			
+			CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
+			InlineCardRead ReadCounterCount = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			{
+				card->mutable_counter()->set_count(wrapper->read<uint16_t>("counter count ", count));
+			};
+			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
+			
+			// TODO: Set right counter type to each card?
+		}
+		break;
 	}
 }
 
@@ -378,6 +401,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SelectTribute:
 		// case SortCard:
 		case SortChain:
+		case SelectCounter:
 		{
 			SpecificMsg(gmsg, msgType);
 			
