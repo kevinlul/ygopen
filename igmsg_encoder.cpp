@@ -48,7 +48,7 @@ using CardSpawner = std::function<YGOpen::Core::Data::CardInfo*()>;
 #define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
 
 // Function prototype that reads data from a given wrapper and places the right content on the given card.
-using InlineCardRead = std::function<void(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)>;
+using InlineCardRead = std::function<void(Buffer::ibufferw&, const int, YGOpen::Core::Data::CardInfo*)>;
 
 // Used to tell ReadCardLocInfo to not read a specific value, at compile time
 struct do_not_read_t {};
