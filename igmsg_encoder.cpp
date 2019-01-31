@@ -214,16 +214,17 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		break;
 		case SelectCard:
 		{
-			auto selectCard = specific->mutable_request()->mutable_select_cards();
+			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
-			selectCard->set_type(Core::SelectCards::SELECTION_EFFECT);
+			selectCards->set_type(Core::SelectCards::SELECTION_EFFECT);
 
-			selectCard->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+			selectCards->set_can_accept(false);
 
-			selectCard->set_min(wrapper->read<uint8_t>("min"));
-			selectCard->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_min(wrapper->read<uint8_t>("min"));
+			selectCards->set_max(wrapper->read<uint8_t>("max"));
 
-			CardSpawner add_selectable = BindFromPointer(selectCard, add_cards_selectable);
+			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
 		}
 		break;
@@ -319,16 +320,17 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		break;
 		case SelectTribute:
 		{
-			auto selectTribute = specific->mutable_request()->mutable_select_cards();
-			
-			selectTribute->set_type(Core::SelectCards::SELECTION_TRIBUTE);
+			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
-			selectTribute->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+			selectCards->set_type(Core::SelectCards::SELECTION_TRIBUTE);
 
-			selectTribute->set_min(wrapper->read<uint8_t>("min"));
-			selectTribute->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
+			selectCards->set_can_accept(false);
 
-			CardSpawner add_selectable = BindFromPointer(selectTribute, add_cards_selectable);
+			selectCards->set_min(wrapper->read<uint8_t>("min"));
+			selectCards->set_max(wrapper->read<uint8_t>("max"));
+
+			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
 			{
 				card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
