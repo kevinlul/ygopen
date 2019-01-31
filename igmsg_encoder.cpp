@@ -376,6 +376,8 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		// case SelectDisfield:
 		case SelectPosition:
 		case SelectTribute:
+		// case SortCard:
+		case SortChain:
 		{
 			SpecificMsg(gmsg, msgType);
 			
