@@ -369,6 +369,29 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			// TODO: Set right counter type to each card?
 		}
 		break;
+		case SelectSum:
+		{
+			auto selectCards = specific->mutable_request()->mutable_select_cards();
+			
+			selectCards->set_type(Core::SelectCards::SELECTION_SUM);
+			
+			selectCards->set_sum(wrapper->read<uint16_t>("acc (sum)"));
+			
+			selectCards->set_min(wrapper->read<uint8_t>("min"));
+			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			
+			InlineCardRead ReadSumParam = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			{
+				card->set_sum_param(wrapper->read<uint32_t>("sum param ", count));
+			};
+			
+			CardSpawner add_cards_must_select = BindFromPointer(selectCards, add_cards_must_select);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_must_select, nullptr, ReadSumParam);
+			
+			CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
+		}
+		break;
 	}
 }
 
@@ -402,6 +425,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		// case SortCard:
 		case SortChain:
 		case SelectCounter:
+		case SelectSum:
 		{
 			SpecificMsg(gmsg, msgType);
 			
