@@ -392,6 +392,22 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
 		}
 		break;
+		case SelectUnselect:
+		{
+			auto selectCards = specific->mutable_request()->mutable_select_cards();
+			
+			selectCards->set_can_accept(wrapper->read<uint8_t>("buttonok (can_accept)"));
+			selectCards->set_can_cancel(wrapper->read<uint8_t>("cancelable"));
+			selectCards->set_min(wrapper->read<uint8_t>("min"));
+			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			
+			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
+			
+			CardSpawner add_unselectable = BindFromPointer(selectCards, add_cards_unselectable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_unselectable);
+		}
+		break;
 	}
 }
 
@@ -426,6 +442,7 @@ Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
 		case SortChain:
 		case SelectCounter:
 		case SelectSum:
+		case SelectUnselect:
 		{
 			SpecificMsg(gmsg, msgType);
 			
