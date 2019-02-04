@@ -7,7 +7,7 @@ namespace YGOpen
 {
 
 // Game Message Stream Base
-class GMsgStreamBase
+class MsgCodecBase
 {
 protected:
 	Core::GMsg lastGMsg;
@@ -15,7 +15,7 @@ protected:
 
 // Input Game Message Encoder
 // takes a raw buffer from the core and transform it into a GMsg protobuf message
-class IGMsgEncoder : virtual public GMsgStreamBase
+class MsgEncoder : virtual public MsgCodecBase
 {
 	struct impl;
 	std::unique_ptr<impl> pimpl;
@@ -23,26 +23,26 @@ class IGMsgEncoder : virtual public GMsgStreamBase
 	inline void SpecificMsg(Core::GMsg& gmsg, const int msgType);
 	inline void InformationMsg(Core::GMsg& gmsg, const int msgType);
 public:
-	IGMsgEncoder();
+	MsgEncoder();
 
-	IGMsgEncoder(IGMsgEncoder&&) = delete;
-	IGMsgEncoder(const IGMsgEncoder&) = delete;
-	IGMsgEncoder& operator=(IGMsgEncoder&&) = delete;
-	IGMsgEncoder& operator=(const IGMsgEncoder&) = delete;
+	MsgEncoder(MsgEncoder&&) = delete;
+	MsgEncoder(const MsgEncoder&) = delete;
+	MsgEncoder& operator=(MsgEncoder&&) = delete;
+	MsgEncoder& operator=(const MsgEncoder&) = delete;
 
-	~IGMsgEncoder();
+	~MsgEncoder();
 
 	Core::GMsg Encode(void* buffer, size_t length);
 };
 
 // Output Game Message Decoder
 // takes a GMsg protobuf message and transform it into a core readable answer buffer
-class OGMsgDecoder : virtual public GMsgStreamBase
+class MsgDecoder : virtual public MsgCodecBase
 {
 };
 
 // Input/Output Game Message Stream
-class IOGMsgStream : public IGMsgEncoder, public OGMsgDecoder
+class MsgCodec : public MsgEncoder, public MsgDecoder
 {
 
 };

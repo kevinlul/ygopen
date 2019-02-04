@@ -3,7 +3,7 @@
 
 #include <google/protobuf/text_format.h>
 
-#include "io_gmsg_stream.hpp"
+#include "msg_codec.hpp"
 #include "buffer.hpp"
 #include "core_message.hpp"
 
@@ -110,17 +110,17 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 	}
 }
 
-struct IGMsgEncoder::impl
+struct MsgEncoder::impl
 {
 	Buffer::ibuffer ib{};
 };
 
-IGMsgEncoder::IGMsgEncoder() : pimpl(new impl())
+MsgEncoder::MsgEncoder() : pimpl(new impl())
 {}
 
-IGMsgEncoder::~IGMsgEncoder() = default;
+MsgEncoder::~MsgEncoder() = default;
 
-inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
+inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 
@@ -411,12 +411,12 @@ inline void IGMsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 	}
 }
 
-inline void IGMsgEncoder::InformationMsg(Core::GMsg& gmsg, const int msgType)
+inline void MsgEncoder::InformationMsg(Core::GMsg& gmsg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 }
 
-Core::GMsg IGMsgEncoder::Encode(void* buffer, size_t length)
+Core::GMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
 	Core::GMsg gmsg{};
 
