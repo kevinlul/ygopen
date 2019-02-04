@@ -249,7 +249,7 @@ public:
 template<typename BufferType>
 class buffer_wrapper
 {
-	static_assert(std::is_base_of<buffer_base, BufferType>::value, "BufferType must be base of buffer_base");
+	static_assert(std::is_base_of<buffer_base, BufferType>::value, "BufferType must inherit from buffer_base");
 public:
 	buffer_wrapper(BufferType* buf) : buff_ptr(buf)
 	{
