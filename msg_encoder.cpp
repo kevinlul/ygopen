@@ -32,7 +32,7 @@ void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
 }
 
 // reads a card code and sets the right values of a Data.CardInfo message
-void ToCardCode(const cardcode_t code, YGOpen::Core::Data::CardInfo* card)
+void ToCardCode(const cardcode_t code, Core::Data::CardInfo* card)
 {
 	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
 	card->set_bit(code & 0x80000000);
@@ -41,21 +41,21 @@ void ToCardCode(const cardcode_t code, YGOpen::Core::Data::CardInfo* card)
 // Function prototype that returns a CardInfo (newly created most likely).
 // The returned card should be inside of a array,
 // managed by a GMsg; normally the [gmsg]->add_* functions
-using CardSpawner = std::function<YGOpen::Core::Data::CardInfo*()>;
+using CardSpawner = std::function<Core::Data::CardInfo*()>;
 
 // Binds a function from a object pointer, without needing to write the full object path.
 // NOTE: Can be improved but this works right now.
 #define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
 
 // Function prototype that reads data from a given wrapper and places the right content on the given card.
-using InlineCardRead = std::function<void(Buffer::ibufferw&, const int, YGOpen::Core::Data::CardInfo*)>;
+using InlineCardRead = std::function<void(Buffer::ibufferw&, const int, Core::Data::CardInfo*)>;
 
 // Used to tell ReadCardLocInfo to not read a specific value, at compile time
 struct do_not_read_t {};
 
 // Reads a single card location info from the given wrapper
 template<typename Controller, typename Location, typename Sequence, typename Position>
-void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 {
 	// Controller
 	if constexpr(!std::is_same<do_not_read_t, Controller>())
@@ -94,7 +94,7 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 	const Count count = wrapper->read<Count>(".size()");
 	for(int i = 0; i < (int)count; i++)
 	{
-		YGOpen::Core::Data::CardInfo* card = cs();
+		Core::Data::CardInfo* card = cs();
 		
 		// Before Card Read
 		if(bcr) bcr(wrapper, i, card);
@@ -136,14 +136,14 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_BATTLE);
 
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
-			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
 			
 			CardSpawner add_can_attack = BindFromPointer(selectCmd, add_cards_can_attack);
-			InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				card->set_can_attack_directly(wrapper->read<uint8_t>("can_attack_directly ", count));
 			};
@@ -175,7 +175,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
 
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
-			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
@@ -331,7 +331,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			selectCards->set_max(wrapper->read<uint8_t>("max"));
 
 			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
-			InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
 			};
@@ -360,7 +360,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			counter->set_count(wrapper->read<uint16_t>("counter_type"));
 			
 			CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
-			InlineCardRead ReadCounterCount = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadCounterCount = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				card->mutable_counter()->set_count(wrapper->read<uint16_t>("counter count ", count));
 			};
@@ -380,7 +380,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			selectCards->set_min(wrapper->read<uint8_t>("min"));
 			selectCards->set_max(wrapper->read<uint8_t>("max"));
 			
-			InlineCardRead ReadSumParam = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
+			InlineCardRead ReadSumParam = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				card->set_sum_param(wrapper->read<uint32_t>("sum param ", count));
 			};
