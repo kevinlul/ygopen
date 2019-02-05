@@ -1,7 +1,7 @@
 #ifndef __IO_GMSG_STREAM_HPP__
 #define __IO_GMSG_STREAM_HPP__
 #include <memory> // std::unique_ptr
-#include "generated/core_gmsg.pb.h"
+#include "generated/core_msg.pb.h"
 
 namespace YGOpen
 {
@@ -10,7 +10,7 @@ namespace YGOpen
 class MsgCodecBase
 {
 protected:
-	Core::GMsg lastGMsg;
+	Core::AnyMsg lastMsg;
 };
 
 // Input Game Message Encoder
@@ -20,8 +20,8 @@ class MsgEncoder : virtual public MsgCodecBase
 	struct impl;
 	std::unique_ptr<impl> pimpl;
 	
-	inline void SpecificMsg(Core::GMsg& gmsg, const int msgType);
-	inline void InformationMsg(Core::GMsg& gmsg, const int msgType);
+	inline void SpecificMsg(Core::AnyMsg& gmsg, const int msgType);
+	inline void InformationMsg(Core::AnyMsg& gmsg, const int msgType);
 public:
 	MsgEncoder();
 
@@ -32,7 +32,7 @@ public:
 
 	~MsgEncoder();
 
-	Core::GMsg Encode(void* buffer, size_t length);
+	Core::AnyMsg Encode(void* buffer, size_t length);
 };
 
 // Output Game Message Decoder

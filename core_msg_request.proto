@@ -2,29 +2,7 @@ syntax = "proto3";
 
 import "core_data.proto";
 
-package YGOpen.Core;
-
-message GMsgRequest
-{
-	// bool player = 1; // probably not needed
-	bool stripped = 2;
-	oneof GMsgRequest
-	{
-		bool retry = 3; // the last answer was not understood by the core
-
-		SelectCmd select_cmd = 4;
-		SelectYesNo select_yesno = 5;
-		SelectOption select_option = 6;
-		SelectCards select_cards = 7;
-		SortCards sort_cards = 8;
-		SelectPlaces select_places = 9;
-		SelectPosition select_position = 10;
-		bool select_rps = 11; // ask player for rock, papper or scissors
-		DeclareCard declare_card = 12;
-		DeclareMisc declare_misc = 13; // ask for race, attribute or a number
-		SelectToChain select_to_chain = 14;
-	}
-}
+package YGOpen.Core.Msg;
 
 // Encapsulates:
 // MSG_SELECT_BATTLECMD

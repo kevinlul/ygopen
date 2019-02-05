@@ -2,37 +2,7 @@ syntax = "proto3";
 
 import "core_data.proto";
 
-package YGOpen.Core;
-
-// Game message about information of the game, those are saved unstripped to a replay
-// and they are sent to everyone either stripped or unstripped
-message GMsgInformation
-{
-	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
-	oneof GMsgInformation
-	{
-		Win win = 3;
-		Hint hint = 4;
-		ConfirmCards confirm_cards = 5;
-		ShuffleLocation shuffle_location = 6;
-		ShuffleSetCards shuffle_set_cards = 7;
-		UpdateCard update_card = 8;
-		SwapCards swap_cards = 9;
-		NewTurn new_turn = 10;
-		NewPhase new_phase = 11;
-		DisableZones disable_zones = 12;
-		SummonCard summon_card = 13;
-		ChainAction chain_action = 14;
-		SelectedCards selected_cards = 15;
-		Draw draw = 16;
-		LpChange lp_change = 17;
-		CounterChange counter_change = 18;
-		OnAttack on_attack = 19;
-		Result result = 20;
-		MiscAction misc_action = 21;
-		SwapPlayer swap_player = 22;
-	}
-}
+package YGOpen.Core.Msg;
 
 // Encapsulates:
 // MSG_WIN

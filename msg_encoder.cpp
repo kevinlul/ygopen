@@ -120,11 +120,11 @@ MsgEncoder::MsgEncoder() : pimpl(new impl())
 
 MsgEncoder::~MsgEncoder() = default;
 
-inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
+inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 
-	auto specific = gmsg.mutable_specific();
+	auto specific = msg.mutable_specific();
 	specific->set_player(wrapper->read<player_t>("player"));
 
 	switch(msgType)
@@ -133,7 +133,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
-			selectCmd->set_type(Core::SelectCmd::COMMAND_BATTLE);
+			selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_BATTLE);
 
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
 			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, YGOpen::Core::Data::CardInfo* card)
@@ -157,7 +157,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 
-			selectCmd->set_type(Core::SelectCmd::COMMAND_IDLE);
+			selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_IDLE);
 
 			CardSpawner add_summonable = BindFromPointer(selectCmd, add_cards_summonable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
@@ -216,7 +216,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
-			selectCards->set_type(Core::SelectCards::SELECTION_EFFECT);
+			selectCards->set_type(Core::Msg::SelectCards::SELECTION_EFFECT);
 
 			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
 			selectCards->set_can_accept(false);
@@ -322,7 +322,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
-			selectCards->set_type(Core::SelectCards::SELECTION_TRIBUTE);
+			selectCards->set_type(Core::Msg::SelectCards::SELECTION_TRIBUTE);
 
 			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
 			selectCards->set_can_accept(false);
@@ -350,7 +350,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
-			selectCards->set_type(Core::SelectCards::SELECTION_COUNTER);
+			selectCards->set_type(Core::Msg::SelectCards::SELECTION_COUNTER);
 
 			selectCards->set_can_cancel(false);
 			selectCards->set_can_accept(false);
@@ -373,7 +373,7 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 			
-			selectCards->set_type(Core::SelectCards::SELECTION_SUM);
+			selectCards->set_type(Core::Msg::SelectCards::SELECTION_SUM);
 			
 			selectCards->set_sum(wrapper->read<uint16_t>("acc (sum)"));
 			
@@ -411,14 +411,14 @@ inline void MsgEncoder::SpecificMsg(Core::GMsg& gmsg, const int msgType)
 	}
 }
 
-inline void MsgEncoder::InformationMsg(Core::GMsg& gmsg, const int msgType)
+inline void MsgEncoder::InformationMsg(Core::AnyMsg& gmsg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 }
 
-Core::GMsg MsgEncoder::Encode(void* buffer, size_t length)
+Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
-	Core::GMsg gmsg{};
+	Core::AnyMsg msg{};
 
 	pimpl->ib.open(buffer, length);
 
@@ -444,10 +444,10 @@ Core::GMsg MsgEncoder::Encode(void* buffer, size_t length)
 		case SelectSum:
 		case SelectUnselect:
 		{
-			SpecificMsg(gmsg, msgType);
+			SpecificMsg(msg, msgType);
 			
 			std::string str;
-			google::protobuf::TextFormat::PrintToString(gmsg, &str);
+			google::protobuf::TextFormat::PrintToString(msg, &str);
 			std::cout << str << std::endl;
 		}
 		break;
@@ -465,7 +465,7 @@ Core::GMsg MsgEncoder::Encode(void* buffer, size_t length)
 		break;
 	}
 
-	return (lastGMsg = gmsg);
+	return (lastMsg = msg);
 }
 
 

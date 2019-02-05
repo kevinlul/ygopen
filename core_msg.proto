@@ -2,20 +2,84 @@ syntax = "proto3";
 
 package YGOpen.Core;
 
-import "core_gmsg_specific.proto";
-import "core_gmsg_information.proto";
+import "core_msg_request.proto";
+import "core_msg_information.proto";
 
-//import "core_query.proto"
+// Game message that requires an answer from the player, see MsgSpecific
+// Can be stripped in case selections or choices have non-public cards on it
+message MsgRequest
+{
+	// bool player = 1; // probably not needed
+	bool stripped = 2;
+	oneof MsgRequest
+	{
+		bool retry = 3; // the last answer was not understood by the core
+
+		Msg.SelectCmd select_cmd = 4;
+		Msg.SelectYesNo select_yesno = 5;
+		Msg.SelectOption select_option = 6;
+		Msg.SelectCards select_cards = 7;
+		Msg.SortCards sort_cards = 8;
+		Msg.SelectPlaces select_places = 9;
+		Msg.SelectPosition select_position = 10;
+		bool select_rps = 11; // ask player for rock, papper or scissors
+		Msg.DeclareCard declare_card = 12;
+		Msg.DeclareMisc declare_misc = 13; // ask for race, attribute or a number
+		Msg.SelectToChain select_to_chain = 14;
+	}
+}
+
+// Game message about information of the game, those are saved unstripped to a replay
+// and they are sent to everyone either stripped or unstripped
+message MsgInformation
+{
+	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
+	oneof MsgInformation
+	{
+		Msg.Win win = 3;
+		Msg.Hint hint = 4;
+		Msg.ConfirmCards confirm_cards = 5;
+		Msg.ShuffleLocation shuffle_location = 6;
+		Msg.ShuffleSetCards shuffle_set_cards = 7;
+		Msg.UpdateCard update_card = 8;
+		Msg.SwapCards swap_cards = 9;
+		Msg.NewTurn new_turn = 10;
+		Msg.NewPhase new_phase = 11;
+		Msg.DisableZones disable_zones = 12;
+		Msg.SummonCard summon_card = 13;
+		Msg.ChainAction chain_action = 14;
+		Msg.SelectedCards selected_cards = 15;
+		Msg.Draw draw = 16;
+		Msg.LpChange lp_change = 17;
+		Msg.CounterChange counter_change = 18;
+		Msg.OnAttack on_attack = 19;
+		Msg.Result result = 20;
+		Msg.MiscAction misc_action = 21;
+		Msg.SwapPlayer swap_player = 22;
+	}
+}
+
+// Game message for a specific player, those are not saved on a replay
+// and sometimes require an answer
+message MsgSpecific
+{
+	bool player = 1;
+	oneof MsgSpecific
+	{
+		MsgRequest request = 2;
+		MsgInformation information = 3;
+	}
+}
 
 // Base Game Message, it can hold any type of message in the game
-message GMsg
+message AnyMsg
 {
-	oneof GMsg
+	oneof AnyMsg
 	{
-		GMsgSpecific specific = 1;
-		GMsgInformation information = 2;
-		//GMsgBoardState board_state = 3; // Probably needed in the future
+		MsgSpecific specific = 1;
+		MsgInformation information = 2;
+		//MsgBoardState board_state = 3; // Probably needed in the future
 	}
-	//repeated Core.Msg.Query before_msg_query = 3;
-	//repeated Core.Msg.Query after_msg_query = 4;
+	//repeated Core.Msg.Query before_msg_query = 4;
+	//repeated Core.Msg.Query after_msg_query = 5;
 }
