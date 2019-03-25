@@ -129,7 +129,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 
 	switch(msgType)
 	{
-		case SelectBattleCmd:
+		case MSG_SELECT_BATTLECMD:
 		{
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 			
@@ -153,7 +153,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
 		}
 		break;
-		case SelectIdleCmd:
+		case MSG_SELECT_IDLECMD:
 		{
 			auto selectCmd = specific->mutable_request()->mutable_select_cmd();
 
@@ -186,7 +186,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
 		}
 		break;
-		case SelectEffectYn:
+		case MSG_SELECT_EFFECTYN:
 		{
 			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
 
@@ -196,14 +196,14 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), card->mutable_effect_desc());
 		}
 		break;
-		case SelectYesNo:
+		case MSG_SELECT_YESNO:
 		{
 			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
 
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
 		}
 		break;
-		case SelectOption:
+		case MSG_SELECT_OPTION:
 		{
 			auto selectOption = specific->mutable_request()->mutable_select_option();
 
@@ -212,7 +212,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
 		}
 		break;
-		case SelectCard:
+		case MSG_SELECT_CARD:
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
@@ -228,7 +228,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
 		}
 		break;
-		case SelectChain:
+		case MSG_SELECT_CHAIN:
 		{
 			auto selectToChain = specific->mutable_request()->mutable_select_to_chain();
 
@@ -256,8 +256,8 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			}
 		}
 		break;
-		case SelectPlace:
-		// case SelectDisfield:
+		case MSG_SELECT_PLACE:
+		// case MSG_SELECT_DISFIELD:
 		{
 			// NOTE:
 			// The available positions are always current player places first
@@ -308,7 +308,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			extractPlacesForPlayer(1, 16);
 		}
 		break;
-		case SelectPosition:
+		case MSG_SELECT_POSITION:
 		{
 			auto selectPosition = specific->mutable_request()->mutable_select_position();
 			
@@ -318,7 +318,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			card->set_position(wrapper->read<small_position_t>("positions"));
 		}
 		break;
-		case SelectTribute:
+		case MSG_SELECT_TRIBUTE:
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
@@ -338,15 +338,15 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_selectable, nullptr, ReadReleaseParam);
 		}
 		break;
-		// case SortCard:
-		case SortChain:
+		// case MSG_SORT_CARD:
+		case MSG_SORT_CHAIN:
 		{
 			auto sortCards = specific->mutable_request()->mutable_sort_cards();
 			CardSpawner add_cards_to_sort = BindFromPointer(sortCards, add_cards_to_sort);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_cards_to_sort);
 		}
 		break;
-		case SelectCounter:
+		case MSG_SELECT_COUNTER:
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 
@@ -369,7 +369,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			// TODO: Set right counter type to each card?
 		}
 		break;
-		case SelectSum:
+		case MSG_SELECT_SUM:
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 			
@@ -392,7 +392,7 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
 		}
 		break;
-		case SelectUnselect:
+		case MSG_SELECT_UNSELECT_CARD:
 		{
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 			
@@ -427,22 +427,22 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 	switch(msgType)
 	{
 		// Specific messages
-		case SelectBattleCmd:
-		case SelectIdleCmd:
-		case SelectEffectYn:
-		case SelectYesNo:
-		case SelectOption:
-		case SelectCard:
-		case SelectChain:
-		case SelectPlace:
-		// case SelectDisfield:
-		case SelectPosition:
-		case SelectTribute:
-		// case SortCard:
-		case SortChain:
-		case SelectCounter:
-		case SelectSum:
-		case SelectUnselect:
+		case MSG_SELECT_BATTLECMD:
+		case MSG_SELECT_IDLECMD:
+		case MSG_SELECT_EFFECTYN:
+		case MSG_SELECT_YESNO:
+		case MSG_SELECT_OPTION:
+		case MSG_SELECT_CARD:
+		case MSG_SELECT_CHAIN:
+		case MSG_SELECT_PLACE:
+		// case MSG_SELECT_DISFIELD:
+		case MSG_SELECT_POSITION:
+		case MSG_SELECT_TRIBUTE:
+		// case MSG_SORT_CARD:
+		case MSG_SORT_CHAIN:
+		case MSG_SELECT_COUNTER:
+		case MSG_SELECT_SUM:
+		case MSG_SELECT_UNSELECT_CARD:
 		{
 			SpecificMsg(msg, msgType);
 			
@@ -452,8 +452,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 		}
 		break;
 		// Information messages
-		case Win:
-		case MatchKill:
+		case MSG_WIN:
+		case MSG_MATCH_KILL:
 		{
 			//InformationMsg(gmsg, msgType);
 		}
