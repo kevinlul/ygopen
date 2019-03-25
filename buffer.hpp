@@ -24,8 +24,6 @@ const char* reason_unspecified = "Unspecified";
 // TODO: add a note explaining that this file does not follow the main project code style
 // but is more near to that style used on the standard libraries
 
-// TODO: decide if i should move the seek operations to the base functions
-
 namespace YGOpen
 {
 namespace Buffer

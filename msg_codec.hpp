@@ -1,5 +1,5 @@
-#ifndef __IO_GMSG_STREAM_HPP__
-#define __IO_GMSG_STREAM_HPP__
+#ifndef __MSG_CODEC_HPP__
+#define __MSG_CODEC_HPP__
 #include <memory> // std::unique_ptr
 #include "generated/core_msg.pb.h"
 
@@ -49,4 +49,4 @@ class MsgCodec : public MsgEncoder, public MsgDecoder
 
 } // namespace YGOpen
 
-#endif // __IO_GMSG_STREAM_HPP__
+#endif // __MSG_CODEC_HPP__
