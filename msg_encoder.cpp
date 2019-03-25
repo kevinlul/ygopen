@@ -55,7 +55,7 @@ struct do_not_read_t {};
 
 // Reads a single card location info from the given wrapper
 template<typename Controller, typename Location, typename Sequence, typename Position>
-void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
+inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 {
 	// Controller
 	if constexpr(!std::is_same<do_not_read_t, Controller>())
@@ -461,6 +461,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 		default:
 		{
 			// UNHANDLED
+			pimpl->ib.log("Warning: Unhandled Message\n");
 		}
 		break;
 	}
