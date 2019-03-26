@@ -470,6 +470,7 @@ inline void MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 
 Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
+	bool unhandled = false;
 	Core::AnyMsg msg{};
 
 	pimpl->ib.open(buffer, length);
@@ -514,14 +515,24 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 			InformationMsg(msg, msgType);
 		}
 		break;
+		
+		// Unhandled Messages
 		default:
 		{
 			// UNHANDLED
 			pimpl->ib.log("Warning: Unhandled Message\n");
+			unhandled = true;
 		}
 		break;
 	}
-
+	
+	if(!unhandled)
+	{
+		std::string str;
+		google::protobuf::TextFormat::PrintToString(msg, &str);
+		std::cout << str << std::endl;
+	}
+	
 	return (lastMsg = msg);
 }
 
