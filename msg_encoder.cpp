@@ -123,8 +123,9 @@ MsgEncoder::MsgEncoder() : pimpl(new impl())
 
 MsgEncoder::~MsgEncoder() = default;
 
-inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
+inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 {
+	bool encoded;
 	Buffer::ibufferw wrapper(&pimpl->ib);
 
 	auto specific = msg.mutable_specific();
@@ -154,6 +155,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			selectCmd->set_able_to_mp2(wrapper->read<uint8_t>("to_mp2"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_IDLECMD:
@@ -187,6 +190,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
 			selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_EFFECTYN:
@@ -204,6 +209,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
 
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_OPTION:
@@ -213,6 +220,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			const auto count = wrapper->read<uint8_t>("number of effects");
 			for(int i = 0; i < count; i++)
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_CARD:
@@ -229,6 +238,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 
 			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_CHAIN:
@@ -257,6 +268,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, card);
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", i), card->mutable_effect_desc());
 			}
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_PLACE:
@@ -309,6 +322,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 
 			extractPlacesForPlayer(0, 0);
 			extractPlacesForPlayer(1, 16);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_POSITION:
@@ -319,6 +334,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			ToCardCode(wrapper->read<cardcode_t>("card code"), card);
 			card->set_position(wrapper->read<small_position_t>("positions"));
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_TRIBUTE:
@@ -339,6 +356,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 				card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
 			};
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_selectable, nullptr, ReadReleaseParam);
+			
+			encoded = true;
 		}
 		break;
 		// case MSG_SORT_CARD:
@@ -347,6 +366,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			auto sortCards = specific->mutable_request()->mutable_sort_cards();
 			CardSpawner add_cards_to_sort = BindFromPointer(sortCards, add_cards_to_sort);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_cards_to_sort);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_COUNTER:
@@ -370,6 +391,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
 			
 			// TODO: Set right counter type to each card?
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_SUM:
@@ -393,6 +416,8 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SELECT_UNSELECT_CARD:
@@ -409,13 +434,19 @@ inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			CardSpawner add_unselectable = BindFromPointer(selectCards, add_cards_unselectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_unselectable);
+			
+			encoded = true;
 		}
 		break;
 	}
+	
+	return encoded;
 }
 
-inline void MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgType)
+inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgType)
 {
+	bool encoded;
+	
 	Buffer::ibufferw wrapper(&pimpl->ib);
 	
 	auto specific = msg.mutable_specific();
@@ -433,13 +464,18 @@ inline void MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgT
 			
 			hint->set_data(wrapper->read<uint64_t>("hint data"));
 			// TODO: handle each hint
+			encoded = true;
 		}
 		break;
 	}
+	
+	return encoded;
 }
 
-inline void MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
+inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 {
+	bool encoded;
+	
 	Buffer::ibufferw wrapper(&pimpl->ib);
 	
 	auto information = msg.mutable_information();
@@ -457,18 +493,24 @@ inline void MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			win->set_is_match_kill(pimpl->isMatchKill);
 			if(pimpl->isMatchKill)
 				win->set_code(pimpl->matchKillCardId);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
 			pimpl->matchKillCardId = wrapper->read<cardcode_t>("match killer");
+			
+			encoded = false;
 		}
 		break;
 	}
+	
+	return encoded;
 }
 
-Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
+Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 {
 	bool unhandled = false;
 	Core::AnyMsg msg{};
@@ -497,14 +539,14 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 		case MSG_SELECT_SUM:
 		case MSG_SELECT_UNSELECT_CARD:
 		{
-			SpecificRequestMsg(msg, msgType);
+			encoded = SpecificRequestMsg(msg, msgType);
 		}
 		break;
 		
 		// Specific Information messages
 		case MSG_HINT:
 		{
-			SpecificInformationMsg(msg, msgType);
+			encoded = SpecificInformationMsg(msg, msgType);
 		}
 		break;
 		
@@ -512,7 +554,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 		case MSG_WIN:
 		case MSG_MATCH_KILL:
 		{
-			InformationMsg(msg, msgType);
+			encoded = InformationMsg(msg, msgType);
 		}
 		break;
 		
@@ -522,6 +564,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 			// UNHANDLED
 			pimpl->ib.log("Warning: Unhandled Message\n");
 			unhandled = true;
+			encoded = false;
 		}
 		break;
 	}

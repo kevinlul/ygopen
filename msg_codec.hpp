@@ -20,20 +20,22 @@ class MsgEncoder : virtual public MsgCodecBase
 	struct impl;
 	std::unique_ptr<impl> pimpl;
 	
-	inline void SpecificRequestMsg(Core::AnyMsg& msg, const int msgType);
-	inline void SpecificInformationMsg(Core::AnyMsg& msg, const int msgType);
-	inline void InformationMsg(Core::AnyMsg& msg, const int msgType);
+	inline bool SpecificRequestMsg(Core::AnyMsg& msg, const int msgType);
+	inline bool SpecificInformationMsg(Core::AnyMsg& msg, const int msgType);
+	inline bool InformationMsg(Core::AnyMsg& msg, const int msgType);
 public:
 	MsgEncoder();
 
-	MsgEncoder(MsgEncoder&&) = delete;
 	MsgEncoder(const MsgEncoder&) = delete;
-	MsgEncoder& operator=(MsgEncoder&&) = delete;
+	MsgEncoder(MsgEncoder&&) = delete;
 	MsgEncoder& operator=(const MsgEncoder&) = delete;
+	MsgEncoder& operator=(MsgEncoder&&) = delete;
 
 	~MsgEncoder();
 
-	Core::AnyMsg Encode(void* buffer, size_t length);
+	// Input: A buffer and buffer length
+	// Output: A encoded message (if any) and a boolean telling if we got a message
+	Core::AnyMsg Encode(void* buffer, size_t length, bool& encoded);
 };
 
 // Output Game Message Decoder
