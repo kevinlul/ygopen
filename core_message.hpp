@@ -6,12 +6,12 @@
 // TODO: comment unused values
 #define MSG_RETRY				1
 #define MSG_HINT				2
-#define MSG_WAITING				3
-#define MSG_START				4
+//#define MSG_WAITING				3
+//#define MSG_START				4
 #define MSG_WIN					5
-#define MSG_UPDATE_DATA			6
-#define MSG_UPDATE_CARD			7
-#define MSG_REQUEST_DECK		8
+//#define MSG_UPDATE_DATA			6
+//#define MSG_UPDATE_CARD			7
+//#define MSG_REQUEST_DECK		8
 #define MSG_SELECT_BATTLECMD	10 // DONE
 #define MSG_SELECT_IDLECMD		11 // DONE
 #define MSG_SELECT_EFFECTYN		12 // DONE
@@ -98,7 +98,7 @@
 #define MSG_SHOW_HINT			164
 #define MSG_PLAYER_HINT			165
 #define MSG_MATCH_KILL			170
-#define MSG_CUSTOM_MSG			180
+//#define MSG_CUSTOM_MSG			180
 
 
 #endif // __CORE_MESSAGE_HPP__
