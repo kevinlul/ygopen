@@ -113,6 +113,9 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 struct MsgEncoder::impl
 {
 	Buffer::ibuffer ib{};
+	
+	bool isMatchKill{};
+	uint32_t matchKillCardId{};
 };
 
 MsgEncoder::MsgEncoder() : pimpl(new impl())
@@ -120,7 +123,7 @@ MsgEncoder::MsgEncoder() : pimpl(new impl())
 
 MsgEncoder::~MsgEncoder() = default;
 
-inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
+inline void MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
 
@@ -411,9 +414,58 @@ inline void MsgEncoder::SpecificMsg(Core::AnyMsg& msg, const int msgType)
 	}
 }
 
-inline void MsgEncoder::InformationMsg(Core::AnyMsg& gmsg, const int msgType)
+inline void MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgType)
 {
 	Buffer::ibufferw wrapper(&pimpl->ib);
+	
+	auto specific = msg.mutable_specific();
+	
+	switch(msgType)
+	{
+		case MSG_HINT:
+		{
+			auto hint = specific->mutable_information()->mutable_hint();
+			
+			const int type = wrapper->read<uint8_t>("hint type");
+			hint->set_type(type);
+			
+			specific->set_player(wrapper->read<player_t>("player"));
+			
+			hint->set_data(wrapper->read<uint64_t>("hint data"));
+			// TODO: handle each hint
+		}
+		break;
+	}
+}
+
+inline void MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
+{
+	Buffer::ibufferw wrapper(&pimpl->ib);
+	
+	auto information = msg.mutable_information();
+	
+	switch(msgType)
+	{
+		case MSG_WIN:
+		{
+			auto win = information->mutable_win();
+			
+			win->set_player(wrapper->read<player_t>("player"));
+			win->set_reason(wrapper->read<uint8_t>("reason"));
+			
+			// this information is set when reading MSG_MATCH_KILL
+			win->set_is_match_kill(pimpl->isMatchKill);
+			if(pimpl->isMatchKill)
+				win->set_code(pimpl->matchKillCardId);
+		}
+		break;
+		case MSG_MATCH_KILL:
+		{
+			pimpl->isMatchKill = true;
+			pimpl->matchKillCardId = wrapper->read<cardcode_t>("match killer");
+		}
+		break;
+	}
 }
 
 Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
@@ -426,7 +478,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 	pimpl->ib.log("Message Type: ", (int)msgType, '\n');
 	switch(msgType)
 	{
-		// Specific messages
+		// Specific Request messages
 		case MSG_SELECT_BATTLECMD:
 		case MSG_SELECT_IDLECMD:
 		case MSG_SELECT_EFFECTYN:
@@ -444,18 +496,22 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 		case MSG_SELECT_SUM:
 		case MSG_SELECT_UNSELECT_CARD:
 		{
-			SpecificMsg(msg, msgType);
-			
-			std::string str;
-			google::protobuf::TextFormat::PrintToString(msg, &str);
-			std::cout << str << std::endl;
+			SpecificRequestMsg(msg, msgType);
 		}
 		break;
+		
+		// Specific Information messages
+		case MSG_HINT:
+		{
+			SpecificInformationMsg(msg, msgType);
+		}
+		break;
+		
 		// Information messages
 		case MSG_WIN:
 		case MSG_MATCH_KILL:
 		{
-			//InformationMsg(gmsg, msgType);
+			InformationMsg(msg, msgType);
 		}
 		break;
 		default:

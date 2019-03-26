@@ -20,8 +20,9 @@ class MsgEncoder : virtual public MsgCodecBase
 	struct impl;
 	std::unique_ptr<impl> pimpl;
 	
-	inline void SpecificMsg(Core::AnyMsg& gmsg, const int msgType);
-	inline void InformationMsg(Core::AnyMsg& gmsg, const int msgType);
+	inline void SpecificRequestMsg(Core::AnyMsg& msg, const int msgType);
+	inline void SpecificInformationMsg(Core::AnyMsg& msg, const int msgType);
+	inline void InformationMsg(Core::AnyMsg& msg, const int msgType);
 public:
 	MsgEncoder();
 
