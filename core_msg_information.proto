@@ -5,22 +5,23 @@ import "core_data.proto";
 package YGOpen.Core.Msg;
 
 // Encapsulates:
+// MSG_HINT
+message Hint
+{
+	// TODO: make a message for each hint type
+	int32 type = 1;
+	int64 data = 2;
+}
+
+// Encapsulates:
 // MSG_WIN
 // MSG_MATCH_KILL
 message Win
 {
 	bool player = 1;
-	bool is_match_kill = 2;
-	int32 reason = 3;
-}
-
-// Encapsulates:
-// MSG_HINT
-message Hint
-{
-	// FIXME: make the type a ENUM
-	int32 type = 1;
-	int64 data = 2;
+	int32 reason = 2;
+	bool is_match_kill = 3;
+	int32 code = 4;
 }
 
 // Encapsulates:
