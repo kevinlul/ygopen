@@ -36,8 +36,8 @@ message MsgInformation
 	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
 	oneof MsgInformation
 	{
-		Msg.Win win = 3;
-		Msg.Hint hint = 4;
+		Msg.Hint hint = 3;
+		Msg.Win win = 4;
 		Msg.ConfirmCards confirm_cards = 5;
 		Msg.ShuffleLocation shuffle_location = 6;
 		Msg.ShuffleSetCards shuffle_set_cards = 7;
