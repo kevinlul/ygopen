@@ -5,10 +5,10 @@
 // TODO: convert into enum (or probably not?)
 // TODO: comment unused values
 #define MSG_RETRY				1
-#define MSG_HINT				2
+#define MSG_HINT				2 // DONE
 //#define MSG_WAITING				3
 //#define MSG_START				4
-#define MSG_WIN					5
+#define MSG_WIN					5 // DONE
 //#define MSG_UPDATE_DATA			6
 //#define MSG_UPDATE_CARD			7
 //#define MSG_REQUEST_DECK		8
@@ -97,7 +97,7 @@
 #define MSG_AI_NAME				163
 #define MSG_SHOW_HINT			164
 #define MSG_PLAYER_HINT			165
-#define MSG_MATCH_KILL			170
+#define MSG_MATCH_KILL			170 // DONE
 //#define MSG_CUSTOM_MSG			180
 
 
