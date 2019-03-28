@@ -467,6 +467,20 @@ inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgT
 			encoded = true;
 		}
 		break;
+		case MSG_CONFIRM_DECKTOP:
+		{
+			auto comfirmCards = specific->mutable_information()->mutable_confirm_cards();
+			
+			comfirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_DECKTOP);
+			
+			specific->set_player(wrapper->read<player_t>("player"));
+			
+			CardSpawner add_cards = BindFromPointer(comfirmCards, add_cards);
+			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t, small_position_t>(wrapper, add_cards);
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -476,7 +490,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 {
 	bool encoded;
 	
-	Buffer::ibufferw wrapper(&pimpl->ib);
+	Buffer::ibufferw wrapper{&pimpl->ib};
 	
 	auto information = msg.mutable_information();
 	
@@ -553,6 +567,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		// Information messages
 		case MSG_WIN:
 		case MSG_MATCH_KILL:
+		case MSG_CONFIRM_DECKTOP:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
