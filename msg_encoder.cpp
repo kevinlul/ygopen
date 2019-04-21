@@ -18,6 +18,8 @@ using sequence_t = uint32_t;
 using position_t = uint32_t;
 using effectdesc_t = uint64_t;
 
+using field_cardcount_t = uint8_t;
+
 // Types that should be changed (increased) in far future
 using small_cardcount_t = uint8_t;
 using small_location_t = uint8_t;
@@ -577,6 +579,22 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_SHUFFLE_SET_CARD:
+		{
+			auto shuffleSetCards = information->mutable_shuffle_set_cards();
+			wrapper->seek(1, Buffer::seek_dir::cur, "location");
+			
+			auto count = wrapper->read<field_cardcount_t>(".size()");
+			CardSpawner add_cards_previous = BindFromPointer(shuffleSetCards, add_cards_previous);
+			CardSpawner add_cards_current = BindFromPointer(shuffleSetCards, add_cards_current);
+			for(decltype(count) i = 0; i < count; i++)
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, add_cards_previous());
+			for(decltype(count) i = 0; i < count; i++)
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, add_cards_current());
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -630,6 +648,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SHUFFLE_DECK:
 		case MSG_SHUFFLE_HAND:
 		case MSG_SWAP_GRAVE_DECK:
+		case MSG_SHUFFLE_SET_CARD:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
