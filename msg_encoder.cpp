@@ -533,6 +533,19 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = false;
 		}
 		break;
+		case MSG_SHUFFLE_DECK:
+		{
+			auto shuffleLocation = information->mutable_shuffle_location();
+			
+			shuffleLocation->set_player(wrapper->read<player_t>("player"));
+			
+			shuffleLocation->set_location(0x01); // LOCATION_DECK
+			
+			// NOTE: empty decklist
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -583,7 +596,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		// Information messages
 		case MSG_WIN:
 		case MSG_MATCH_KILL:
-		case MSG_CONFIRM_DECKTOP:
+		case MSG_SHUFFLE_DECK:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
