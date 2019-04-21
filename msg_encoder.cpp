@@ -92,7 +92,7 @@ template<typename Count, typename Location, typename Sequence, typename Position
 void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
 {
 	const Count count = wrapper->read<Count>(".size()");
-	for(int i = 0; i < (int)count; i++)
+	for(Count i = 0; i < count; i++)
 	{
 		Core::Data::CardInfo* card = cs();
 		

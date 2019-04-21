@@ -49,11 +49,11 @@ message ConfirmCards
 // MSG_SHUFFLE_EXTRA
 message ShuffleLocation
 {
-	bool controller = 1;
+	bool player = 1;
 	int32 location = 2;
 	
 	// NOTE: can be empty
-	Data.CardInfo shuffled_order = 3;
+	repeated Data.CardInfo shuffled_cards = 3;
 }
 
 // Encapsulates:
