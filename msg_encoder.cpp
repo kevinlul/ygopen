@@ -546,6 +546,26 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_SHUFFLE_HAND:
+		{
+			auto shuffleLocation = information->mutable_shuffle_location();
+			
+			shuffleLocation->set_player(wrapper->read<player_t>("player"));
+			
+			shuffleLocation->set_location(0x02); // LOCATION_HAND
+			
+			auto count = wrapper->read<small_cardcount_t>(".size()");
+			CardSpawner add_shuffled_cards = BindFromPointer(shuffleLocation, add_shuffled_cards);
+			for(decltype(count) i = 0; i < count; i++)
+			{
+				Core::Data::CardInfo* card = add_shuffled_cards();
+				ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+				card->set_location(0x02); // LOCATION_HAND
+			}
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -597,6 +617,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_WIN:
 		case MSG_MATCH_KILL:
 		case MSG_SHUFFLE_DECK:
+		case MSG_SHUFFLE_HAND:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
