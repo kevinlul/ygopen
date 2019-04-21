@@ -469,14 +469,14 @@ inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgT
 		break;
 		case MSG_CONFIRM_DECKTOP:
 		{
-			auto comfirmCards = specific->mutable_information()->mutable_confirm_cards();
+			auto confirmCards = specific->mutable_information()->mutable_confirm_cards();
 			
-			comfirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_DECKTOP);
+			confirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_DECKTOP);
 			
 			specific->set_player(wrapper->read<player_t>("player"));
 			
-			CardSpawner add_cards = BindFromPointer(comfirmCards, add_cards);
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t, small_position_t>(wrapper, add_cards);
+			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
+			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
 			
 			encoded = true;
 		}
