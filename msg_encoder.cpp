@@ -481,6 +481,20 @@ inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgT
 			encoded = true;
 		}
 		break;
+		case MSG_CONFIRM_CARDS:
+		{
+			auto confirmCards = specific->mutable_information()->mutable_confirm_cards();
+			
+			confirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_CARDS);
+			
+			specific->set_player(wrapper->read<player_t>("player"));
+			
+			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
+			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_cards);
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -559,6 +573,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		
 		// Specific Information messages
 		case MSG_HINT:
+		case MSG_CONFIRM_DECKTOP:
+		case MSG_CONFIRM_CARDS:
 		{
 			encoded = SpecificInformationMsg(msg, msgType);
 		}
