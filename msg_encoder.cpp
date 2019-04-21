@@ -566,6 +566,17 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_SWAP_GRAVE_DECK:
+		{
+			auto miscAction = information->mutable_misc_action();
+			
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_SWAP_GY_WITH_DECK);
+			
+			miscAction->set_player(wrapper->read<player_t>("player"));
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -618,6 +629,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_MATCH_KILL:
 		case MSG_SHUFFLE_DECK:
 		case MSG_SHUFFLE_HAND:
+		case MSG_SWAP_GRAVE_DECK:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
