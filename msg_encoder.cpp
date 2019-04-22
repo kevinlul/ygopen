@@ -499,14 +499,6 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
-		case MSG_MATCH_KILL:
-		{
-			pimpl->isMatchKill = true;
-			pimpl->matchKillCardId = wrapper->read<cardcode_t>("match killer");
-			
-			encoded = false;
-		}
-		break;
 		case MSG_CONFIRM_DECKTOP:
 		{
 			auto confirmCards = information->mutable_confirm_cards();
@@ -604,6 +596,14 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_MATCH_KILL:
+		{
+			pimpl->isMatchKill = true;
+			pimpl->matchKillCardId = wrapper->read<cardcode_t>("match killer");
+			
+			encoded = false;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -651,7 +651,6 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		
 		// Information messages
 		case MSG_WIN:
-		case MSG_MATCH_KILL:
 		case MSG_CONFIRM_DECKTOP:
 		case MSG_CONFIRM_CARDS:
 		case MSG_SHUFFLE_DECK:
@@ -659,6 +658,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SWAP_GRAVE_DECK:
 		case MSG_SHUFFLE_SET_CARD:
 		case MSG_REVERSE_DECK:
+		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
 		}
