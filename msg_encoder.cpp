@@ -660,6 +660,27 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		case MSG_MOVE:
+		{
+			auto updateCard = information->mutable_update_card();
+			
+			updateCard->set_reason(Core::Msg::UpdateCard::REASON_MOVE);
+			
+			const auto cardCode = wrapper->read<cardcode_t>("card code");
+			
+			auto ReadCardInfo = [&wrapper, cardCode](Core::Data::CardInfo* card, const int val)
+			{
+				ToCardCode(cardCode, card);
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, val, card);
+			};
+			
+			ReadCardInfo(updateCard->mutable_previous(), 0);
+			ReadCardInfo(updateCard->mutable_current(), 1);
+			
+			updateCard->set_core_reason(wrapper->read<uint32_t>("core reason"));
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -727,6 +748,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_NEW_TURN:
 		case MSG_NEW_PHASE:
 		case MSG_CONFIRM_EXTRATOP:
+		case MSG_MOVE:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

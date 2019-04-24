@@ -41,8 +41,8 @@
 #define MSG_NEW_TURN			40 // DONE
 #define MSG_NEW_PHASE			41 // DONE
 #define MSG_CONFIRM_EXTRATOP	42 // DONE
-#define MSG_MOVE				50
 #define MSG_POS_CHANGE			53
+#define MSG_MOVE				50 // DONE
 #define MSG_SET					54
 #define MSG_SWAP				55
 #define MSG_FIELD_DISABLED		56
