@@ -596,6 +596,22 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_DECK_TOP:
+		{
+			auto updateCard = information->mutable_update_card();
+			
+			updateCard->set_reason(Core::Msg::UpdateCard::REASON_DECK_TOP);
+			
+			auto prevCardInfo = updateCard->mutable_previous();
+			prevCardInfo->set_controller(wrapper->read<player_t>("player"));
+			prevCardInfo->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			
+			auto currCardInfo = updateCard->mutable_current();
+			ToCardCode(wrapper->read<cardcode_t>("card code "), currCardInfo);
+			// NOTE: maybe move the dirty bit to the position parameter?
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -658,6 +674,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SWAP_GRAVE_DECK:
 		case MSG_SHUFFLE_SET_CARD:
 		case MSG_REVERSE_DECK:
+		case MSG_DECK_TOP:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
