@@ -80,26 +80,28 @@ message UpdateCard
 	// Defines the behaviour of this message
 	enum UpdateReason
 	{
-		// undefined: assume full update
+		// undefined: assume full update.
 		REASON_NO_REASON = 0;
-		// Shows a card from the top of the deck
+		// Shows a card from the top of the deck.
 		// previous: location; current: info
+		// NOTE: sequence in previous is reversed, 0 means top of the stack
 		REASON_DECK_TOP = 1;
-		// Moves a card from one location to another
-		// previous: location and info or not set; current: location and info
+		// Moves a card from one location to another.
+		// previous: location and info, or not set; current: location and info
 		// if previous is not set, then creates a card in place (token)
+		// if current is not set, then removes a card in place (token)
 		REASON_MOVE = 2;
-		// Changes the position of a card in place
+		// Changes the position of a card in place.
 		// previous: location; current: info
 		REASON_POS_CHANGE = 3;
-		// Sets a card in place
+		// Sets a card in place.
 		// previous: location; current: info
 		REASON_SET = 4;
 	}
 	
 	UpdateReason reason = 1;
 	
-	// reason used by MSG_MOVE
+	// NOTE: reason used by MSG_MOVE
 	int32 core_reason = 2;
 	
 	Data.CardInfo previous = 4;
