@@ -631,6 +631,22 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		case MSG_NEW_TURN:
+		{
+			auto newTurn = information->mutable_new_turn();
+			
+			newTurn->set_turn_player(wrapper->read<player_t>("turn player"));
+			
+			encoded = true;
+		}
+		case MSG_NEW_PHASE:
+		{
+			auto newPhase = information->mutable_new_phase();
+			
+			newPhase->set_phase(wrapper->read<uint16_t>("phase"));
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -695,6 +711,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_REVERSE_DECK:
 		case MSG_DECK_TOP:
 		case MSG_SHUFFLE_EXTRA:
+		case MSG_NEW_TURN:
+		case MSG_NEW_PHASE:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
