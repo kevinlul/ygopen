@@ -647,6 +647,19 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		case MSG_CONFIRM_EXTRATOP:
+		{
+			auto confirmCards = information->mutable_confirm_cards();
+			
+			confirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_EXTRATOP);
+			
+			wrapper->seek(1, Buffer::seek_dir::cur, "player");
+			
+			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
+			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -713,6 +726,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SHUFFLE_EXTRA:
 		case MSG_NEW_TURN:
 		case MSG_NEW_PHASE:
+		case MSG_CONFIRM_EXTRATOP:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
