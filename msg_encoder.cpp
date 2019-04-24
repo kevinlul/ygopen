@@ -602,12 +602,13 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			updateCard->set_reason(Core::Msg::UpdateCard::REASON_DECK_TOP);
 			
-			auto prevCardInfo = updateCard->mutable_previous();
-			prevCardInfo->set_controller(wrapper->read<player_t>("player"));
-			prevCardInfo->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			auto previous = updateCard->mutable_previous();
+			previous->set_controller(wrapper->read<player_t>("player"));
+			previous->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			previous->set_location(0x01); // LOCATION_DECK
 			
-			auto currCardInfo = updateCard->mutable_current();
-			ToCardCode(wrapper->read<cardcode_t>("card code "), currCardInfo);
+			auto current = updateCard->mutable_current();
+			ToCardCode(wrapper->read<cardcode_t>("card code "), current);
 			// NOTE: maybe move the dirty bit to the position parameter?
 			
 			encoded = true;
@@ -703,7 +704,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
-			pimpl->matchKillCardId = wrapper->read<cardcode_t>("match killer");
+			pimpl->matchKillCardId = wrapper->read<cardcode_t>("card code");
 			
 			encoded = false;
 		}

@@ -627,8 +627,8 @@ message Move
 {
 	int32 player = 1;
 	int32 reason = 2;
-	repeated Data.CardInfo previous = 3;
-	repeated Data.CardInfo current = 4;
+	Data.CardInfo previous = 3;
+	Data.CardInfo current = 4;
 }
 
 // number: 53 (MSG_POS_CHANGE)
