@@ -136,7 +136,7 @@ message NewPhase
 // NOTE: clears all other disabled zones
 message DisableZones
 {
-	repeated Data.CardInfo locations = 1;
+	repeated Data.Place places = 1;
 }
 
 // Encapsulates:

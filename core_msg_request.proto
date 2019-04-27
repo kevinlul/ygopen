@@ -121,20 +121,13 @@ message SortCards
 // MSG_SELECT_DISFIELD
 message SelectPlaces
 {
-	message Place
-	{
-		bool controller = 1;
-		int32 location = 2;
-		int32 sequence = 3;
-	}
-	
 	//Reason reason = 1;
 	
 	// Minimum places to select
 	int32 min = 2;
 	
 	// Places to select from
-	repeated Place places = 3;
+	repeated Data.Place places = 3;
 }
 
 // Encapsulates:
