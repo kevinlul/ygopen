@@ -706,6 +706,21 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			// NOTE: can we get away with no handling this message?
 			encoded = false;
 		}
+		case MSG_SWAP:
+		{
+			auto swapCards = information->mutable_swap_cards();
+			
+			auto ReadCardInfo = [&wrapper](Core::Data::CardInfo* card, const int val)
+			{
+				ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, val, card);
+			};
+			
+			ReadCardInfo(swapCards->mutable_card1(), 0);
+			ReadCardInfo(swapCards->mutable_card2(), 1);
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -775,6 +790,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_CONFIRM_EXTRATOP:
 		case MSG_MOVE:
 		case MSG_POS_CHANGE:
+		case MSG_SET:
+		case MSG_SWAP:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
