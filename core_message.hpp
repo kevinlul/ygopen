@@ -43,9 +43,9 @@
 #define MSG_CONFIRM_EXTRATOP	42 // DONE
 #define MSG_MOVE				50 // DONE
 #define MSG_POS_CHANGE			53 // DONE
-#define MSG_FIELD_DISABLED		56
 #define MSG_SET					54 // DONE
 #define MSG_SWAP				55 // DONE
+#define MSG_FIELD_DISABLED		56 // DONE
 #define MSG_SUMMONING			60
 #define MSG_SUMMONED			61
 #define MSG_SPSUMMONING			62

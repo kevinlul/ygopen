@@ -721,6 +721,55 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		case MSG_FIELD_DISABLED:
+		{
+			auto disableZones = information->mutable_disable_zones();
+			
+			std::bitset<32> flag(wrapper->read<uint32_t>("flag"));
+
+			// NOTE: This one is different from the one used to handle MSG_SELECT_PLACE.
+			// The flag checkings are reversed.
+			auto ExtractPlaces = [&disableZones, &flag](const int player, const int indexStart)
+			{
+				int i = indexStart;
+				
+				auto addPlace = [&disableZones, &player](int location, int sequence)
+				{
+					auto place = disableZones->add_places();
+					place->set_controller(player);
+					place->set_location(location);
+					place->set_sequence(sequence);
+				};
+
+				// Monster zones, including extra monster zones
+				// NOTE: both players have extra monster zone
+				for(int sequence = 0;i < indexStart + 7;i++,sequence++)
+					if(flag[i])
+						addPlace(0x04, sequence); // LOCATION_MZONE
+
+				i++; // UNUSED BIT
+
+				// Spell zones
+				for(int sequence = 0;i < indexStart + 7 + 1 + 5;i++,sequence++)
+					if(flag[i])
+						addPlace(0x08, sequence); // LOCATION_SZONE
+
+				// Field zone
+				if(flag[i])
+					addPlace(0x0100, 0); // LOCATION_FZONE
+				i++;
+
+				// Pendulum zones
+				for(int sequence = 0;i < indexStart + 7 + 1 + 5 + 1;i++,sequence++)
+					if(flag[i])
+						addPlace(0x0200, sequence); // LOCATION_SZONE
+			};
+			
+			ExtractPlaces(0, 0);
+			ExtractPlaces(1, 16);
+			
+			encoded = true;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -792,6 +841,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_POS_CHANGE:
 		case MSG_SET:
 		case MSG_SWAP:
+		case MSG_FIELD_DISABLED:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
