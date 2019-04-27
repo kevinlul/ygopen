@@ -701,6 +701,11 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		case MSG_SET:
+		{
+			// NOTE: can we get away with no handling this message?
+			encoded = false;
+		}
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
