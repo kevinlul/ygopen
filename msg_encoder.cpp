@@ -286,11 +286,11 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 
 			std::bitset<32> flag(wrapper->read<uint32_t>("flag"));
 
-			auto extractPlacesForPlayer = [&selectPlaces, &flag](const int player, const int indexStart)
+			auto ExtractPlaces = [&selectPlaces, &flag](const int player, const int indexStart)
 			{
 				int i = indexStart;
-
-				auto addPlace = [&selectPlaces, player](int location, int sequence)
+				
+				auto addPlace = [&selectPlaces, &player](int location, int sequence)
 				{
 					auto place = selectPlaces->add_places();
 					place->set_controller(player);
@@ -322,8 +322,8 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 						addPlace(0x0200, sequence); // LOCATION_SZONE
 			};
 
-			extractPlacesForPlayer(0, 0);
-			extractPlacesForPlayer(1, 16);
+			ExtractPlaces(0, 0);
+			ExtractPlaces(1, 16);
 			
 			encoded = true;
 		}
