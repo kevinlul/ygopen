@@ -778,6 +778,61 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
+		case MSG_SUMMONING:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
+			
+			auto card = summonCard->mutable_card();
+			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+		}
+		break;
+		case MSG_SUMMONED:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
+		}
+		break;
+		case MSG_SPSUMMONING:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
+			
+			auto card = summonCard->mutable_card();
+			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+		}
+		break;
+		case MSG_SPSUMMONED:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
+		}
+		break;
+		case MSG_FLIPSUMMONING:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
+			
+			auto card = summonCard->mutable_card();
+			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+		}
+		break;
+		case MSG_FLIPSUMMONED:
+		{
+			auto summonCard = information->mutable_summon_card();
+			
+			summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -850,6 +905,12 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SET:
 		case MSG_SWAP:
 		case MSG_FIELD_DISABLED:
+		case MSG_SUMMONING:
+		case MSG_SUMMONED:
+		case MSG_SPSUMMONING:
+		case MSG_SPSUMMONED:
+		case MSG_FLIPSUMMONING:
+		case MSG_FLIPSUMMONED:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

@@ -157,11 +157,9 @@ message SummonCard
 	
 	SummonType type = 1;
 	
-	// Is it summoning or was it already summoned?
-	bool summoning = 2;
-	
 	// Card being summoned (only when summoning is true)
-	Data.CardInfo card = 3;
+	// NOTE: empty if summon already happened
+	Data.CardInfo card = 2;
 }
 
 // Encapsulates:
