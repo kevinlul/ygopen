@@ -613,6 +613,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_SHUFFLE_EXTRA:
 		{
 			auto shuffleLocation = information->mutable_shuffle_location();
@@ -632,6 +633,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_NEW_TURN:
 		{
 			auto newTurn = information->mutable_new_turn();
@@ -640,6 +642,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_NEW_PHASE:
 		{
 			auto newPhase = information->mutable_new_phase();
@@ -661,6 +664,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_MOVE:
 		{
 			auto updateCard = information->mutable_update_card();
@@ -682,6 +686,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_POS_CHANGE:
 		{
 			auto updateCard = information->mutable_update_card();
@@ -701,11 +706,13 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_SET:
 		{
 			// NOTE: can we get away with no handling this message?
 			encoded = false;
 		}
+		break;
 		case MSG_SWAP:
 		{
 			auto swapCards = information->mutable_swap_cards();
@@ -721,6 +728,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_FIELD_DISABLED:
 		{
 			auto disableZones = information->mutable_disable_zones();
