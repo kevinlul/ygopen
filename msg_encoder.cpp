@@ -788,6 +788,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto card = summonCard->mutable_card();
 			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SUMMONED:
@@ -795,6 +797,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto summonCard = information->mutable_summon_card();
 			
 			summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SPSUMMONING:
@@ -806,6 +810,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto card = summonCard->mutable_card();
 			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SPSUMMONED:
@@ -813,6 +819,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto summonCard = information->mutable_summon_card();
 			
 			summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_FLIPSUMMONING:
@@ -824,6 +832,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto card = summonCard->mutable_card();
 			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_FLIPSUMMONED:
@@ -831,6 +841,8 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto summonCard = information->mutable_summon_card();
 			
 			summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_MATCH_KILL:
