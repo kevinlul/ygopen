@@ -185,12 +185,15 @@ message ChainAction
 	
 	ActionType type = 1;
 	
-	// used for ACTION_CHAINING
-	Data.CardInfo location = 2;
-	Data.CardInfo card = 3;
+	// Card that started the chain
+	Data.CardInfo card = 2;
 	
-	// ACTION_CHAIN_END might not have it
-	int32 chain_number = 4;
+	// Used by MSG_CHAINING (ACTION_CHAINING)
+	Data.Place place = 3; // Place where the chain started
+	Data.EffectDesc ed = 4; // Effect that started the chain
+	
+	// ACTION_CHAIN_END might not have this
+	int32 chain_number = 5;
 }
 
 // Encapsulates:
