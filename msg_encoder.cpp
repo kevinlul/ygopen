@@ -845,6 +845,80 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_CHAINING:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINING);
+			
+			auto card = chainAction->mutable_card();
+			ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
+			
+			auto place = chainAction->mutable_place();
+			place->set_controller(wrapper->read<player_t>("player"));
+			place->set_location(wrapper->read<small_location_t>("location"));
+			place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			
+			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), chainAction->mutable_ed());
+			
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAINED:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINED);
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAIN_SOLVING:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVING);
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAIN_SOLVED:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVED);
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAIN_END:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVED);
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAIN_NEGATED:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_NEGATED);
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CHAIN_DISABLED:
+		{
+			auto chainAction = information->mutable_chain_action();
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_DISABLED);
+			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -923,6 +997,13 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SPSUMMONED:
 		case MSG_FLIPSUMMONING:
 		case MSG_FLIPSUMMONED:
+		case MSG_CHAINING:
+		case MSG_CHAINED:
+		case MSG_CHAIN_SOLVING:
+		case MSG_CHAIN_SOLVED:
+		case MSG_CHAIN_END:
+		case MSG_CHAIN_NEGATED:
+		case MSG_CHAIN_DISABLED:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
