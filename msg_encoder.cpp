@@ -957,6 +957,46 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_DAMAGE:
+		{
+			auto lpChange = information->mutable_lp_change();
+			lpChange->set_type(Core::Msg::LpChange::CHANGE_DAMAGE);
+			lpChange->set_player(wrapper->read<player_t>("player"));
+			lpChange->set_amount(wrapper->read<uint32_t>("amount"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_RECOVER:
+		{
+			auto lpChange = information->mutable_lp_change();
+			lpChange->set_type(Core::Msg::LpChange::CHANGE_RECOVER);
+			lpChange->set_player(wrapper->read<player_t>("player"));
+			lpChange->set_amount(wrapper->read<uint32_t>("amount"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_LPUPDATE:
+		{
+			auto lpChange = information->mutable_lp_change();
+			lpChange->set_type(Core::Msg::LpChange::CHANGE_BECOME);
+			lpChange->set_player(wrapper->read<player_t>("player"));
+			lpChange->set_amount(wrapper->read<uint32_t>("amount"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_PAY_LPCOST:
+		{
+			auto lpChange = information->mutable_lp_change();
+			lpChange->set_type(Core::Msg::LpChange::CHANGE_PAY);
+			lpChange->set_player(wrapper->read<player_t>("player"));
+			lpChange->set_amount(wrapper->read<uint32_t>("amount"));
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1045,6 +1085,10 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_RANDOM_SELECTED:
 		case MSG_BECOME_TARGET:
 		case MSG_DRAW:
+		case MSG_DAMAGE:
+		case MSG_RECOVER:
+		case MSG_LPUPDATE:
+		case MSG_PAY_LPCOST:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
