@@ -60,6 +60,7 @@ message Place
 	bool controller = 1;
 	int32 location = 2;
 	int32 sequence = 3;
+// 	int32 position = 4;
 }
 
 message EffectDesc

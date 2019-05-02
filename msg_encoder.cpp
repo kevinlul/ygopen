@@ -919,6 +919,32 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_RANDOM_SELECTED:
+		{
+			auto selectedCards = information->mutable_selected_cards();
+			selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_RANDOM);
+			
+			wrapper->seek(1, Buffer::seek_dir::cur, "player");
+			
+			auto count = wrapper->read<small_cardcount_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
+			
+			encoded = true;
+		}
+		break;
+		case MSG_BECOME_TARGET:
+		{
+			auto selectedCards = information->mutable_selected_cards();
+			selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_BECOME);
+			
+			auto count = wrapper->read<small_cardcount_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1004,6 +1030,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_CHAIN_END:
 		case MSG_CHAIN_NEGATED:
 		case MSG_CHAIN_DISABLED:
+		case MSG_RANDOM_SELECTED:
+		case MSG_BECOME_TARGET:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
