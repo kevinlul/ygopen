@@ -945,6 +945,18 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_DRAW:
+		{
+			auto draw = information->mutable_draw();
+			draw->set_player(wrapper->read<player_t>("player"));
+			
+			auto count = wrapper->read<small_cardcount_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				ToCardCode(wrapper->read<cardcode_t>("cardcode", i), draw->add_cards());
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1032,6 +1044,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_CHAIN_DISABLED:
 		case MSG_RANDOM_SELECTED:
 		case MSG_BECOME_TARGET:
+		case MSG_DRAW:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

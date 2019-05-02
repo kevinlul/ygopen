@@ -59,7 +59,6 @@
 #define MSG_CHAIN_END			74 // DONE
 #define MSG_CHAIN_NEGATED		75 // DONE
 #define MSG_CHAIN_DISABLED		76 // DONE
-#define MSG_DRAW				90
 #define MSG_DAMAGE				91
 #define MSG_RECOVER				92
 #define MSG_EQUIP				93
@@ -67,6 +66,7 @@
 // #define MSG_CARD_SELECTED		80
 #define MSG_RANDOM_SELECTED		81 // DONE
 #define MSG_BECOME_TARGET		83 // DONE
+#define MSG_DRAW				90 // DONE
 #define MSG_UNEQUIP				95
 #define MSG_CARD_TARGET			96
 #define MSG_CANCEL_TARGET		97
