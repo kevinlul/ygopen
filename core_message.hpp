@@ -59,7 +59,6 @@
 #define MSG_CHAIN_END			74 // DONE
 #define MSG_CHAIN_NEGATED		75 // DONE
 #define MSG_CHAIN_DISABLED		76 // DONE
-#define MSG_BECOME_TARGET		83
 #define MSG_DRAW				90
 #define MSG_DAMAGE				91
 #define MSG_RECOVER				92
