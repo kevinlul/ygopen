@@ -1125,6 +1125,30 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_TOSS_COIN:
+		{
+			auto result = information->mutable_result();
+			result->set_type(Core::Msg::ResultType::RESULT_TOSS_COIN);
+			
+			result->set_player(wrapper->read<player_t>("player"));
+			
+			auto count = wrapper->read<uint8_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				result->add_results(wrapper->read<uint8_t>("result ", i));
+		}
+		break;
+		case MSG_TOSS_DICE:
+		{
+			auto result = information->mutable_result();
+			result->set_type(Core::Msg::ResultType::RESULT_TOSS_DICE);
+			
+			result->set_player(wrapper->read<player_t>("player"));
+			
+			auto count = wrapper->read<uint8_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				result->add_results(wrapper->read<uint8_t>("result ", i));
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1227,6 +1251,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_DAMAGE_STEP_START:
 		case MSG_DAMAGE_STEP_END:
 		case MSG_MISSED_EFFECT:
+		case MSG_TOSS_COIN:
+		case MSG_TOSS_DICE:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
