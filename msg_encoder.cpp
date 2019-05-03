@@ -1019,6 +1019,38 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_ADD_COUNTER:
+		{
+			auto counterChange = information->mutable_counter_change();
+			counterChange->set_type(Core::Msg::CounterChange::CHANGE_ADD);
+			
+			auto counter = counterChange->mutable_counter();
+			auto place = counterChange->mutable_place();
+			counter->set_type(wrapper->read<uint16_t>("counter type"));
+			place->set_controller(wrapper->read<player_t>("player"));
+			place->set_location(wrapper->read<small_location_t>("location"));
+			place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			counter->set_count(wrapper->read<uint16_t>("counter count"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_REMOVE_COUNTER:
+		{
+			auto counterChange = information->mutable_counter_change();
+			counterChange->set_type(Core::Msg::CounterChange::CHANGE_REMOVE);
+			
+			auto counter = counterChange->mutable_counter();
+			auto place = counterChange->mutable_place();
+			counter->set_type(wrapper->read<uint16_t>("counter type"));
+			place->set_controller(wrapper->read<player_t>("player"));
+			place->set_location(wrapper->read<small_location_t>("location"));
+			place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			counter->set_count(wrapper->read<uint16_t>("counter count"));
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1113,6 +1145,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_PAY_LPCOST:
 		case MSG_CARD_TARGET:
 		case MSG_CANCEL_TARGET:
+		case MSG_ADD_COUNTER:
+		case MSG_REMOVE_COUNTER:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
