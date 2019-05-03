@@ -997,6 +997,28 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_CARD_TARGET:
+		{
+			auto selectedCards = information->mutable_selected_cards();
+			selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_TARGET);
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, selectedCards->mutable_targeting_card());
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, selectedCards->add_cards());
+			
+			encoded = true;
+		}
+		break;
+		case MSG_CANCEL_TARGET:
+		{
+			auto selectedCards = information->mutable_selected_cards();
+			selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_DETARGET);
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, selectedCards->mutable_targeting_card());
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, selectedCards->add_cards());
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1089,6 +1111,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_RECOVER:
 		case MSG_LPUPDATE:
 		case MSG_PAY_LPCOST:
+		case MSG_CARD_TARGET:
+		case MSG_CANCEL_TARGET:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

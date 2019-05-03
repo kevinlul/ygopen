@@ -273,7 +273,7 @@ message CounterChange
 	ChangeType type = 1;
 	
 	Data.Counter counter = 2;
-	Data.Counter card = 3;
+	Data.Place place = 3;
 }
 
 // Encapsulates:
