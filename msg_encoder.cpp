@@ -1093,6 +1093,38 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_ATTACK_DISABLED:
+		{
+			auto miscAction = information->mutable_misc_action();
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_ATTACK_NEGATED);
+			
+			encoded = true;
+		}
+		break;
+		case MSG_DAMAGE_STEP_START:
+		{
+			auto miscAction = information->mutable_misc_action();
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_START);
+			
+			encoded = true;
+		}
+		break;
+		case MSG_DAMAGE_STEP_END:
+		{
+			auto miscAction = information->mutable_misc_action();
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_END);
+			
+			encoded = true;
+		}
+		break;
+		case MSG_MISSED_EFFECT:
+		{
+			auto miscAction = information->mutable_misc_action();
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_MISSED_TIMING);
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1191,6 +1223,10 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_REMOVE_COUNTER:
 		case MSG_ATTACK:
 		case MSG_BATTLE:
+		case MSG_ATTACK_DISABLED:
+		case MSG_DAMAGE_STEP_START:
+		case MSG_DAMAGE_STEP_END:
+		case MSG_MISSED_EFFECT:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
