@@ -1051,6 +1051,48 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_ATTACK:
+		{
+			auto onAttack = information->mutable_on_attack();
+			onAttack->set_status(Core::Msg::OnAttack::STATUS_ATTACK_DECLARATION);
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, onAttack->mutable_attacker());
+			
+			auto atkTarget = onAttack->mutable_attack_target();
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, atkTarget);
+			
+			// clear card if location is empty
+			if(atkTarget->location() == 0 && atkTarget->sequence() == 0)
+				onAttack->clear_attack_target();
+			
+			encoded = true;
+		}
+		break;
+		case MSG_BATTLE:
+		{
+			auto onAttack = information->mutable_on_attack();
+			onAttack->set_status(Core::Msg::OnAttack::STATUS_ATTACK_DECLARATION);
+			
+			auto attacker = onAttack->mutable_attacker();
+			auto atkTarget = onAttack->mutable_attack_target();
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, attacker);
+			attacker->set_atk(wrapper->read<uint32_t>("attacker atk"));
+			attacker->set_def(wrapper->read<uint32_t>("attacker def"));
+			wrapper->seek(1, Buffer::seek_dir::cur, "attacker battle destroyed");
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, atkTarget);
+			atkTarget->set_atk(wrapper->read<uint32_t>("attack_target atk"));
+			atkTarget->set_def(wrapper->read<uint32_t>("attack_target def"));
+			wrapper->seek(1, Buffer::seek_dir::cur, "attack_target battle destroyed");
+			
+			// clear card if location is empty
+			if(atkTarget->location() == 0 && atkTarget->sequence() == 0)
+				onAttack->clear_attack_target();
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1147,6 +1189,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_CANCEL_TARGET:
 		case MSG_ADD_COUNTER:
 		case MSG_REMOVE_COUNTER:
+		case MSG_ATTACK:
+		case MSG_BATTLE:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

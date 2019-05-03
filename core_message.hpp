@@ -67,14 +67,14 @@
 #define MSG_RECOVER				92 // DONE
 #define MSG_EQUIP				93 // DONE
 #define MSG_LPUPDATE			94 // DONE
-#define MSG_ATTACK				110
 // #define MSG_UNEQUIP				95
 #define MSG_CARD_TARGET			96 // DONE
 #define MSG_CANCEL_TARGET		97 // DONE
 #define MSG_PAY_LPCOST			100 // DONE
 #define MSG_ADD_COUNTER			101 // DONE
 #define MSG_REMOVE_COUNTER		102 // DONE
-#define MSG_BATTLE				111
+#define MSG_ATTACK				110 // DONE
+#define MSG_BATTLE				111 // DONE
 #define MSG_ATTACK_DISABLED		112
 #define MSG_DAMAGE_STEP_START	113
 #define MSG_DAMAGE_STEP_END		114
