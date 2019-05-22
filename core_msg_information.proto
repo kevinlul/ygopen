@@ -307,6 +307,7 @@ message Result
 	}
 	ResultType type = 1;
 
+	// NOTE: unused with RESULT_RPS
 	bool player = 2;
 
 	// results of dices or coin tosses

@@ -440,6 +440,14 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_ROCK_PAPER_SCISSORS:
+		{
+			specific->mutable_request()->set_select_rps(true);
+			encoded = true;
+		}
+		break;
+			
+			encoded = true;
 	}
 	
 	return encoded;
@@ -1128,25 +1136,41 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 		case MSG_TOSS_COIN:
 		{
 			auto result = information->mutable_result();
-			result->set_type(Core::Msg::ResultType::RESULT_TOSS_COIN);
+			result->set_type(Core::Msg::Result::RESULT_TOSS_COIN);
 			
 			result->set_player(wrapper->read<player_t>("player"));
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
 				result->add_results(wrapper->read<uint8_t>("result ", i));
+			
+			encoded = true;
 		}
 		break;
 		case MSG_TOSS_DICE:
 		{
 			auto result = information->mutable_result();
-			result->set_type(Core::Msg::ResultType::RESULT_TOSS_DICE);
+			result->set_type(Core::Msg::Result::RESULT_TOSS_DICE);
 			
 			result->set_player(wrapper->read<player_t>("player"));
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
 				result->add_results(wrapper->read<uint8_t>("result ", i));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_HAND_RES:
+		{
+			auto result = information->mutable_result();
+			result->set_type(Core::Msg::Result::RESULT_RPS);
+			
+			auto handResults = wrapper->read<uint8_t>("hand results");
+			result->add_results((handResults & 0x3) - 1);
+			result->add_results(((handResults >> 2) & 0x3) - 1);
+			
+			encoded = true;
 		}
 		break;
 		case MSG_MATCH_KILL:
@@ -1190,6 +1214,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SELECT_COUNTER:
 		case MSG_SELECT_SUM:
 		case MSG_SELECT_UNSELECT_CARD:
+		case MSG_ROCK_PAPER_SCISSORS:
 		{
 			encoded = SpecificRequestMsg(msg, msgType);
 		}
@@ -1253,6 +1278,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_MISSED_EFFECT:
 		case MSG_TOSS_COIN:
 		case MSG_TOSS_DICE:
+		case MSG_HAND_RES:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
