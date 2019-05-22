@@ -446,8 +446,81 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_ANNOUNCE_RACE:
+		{
+			auto declareMisc = specific->mutable_request()->mutable_declare_misc();
+			declareMisc->set_type(Core::Msg::DeclareMisc::DECLARE_RACE);
+			
+			declareMisc->set_count(wrapper->read<uint8_t>("count"));
+			
+			declareMisc->add_available(wrapper->read<uint32_t>("races available"));
 			
 			encoded = true;
+		}
+		break;
+		case MSG_ANNOUNCE_ATTRIB:
+		{
+			auto declareMisc = specific->mutable_request()->mutable_declare_misc();
+			declareMisc->set_type(Core::Msg::DeclareMisc::DECLARE_ATTRIBUTE);
+			
+			declareMisc->set_count(wrapper->read<uint8_t>("count"));
+			
+			declareMisc->add_available(wrapper->read<uint32_t>("attrs available"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_ANNOUNCE_CARD:
+		{
+			auto declareCard = specific->mutable_request()->mutable_declare_card();
+			
+			auto types = wrapper->read<uint32_t>("card types to declare from");
+			
+			if(types != 0x7) // monster, spell or trap
+			{
+#define f(t)do{if(types & t)declareCard->add_opcodes(t);}while(0)
+				f(0x1); // TYPE_MONSTER
+				f(0x2); // TYPE_SPELL
+				f(0x4); // TYPE_TRAP
+#undef f
+				if(declareCard->opcodes_size() == 2)
+				{
+					declareCard->add_opcodes(0x40000102); // ISTYPE
+					declareCard->add_opcodes(0x40000102); // ISTYPE
+					declareCard->add_opcodes(0x40000005); // OR
+				}
+				else // must be 1
+				{
+					declareCard->add_opcodes(0x40000102); // ISTYPE
+				}
+			}
+			
+			encoded = true;
+		}
+		break;
+		case MSG_ANNOUNCE_NUMBER:
+		{
+			auto declareMisc = specific->mutable_request()->mutable_declare_misc();
+			declareMisc->set_type(Core::Msg::DeclareMisc::DECLARE_NUMBER);
+			
+			auto count = wrapper->read<uint8_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				declareMisc->add_available(wrapper->read<uint64_t>("number ", i));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_ANNOUNCE_CARD_FILTER:
+		{
+			auto declareCard = specific->mutable_request()->mutable_declare_card();
+			
+			auto count = wrapper->read<uint8_t>("count");
+			for(decltype(count) i = 0; i < count; i++)
+				declareCard->add_opcodes(wrapper->read<uint64_t>("opcode ", i));
+			
+			encoded = true;
+		}
+		break;
 	}
 	
 	return encoded;
@@ -1215,6 +1288,11 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_SELECT_SUM:
 		case MSG_SELECT_UNSELECT_CARD:
 		case MSG_ROCK_PAPER_SCISSORS:
+		case MSG_ANNOUNCE_RACE:
+		case MSG_ANNOUNCE_ATTRIB:
+		case MSG_ANNOUNCE_CARD:
+		case MSG_ANNOUNCE_NUMBER:
+		case MSG_ANNOUNCE_CARD_FILTER:
 		{
 			encoded = SpecificRequestMsg(msg, msgType);
 		}
