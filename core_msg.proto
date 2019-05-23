@@ -55,7 +55,8 @@ message MsgInformation
 		Msg.OnAttack on_attack = 19;
 		Msg.Result result = 20;
 		Msg.MiscAction misc_action = 21;
-		Msg.SwapPlayer swap_player = 22;
+		Msg.CardHint card_hint = 22;
+		Msg.PlayerHint player_hint = 23;
 	}
 }
 

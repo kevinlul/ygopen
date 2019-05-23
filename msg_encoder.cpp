@@ -1246,6 +1246,30 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_CARD_HINT:
+		{
+			auto cardHint = information->mutable_card_hint();
+			
+			auto card = cardHint->mutable_card();
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, card);
+			
+			cardHint->set_type(wrapper->read<uint8_t>("hint type"));
+			cardHint->set_data(wrapper->read<uint64_t>("hint data"));
+			
+			encoded = true;
+		}
+		break;
+		case MSG_PLAYER_HINT:
+		{
+			auto playerHint = information->mutable_player_hint();
+			
+			playerHint->set_player(wrapper->read<player_t>("player"));
+			playerHint->set_type(wrapper->read<uint8_t>("hint type"));
+			playerHint->set_data(wrapper->read<uint64_t>("hint data"));
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1357,6 +1381,8 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_TOSS_COIN:
 		case MSG_TOSS_DICE:
 		case MSG_HAND_RES:
+		case MSG_CARD_HINT:
+		case MSG_PLAYER_HINT:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);
