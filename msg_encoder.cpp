@@ -1270,6 +1270,28 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
+		case MSG_TAG_SWAP:
+		{
+			auto swapPlayer = information->mutable_swap_player();
+			
+			swapPlayer->set_player(wrapper->read<player_t>("player"));
+			swapPlayer->set_main_deck_count(wrapper->read<small_cardcount_t>("main deck count"));
+			
+			auto extraCount = wrapper->read<small_cardcount_t>("extra deck count");
+			wrapper->seek(1, Buffer::seek_dir::cur, "extra_p_count (face-up pendulums)");
+			auto handCount = wrapper->read<small_cardcount_t>("hand deck count");
+			
+			ToCardCode(wrapper->read<cardcode_t>("top of deck"), swapPlayer->mutable_top_of_deck());
+			
+			for(decltype(handCount) i = 0; i < handCount; i++)
+				ToCardCode(wrapper->read<cardcode_t>("hand card ", i), swapPlayer->add_hand_cards());
+			
+			for(decltype(extraCount) i = 0; i < extraCount; i++)
+				ToCardCode(wrapper->read<cardcode_t>("extra card ", i), swapPlayer->add_extra_cards());
+			
+			encoded = true;
+		}
+		break;
 		case MSG_MATCH_KILL:
 		{
 			pimpl->isMatchKill = true;
@@ -1383,6 +1405,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_HAND_RES:
 		case MSG_CARD_HINT:
 		case MSG_PLAYER_HINT:
+		case MSG_TAG_SWAP:
 		case MSG_MATCH_KILL:
 		{
 			encoded = InformationMsg(msg, msgType);

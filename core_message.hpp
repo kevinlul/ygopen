@@ -91,11 +91,11 @@
 #define MSG_ANNOUNCE_CARD		142 // DONE
 #define MSG_ANNOUNCE_NUMBER		143 // DONE
 #define MSG_ANNOUNCE_CARD_FILTER	144 // DONE
-#define MSG_TAG_SWAP			161
-#define MSG_RELOAD_FIELD		162	// Debug.ReloadFieldEnd()
-#define MSG_AI_NAME				163
-#define MSG_SHOW_HINT			164
 #define MSG_CARD_HINT			160 // DONE
+#define MSG_TAG_SWAP			161 // DONE
+#define MSG_RELOAD_FIELD		162 // semi-DONE - NOTE: puzzle stuff - Debug.ReloadFieldEnd()
+#define MSG_AI_NAME				163 // semi-DONE - NOTE: puzzle stuff
+#define MSG_SHOW_HINT			164 // semi-DONE - NOTE: puzzle stuff
 #define MSG_PLAYER_HINT			165 // DONE
 #define MSG_MATCH_KILL			170 // DONE
 // #define MSG_CUSTOM_MSG			180

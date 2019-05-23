@@ -371,7 +371,7 @@ message SwapPlayer
 {
 	bool player = 1;
 	int32 main_deck_count = 2;
-	int32 extra_deck_count = 3;
-	int32 hand_count = 4;
-	int32 player_number = 5;
+	Data.CardInfo top_of_deck = 3;
+	repeated Data.CardInfo hand_cards = 4;
+	repeated Data.CardInfo extra_cards = 5;
 }
