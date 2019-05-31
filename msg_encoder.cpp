@@ -1,7 +1,6 @@
 #include <functional>
 #include <bitset>
 
-#include <google/protobuf/text_format.h>
 
 #include "msg_codec.hpp"
 #include "buffer.hpp"
@@ -1307,13 +1306,12 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 
 Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 {
-	bool unhandled = false;
 	Core::AnyMsg msg{};
 
 	pimpl->ib.open(buffer, length);
 
-	const auto msgType = pimpl->ib.read<uint8_t>("Encode: message type");
 	pimpl->ib.log("Message Type: ", (int)msgType, '\n');
+	const int msgType = (int)pimpl->ib.read<uint8_t>("Message type");
 	switch(msgType)
 	{
 		// Specific Request messages
@@ -1417,17 +1415,9 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		{
 			// UNHANDLED
 			pimpl->ib.log("Warning: Unhandled Message\n");
-			unhandled = true;
 			encoded = false;
 		}
 		break;
-	}
-	
-	if(!unhandled)
-	{
-		std::string str;
-		google::protobuf::TextFormat::PrintToString(msg, &str);
-		std::cout << str << std::endl;
 	}
 	
 	return (lastMsg = msg);
