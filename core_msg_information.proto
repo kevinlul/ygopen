@@ -93,10 +93,10 @@ message UpdateCard
 		// if current is not set, then removes a card in place (token)
 		REASON_MOVE = 2;
 		// Changes the position of a card in place.
-		// previous: controller, location, sequence, position; current: position, code
+		// previous: controller, location, sequence, position; current: code, position
 		REASON_POS_CHANGE = 3;
 		// Sets a card in place.
-		// previous: location, sequence; current: info
+		// previous: controller, location, sequence; current: code, position
 		REASON_SET = 4;
 	}
 	
@@ -341,7 +341,7 @@ message MiscAction
 	
 	bool player = 2;
 	
-	// used by ACTION_MISSED_TIMING
+	// NOTE: used by ACTION_MISSED_TIMING
 	Data.CardInfo card = 3;
 }
 
