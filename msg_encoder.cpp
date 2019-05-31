@@ -101,7 +101,7 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 		if(bcr) bcr(wrapper, i, card);
 
 		// Card Code & Dirty Bit
-		ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+		ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 
 		// Location Info
 		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, i, card);
@@ -546,6 +546,19 @@ inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgT
 			
 			hint->set_data(wrapper->read<uint64_t>("hint data"));
 			// TODO: handle each hint
+			encoded = true;
+		}
+		break;
+		case MSG_MISSED_EFFECT:
+		{
+			auto miscAction = specific->mutable_information()->mutable_misc_action();
+			miscAction->set_type(Core::Msg::MiscAction::ACTION_MISSED_TIMING);
+			
+			auto card = miscAction->mutable_card();
+			
+			ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, card);
+			ToCardCode(wrapper->read<cardcode_t>("card code 1"), card);
+			
 			encoded = true;
 		}
 		break;
@@ -1197,14 +1210,6 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			encoded = true;
 		}
 		break;
-		case MSG_MISSED_EFFECT:
-		{
-			auto miscAction = information->mutable_misc_action();
-			miscAction->set_type(Core::Msg::MiscAction::ACTION_MISSED_TIMING);
-			
-			encoded = true;
-		}
-		break;
 		case MSG_TOSS_COIN:
 		{
 			auto result = information->mutable_result();
@@ -1344,6 +1349,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		
 		// Specific Information messages
 		case MSG_HINT:
+		case MSG_MISSED_EFFECT:
 		{
 			encoded = SpecificInformationMsg(msg, msgType);
 		}
@@ -1397,7 +1403,6 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
 		case MSG_ATTACK_DISABLED:
 		case MSG_DAMAGE_STEP_START:
 		case MSG_DAMAGE_STEP_END:
-		case MSG_MISSED_EFFECT:
 		case MSG_TOSS_COIN:
 		case MSG_TOSS_DICE:
 		case MSG_HAND_RES:
