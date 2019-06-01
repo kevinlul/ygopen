@@ -802,8 +802,21 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 		break;
 		case MSG_SET:
 		{
-			// NOTE: can we get away with no handling this message?
-			encoded = false;
+			auto updateCard = information->mutable_update_card();
+			
+			updateCard->set_reason(Core::Msg::UpdateCard::REASON_SET);
+			
+			auto previous = updateCard->mutable_previous();
+			auto current = updateCard->mutable_current();
+			
+			ToCardCode(wrapper->read<cardcode_t>("cardcode"), current);
+			
+			previous->set_controller(wrapper->read<player_t>("controller"));
+			previous->set_location(wrapper->read<small_location_t>("location"));
+			previous->set_sequence(wrapper->read<sequence_t>("sequence"));
+			current->set_position(wrapper->read<position_t>("current position"));
+			
+			encoded = true;
 		}
 		break;
 		case MSG_SWAP:
