@@ -65,7 +65,7 @@ message MsgInformation
 // Must always have player set.
 message MsgSpecific
 {
-	bool player = 1;
+	uint32 player = 1;
 	oneof MsgSpecific
 	{
 		MsgRequest request = 2;

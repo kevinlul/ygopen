@@ -18,7 +18,7 @@ message Hint
 // MSG_MATCH_KILL
 message Win
 {
-	bool player = 1;
+	uint32 player = 1;
 	uint32 reason = 2;
 	uint32 code = 3;
 	bool is_match_kill = 4;
@@ -48,7 +48,7 @@ message ConfirmCards
 // MSG_SHUFFLE_EXTRA
 message ShuffleLocation
 {
-	bool player = 1;
+	uint32 player = 1;
 	uint32 location = 2;
 	
 	// NOTE: can be empty
@@ -119,7 +119,7 @@ message SwapCards
 // MSG_NEW_TURN
 message NewTurn
 {
-	bool turn_player = 1;
+	uint32 turn_player = 1;
 }
 
 // Encapsulates:
@@ -247,7 +247,7 @@ message LpChange
 	}
 	ChangeType type = 1;
 	
-	bool player = 2;
+	uint32 player = 2;
 	uint32 amount = 3;
 }
 
@@ -299,7 +299,7 @@ message Result
 	ResultType type = 1;
 
 	// NOTE: unused with RESULT_RPS
-	bool player = 2;
+	uint32 player = 2;
 
 	// results of dices or coin tosses
 	// in case of RPS, both player hand result
@@ -329,7 +329,7 @@ message MiscAction
 	}
 	ActionType type = 1;
 	
-	bool player = 2;
+	uint32 player = 2;
 	
 	// NOTE: used by ACTION_MISSED_TIMING
 	Data.CardInfo card = 3;
@@ -350,7 +350,7 @@ message CardHint
 message PlayerHint
 {
 // TODO: rework hints
-	bool player = 1;
+	uint32 player = 1;
 	uint32 type = 2;
 	uint64 data = 3;
 }
@@ -359,7 +359,7 @@ message PlayerHint
 // MSG_TAG_SWAP
 message SwapPlayer
 {
-	bool player = 1;
+	uint32 player = 1;
 	uint32 main_deck_count = 2;
 	Data.CardInfo top_of_deck = 3;
 	repeated Data.CardInfo hand_cards = 4;
