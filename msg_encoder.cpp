@@ -361,7 +361,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			{
 				card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
 			};
-			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_selectable, nullptr, ReadReleaseParam);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, void>(wrapper, add_selectable, nullptr, ReadReleaseParam);
 			
 			encoded = true;
 		}
@@ -394,7 +394,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			{
 				card->mutable_counter()->set_count(wrapper->read<uint16_t>("counter count ", count));
 			};
-			ReadCardVector<uint8_t /*TODO: update*/, small_location_t, small_sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
+			ReadCardVector<cardcount_t, small_location_t, small_sequence_t, void>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
 			
 			// TODO: Set right counter type to each card?
 			
@@ -403,13 +403,12 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 		break;
 		case MSG_SELECT_SUM:
 		{
-			// TODO: fix select_mode and player being reversed
-			// TODO: figure out what select_mode is for.
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 			
-			selectCards->set_type(Core::Msg::SelectCards::SELECTION_SUM);
-			
-			wrapper->seek(1, Buffer::seek_dir::cur, "player OR select_mode");
+			if(wrapper->read<uint8_t>("select_mode"))
+				selectCards->set_type(Core::Msg::SelectCards::SELECTION_SUM);
+			else
+				selectCards->set_type(Core::Msg::SelectCards::SELECTION_SUM_EXACTLY);
 			
 			selectCards->set_sum(wrapper->read<uint32_t>("acc (sum)"));
 			
