@@ -51,7 +51,7 @@ message CardInfo
 	
 	// Dirty bit for certain core messages that use it.
 	// used by:
-	// TODO: add msgs that use it and for what they use it
+	// TODO: add special handling for this bit and remove from here
 	bool bit = 20;
 }
 

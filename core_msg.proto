@@ -5,16 +5,15 @@ package YGOpen.Core;
 import "core_msg_request.proto";
 import "core_msg_information.proto";
 
-// Game message that requires an answer from the player, see MsgSpecific
+// Core Game message that requires an answer from the player, see MsgSpecific.
 // Can be stripped in case selections or choices have non-public cards on it
+// Not saved into replay.
 message MsgRequest
 {
-	// bool player = 1; // probably not needed
-	bool stripped = 2;
+	bool stripped = 2; // used 2 to maintain consistency with MsgSpecific
 	oneof MsgRequest
 	{
-		bool retry = 3; // the last answer was not understood by the core
-
+		bool retry = 3; // the last answer was REJECTED by the core
 		Msg.SelectCmd select_cmd = 4;
 		Msg.SelectYesNo select_yesno = 5;
 		Msg.SelectOption select_option = 6;
@@ -24,16 +23,17 @@ message MsgRequest
 		Msg.SelectPosition select_position = 10;
 		bool select_rps = 11; // ask player for rock, papper or scissors
 		Msg.DeclareCard declare_card = 12;
-		Msg.DeclareMisc declare_misc = 13; // ask for race, attribute or a number
+		Msg.DeclareMisc declare_misc = 13;
 		Msg.SelectToChain select_to_chain = 14;
 	}
 }
 
-// Game message about information of the game, those are saved unstripped to a replay
-// and they are sent to everyone either stripped or unstripped
+// Core Game message about information of the game, they do not require an answer.
+// Sent to specific player or everyone, either stripped or unstripped.
+// Saved unstripped to a replay server-side.
 message MsgInformation
 {
-	bool stripped = 2; // used 2 to maintain consistency with GMsgSpecific
+	bool stripped = 2; // used 2 to maintain consistency with MsgSpecific
 	oneof MsgInformation
 	{
 		Msg.Hint hint = 3;
@@ -61,8 +61,8 @@ message MsgInformation
 	}
 }
 
-// Game message for a specific player, those are not saved on a replay
-// and sometimes require an answer
+// Core Game message for a specific player.
+// Must always have player set.
 message MsgSpecific
 {
 	bool player = 1;

@@ -121,8 +121,6 @@ message SortCards
 // MSG_SELECT_DISFIELD
 message SelectPlaces
 {
-	//Reason reason = 1;
-	
 	// Minimum places to select
 	int32 min = 2;
 	

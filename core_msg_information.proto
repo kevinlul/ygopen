@@ -157,8 +157,8 @@ message SummonCard
 	
 	SummonType type = 1;
 	
-	// Card being summoned (only when summoning is true)
-	// NOTE: empty if summon already happened
+	// Card being summoned
+	// NOTE: Only set when core message is SUMMONING
 	Data.CardInfo card = 2;
 }
 
@@ -192,8 +192,8 @@ message ChainAction
 	Data.Place place = 3; // Place where the chain started
 	Data.EffectDesc ed = 4; // Effect that started the chain
 	
-	// ACTION_CHAIN_END might not have this
 	int32 chain_number = 5;
+	// NOTE: ACTION_CHAIN_END does not set this
 }
 
 // Encapsulates:
