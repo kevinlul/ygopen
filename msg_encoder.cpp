@@ -20,10 +20,15 @@ using effectdesc_t = uint64_t;
 using field_cardcount_t = uint8_t;
 
 // Types that should be changed (increased) in far future
-using small_cardcount_t = uint8_t;
 using small_location_t = uint8_t;
 using small_sequence_t = uint8_t;
 using small_position_t = uint8_t;
+
+// NOTE: write info location sizes:
+// controller = 1 byte (player_t)
+// location = 1 byte (small_location_t)
+// sequence = 4 bytes (sequence_t)
+// position = 4 bytes (position_t)
 
 // reads a effectdesc_t value and places the right content on the given EffectDesc
 void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
@@ -145,14 +150,14 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
 			
 			CardSpawner add_can_attack = BindFromPointer(selectCmd, add_cards_can_attack);
 			InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				card->set_can_attack_directly(wrapper->read<uint8_t>("can_attack_directly ", count));
 			};
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_can_attack, nullptr, ReadAtkDirectly);
+			ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_can_attack, nullptr, ReadAtkDirectly);
 			
 			selectCmd->set_able_to_mp2(wrapper->read<uint8_t>("to_mp2"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
@@ -167,26 +172,26 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_IDLE);
 
 			CardSpawner add_summonable = BindFromPointer(selectCmd, add_cards_summonable);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_summonable);
 
 			CardSpawner add_spsummonable = BindFromPointer(selectCmd, add_cards_spsummonable);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_spsummonable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_spsummonable);
 
 			CardSpawner add_repositionable = BindFromPointer(selectCmd, add_cards_repositionable);
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_repositionable);
+			ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_repositionable);
 
 			CardSpawner add_msetable = BindFromPointer(selectCmd, add_cards_msetable);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_msetable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_msetable);
 
 			CardSpawner add_ssetable = BindFromPointer(selectCmd, add_cards_ssetable);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_ssetable);
 
 			CardSpawner add_w_effect = BindFromPointer(selectCmd, add_cards_w_effect);
 			InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
 				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", count), card->mutable_effect_desc());
 			};
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_w_effect, nullptr, ReadEffectDesc);
 
 			selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
 			selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
@@ -234,8 +239,8 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
 			selectCards->set_can_accept(false);
 
-			selectCards->set_min(wrapper->read<uint8_t>("min"));
-			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_min(wrapper->read<uint32_t>("min"));
+			selectCards->set_max(wrapper->read<uint32_t>("max"));
 
 			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
@@ -247,7 +252,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 		{
 			auto selectToChain = specific->mutable_request()->mutable_select_to_chain();
 
-			const auto count = wrapper->read<uint8_t>("number of chains");
+			const auto count = wrapper->read<uint32_t>("number of chains");
 
 			wrapper->seek(1, Buffer::seek_dir::cur, "spe_count");
 
@@ -262,12 +267,12 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			{
 				auto chainCard = selectToChain->add_cards_w_effect();
 
-				chainCard->set_effect_desc_type(wrapper->read<uint8_t>("EDESC ", i));
+				chainCard->set_effect_desc_type(wrapper->read<uint8_t>("EDESC ", (int)i));
 				auto card = chainCard->mutable_card();
 
-				ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+				ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, card);
-				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", i), card->mutable_effect_desc());
+				ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)i), card->mutable_effect_desc());
 			}
 			
 			encoded = true;
@@ -348,8 +353,8 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			selectCards->set_can_cancel(wrapper->read<uint8_t>("can_cancel"));
 			selectCards->set_can_accept(false);
 
-			selectCards->set_min(wrapper->read<uint8_t>("min"));
-			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_min(wrapper->read<uint32_t>("min"));
+			selectCards->set_max(wrapper->read<uint32_t>("max"));
 
 			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
@@ -389,7 +394,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			{
 				card->mutable_counter()->set_count(wrapper->read<uint16_t>("counter count ", count));
 			};
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
+			ReadCardVector<uint8_t /*TODO: update*/, small_location_t, small_sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
 			
 			// TODO: Set right counter type to each card?
 			
@@ -398,14 +403,18 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 		break;
 		case MSG_SELECT_SUM:
 		{
+			// TODO: fix select_mode and player being reversed
+			// TODO: figure out what select_mode is for.
 			auto selectCards = specific->mutable_request()->mutable_select_cards();
 			
 			selectCards->set_type(Core::Msg::SelectCards::SELECTION_SUM);
 			
-			selectCards->set_sum(wrapper->read<uint16_t>("acc (sum)"));
+			wrapper->seek(1, Buffer::seek_dir::cur, "player OR select_mode");
 			
-			selectCards->set_min(wrapper->read<uint8_t>("min"));
-			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_sum(wrapper->read<uint32_t>("acc (sum)"));
+			
+			selectCards->set_min(wrapper->read<uint32_t>("min"));
+			selectCards->set_max(wrapper->read<uint32_t>("max"));
 			
 			InlineCardRead ReadSumParam = [](Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
 			{
@@ -413,10 +422,10 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			};
 			
 			CardSpawner add_cards_must_select = BindFromPointer(selectCards, add_cards_must_select);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_must_select, nullptr, ReadSumParam);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_must_select, nullptr, ReadSumParam);
 			
 			CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t, do_not_read_t>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
 			
 			encoded = true;
 		}
@@ -427,8 +436,8 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			selectCards->set_can_accept(wrapper->read<uint8_t>("buttonok (can_accept)"));
 			selectCards->set_can_cancel(wrapper->read<uint8_t>("cancelable"));
-			selectCards->set_min(wrapper->read<uint8_t>("min"));
-			selectCards->set_max(wrapper->read<uint8_t>("max"));
+			selectCards->set_min(wrapper->read<uint32_t>("min"));
+			selectCards->set_max(wrapper->read<uint32_t>("max"));
 			
 			CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 			ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
@@ -504,7 +513,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
-				declareMisc->add_available(wrapper->read<uint64_t>("number ", i));
+				declareMisc->add_available(wrapper->read<uint64_t>("number ", (int)i));
 			
 			encoded = true;
 		}
@@ -515,7 +524,7 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
-				declareCard->add_opcodes(wrapper->read<uint64_t>("opcode ", i));
+				declareCard->add_opcodes(wrapper->read<uint64_t>("opcode ", (int)i));
 			
 			encoded = true;
 		}
@@ -601,7 +610,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			wrapper->seek(1, Buffer::seek_dir::cur, "player");
 			
 			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
+			ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
 			
 			encoded = true;
 		}
@@ -615,7 +624,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			wrapper->seek(1, Buffer::seek_dir::cur, "player");
 			
 			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
-			ReadCardVector<small_cardcount_t, small_location_t, sequence_t>(wrapper, add_cards);
+			ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_cards);
 			
 			encoded = true;
 		}
@@ -641,12 +650,12 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			shuffleLocation->set_location(0x02); // LOCATION_HAND
 			
-			auto count = wrapper->read<small_cardcount_t>(".size()");
+			auto count = wrapper->read<cardcount_t>(".size()");
 			CardSpawner add_shuffled_cards = BindFromPointer(shuffleLocation, add_shuffled_cards);
 			for(decltype(count) i = 0; i < count; i++)
 			{
 				Core::Data::CardInfo* card = add_shuffled_cards();
-				ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+				ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 				card->set_location(0x02); // LOCATION_HAND
 			}
 			
@@ -701,7 +710,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			previous->set_location(0x01); // LOCATION_DECK
 			
 			auto current = updateCard->mutable_current();
-			ToCardCode(wrapper->read<cardcode_t>("card code "), current);
+			ToCardCode(wrapper->read<cardcode_t>("card code"), current);
 			// NOTE: maybe move the dirty bit to the position parameter?
 			
 			encoded = true;
@@ -715,12 +724,12 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			shuffleLocation->set_location(0x40); // LOCATION_EXTRA
 			
-			auto count = wrapper->read<small_cardcount_t>(".size()");
+			auto count = wrapper->read<cardcount_t>(".size()");
 			CardSpawner add_shuffled_cards = BindFromPointer(shuffleLocation, add_shuffled_cards);
 			for(decltype(count) i = 0; i < count; i++)
 			{
 				Core::Data::CardInfo* card = add_shuffled_cards();
-				ToCardCode(wrapper->read<cardcode_t>("card code ", i), card);
+				ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 				card->set_location(0x40); // LOCATION_EXTRA
 			}
 			
@@ -744,6 +753,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			encoded = true;
 		}
+		break;
 		case MSG_CONFIRM_EXTRATOP:
 		{
 			auto confirmCards = information->mutable_confirm_cards();
@@ -753,7 +763,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			wrapper->seek(1, Buffer::seek_dir::cur, "player");
 			
 			CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
-			ReadCardVector<small_cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
+			ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
 			
 			encoded = true;
 		}
@@ -963,11 +973,11 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto place = chainAction->mutable_place();
 			place->set_controller(wrapper->read<player_t>("player"));
 			place->set_location(wrapper->read<small_location_t>("location"));
-			place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
+			place->set_sequence(wrapper->read<sequence_t>("sequence"));
 			
 			ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), chainAction->mutable_ed());
 			
-			chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
+			chainAction->set_chain_number(wrapper->read<uint32_t>("chain num"));
 			
 			encoded = true;
 		}
@@ -1002,7 +1012,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 		case MSG_CHAIN_END:
 		{
 			auto chainAction = information->mutable_chain_action();
-			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVED);
+			chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_END);
 			
 			encoded = true;
 		}
@@ -1032,7 +1042,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			wrapper->seek(1, Buffer::seek_dir::cur, "player");
 			
-			auto count = wrapper->read<small_cardcount_t>("count");
+			auto count = wrapper->read<cardcount_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
 				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
 			
@@ -1044,7 +1054,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto selectedCards = information->mutable_selected_cards();
 			selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_BECOME);
 			
-			auto count = wrapper->read<small_cardcount_t>("count");
+			auto count = wrapper->read<cardcount_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
 				ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
 			
@@ -1056,9 +1066,9 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto draw = information->mutable_draw();
 			draw->set_player(wrapper->read<player_t>("player"));
 			
-			auto count = wrapper->read<small_cardcount_t>("count");
+			auto count = wrapper->read<cardcount_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
-				ToCardCode(wrapper->read<cardcode_t>("cardcode", i), draw->add_cards());
+				ToCardCode(wrapper->read<cardcode_t>("cardcode", (int)i), draw->add_cards());
 			
 			encoded = true;
 		}
@@ -1232,7 +1242,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
-				result->add_results(wrapper->read<uint8_t>("result ", i));
+				result->add_results(wrapper->read<uint8_t>("result ", (int)i));
 			
 			encoded = true;
 		}
@@ -1246,7 +1256,7 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			
 			auto count = wrapper->read<uint8_t>("count");
 			for(decltype(count) i = 0; i < count; i++)
-				result->add_results(wrapper->read<uint8_t>("result ", i));
+				result->add_results(wrapper->read<uint8_t>("result ", (int)i));
 			
 			encoded = true;
 		}
@@ -1292,19 +1302,19 @@ inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
 			auto swapPlayer = information->mutable_swap_player();
 			
 			swapPlayer->set_player(wrapper->read<player_t>("player"));
-			swapPlayer->set_main_deck_count(wrapper->read<small_cardcount_t>("main deck count"));
+			swapPlayer->set_main_deck_count(wrapper->read<cardcount_t>("main deck count"));
 			
-			auto extraCount = wrapper->read<small_cardcount_t>("extra deck count");
-			wrapper->seek(1, Buffer::seek_dir::cur, "extra_p_count (face-up pendulums)");
-			auto handCount = wrapper->read<small_cardcount_t>("hand deck count");
+			auto extraCount = wrapper->read<cardcount_t>("extra deck count");
+			wrapper->seek(sizeof(cardcount_t), Buffer::seek_dir::cur, "extra_p_count (face-up pendulums)");
+			auto handCount = wrapper->read<cardcount_t>("hand deck count");
 			
 			ToCardCode(wrapper->read<cardcode_t>("top of deck"), swapPlayer->mutable_top_of_deck());
 			
 			for(decltype(handCount) i = 0; i < handCount; i++)
-				ToCardCode(wrapper->read<cardcode_t>("hand card ", i), swapPlayer->add_hand_cards());
+				ToCardCode(wrapper->read<cardcode_t>("hand card ", (int)i), swapPlayer->add_hand_cards());
 			
 			for(decltype(extraCount) i = 0; i < extraCount; i++)
-				ToCardCode(wrapper->read<cardcode_t>("extra card ", i), swapPlayer->add_extra_cards());
+				ToCardCode(wrapper->read<cardcode_t>("extra card ", (int)i), swapPlayer->add_extra_cards());
 			
 			encoded = true;
 		}
