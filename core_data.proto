@@ -4,17 +4,20 @@ package YGOpen.Core.Data;
 
 message CardInfo
 {
-	int32 code = 1;
+	uint32 code = 1;
 	bool controller = 2;
-	int32 location = 3;
-	int32 sequence = 4;
-	int32 position = 5;
+	uint32 location = 3;
+	uint32 sequence = 4;
+	uint32 position = 5;
+	
+	// TODO: change core messages to protobuf messages where the following additional values are used
+	// TODO: optimize these values to either be on a different message or use OneOf
 	
 	// ATK and DEF of the card
 	// used by:
 	// MSG_BATTLE
-	int32 atk = 6;
-	int32 def = 7;
+	uint32 atk = 6;
+	uint32 def = 7;
 	
 	// Effect description string id
 	// used by:
@@ -32,7 +35,7 @@ message CardInfo
 	// Count this card as X tributes
 	// used by:
 	// MSG_SELECT_TRIBUTE
-	int32 tribute_count = 10;
+	uint32 tribute_count = 10;
 	
 	// Counter on the card
 	// used by:
@@ -42,35 +45,33 @@ message CardInfo
 	// Count this card as X plus to a sum selection
 	// used by:
 	// MSG_SELECT_SUM
-	int32 sum_param = 12;
+	uint32 sum_param = 12;
 	
-	// If the message has overlay_sequence it means that the card itself
-	// is a overlay of a xyz monster. In that scenario, the above messages
-	// represent the overlay's owner data.
-	int32 overlay_sequence = 15;
+	// If this card has overlay_sequence set it means that this card itself
+	// is a overlay of a Xyz Monster, location must also have
+	// LOCATION_OVERLAY bit set.
+	uint32 overlay_sequence = 15;
 	
 	// Dirty bit for certain core messages that use it.
-	// used by:
-	// TODO: add special handling for this bit and remove from here
+	// TODO: add special handling for this bit on source code and remove from here
 	bool bit = 20;
 }
 
 message Place
 {
 	bool controller = 1;
-	int32 location = 2;
-	int32 sequence = 3;
-// 	int32 position = 4;
+	uint32 location = 2;
+	uint32 sequence = 3;
 }
 
 message EffectDesc
 {
-	int32 code = 1;
-	int32 string_id = 2;
+	uint32 code = 1;
+	uint32 string_id = 2;
 }
 
 message Counter
 {
-	int32 type = 1;
-	int32 count = 2;
+	uint32 type = 1;
+	uint32 count = 2;
 }

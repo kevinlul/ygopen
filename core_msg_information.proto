@@ -9,8 +9,8 @@ package YGOpen.Core.Msg;
 message Hint
 {
 // TODO: rework hints
-	int32 type = 1;
-	int64 data = 2;
+	uint32 type = 1;
+	uint64 data = 2;
 }
 
 // Encapsulates:
@@ -19,9 +19,9 @@ message Hint
 message Win
 {
 	bool player = 1;
-	int32 reason = 2;
-	bool is_match_kill = 3;
-	int32 code = 4;
+	uint32 reason = 2;
+	uint32 code = 3;
+	bool is_match_kill = 4;
 }
 
 // Encapsulates:
@@ -36,7 +36,6 @@ message ConfirmCards
 		CONFIRM_CARDS = 1;
 		CONFIRM_EXTRATOP = 2;
 	}
-
 	ConfirmType type = 1;
 
 	// Cards to confirm
@@ -50,7 +49,7 @@ message ConfirmCards
 message ShuffleLocation
 {
 	bool player = 1;
-	int32 location = 2;
+	uint32 location = 2;
 	
 	// NOTE: can be empty
 	repeated Data.CardInfo shuffled_cards = 3;
@@ -60,7 +59,7 @@ message ShuffleLocation
 // MSG_SHUFFLE_SET_CARD
 message ShuffleSetCards
 {
-	//int32 location = 1; NOTE: UNUSED
+	//uint32 location = 1; NOTE: UNUSED
 	
 	// Card positions to shuffle
 	repeated Data.CardInfo cards_previous = 2;
@@ -99,11 +98,10 @@ message UpdateCard
 		// previous: controller, location, sequence; current: code, position
 		REASON_SET = 4;
 	}
-	
 	UpdateReason reason = 1;
 	
 	// NOTE: reason used by MSG_MOVE
-	int32 core_reason = 2;
+	uint32 core_reason = 2;
 	
 	Data.CardInfo previous = 4;
 	Data.CardInfo current = 5;
@@ -128,7 +126,7 @@ message NewTurn
 // MSG_NEW_PHASE
 message NewPhase
 {
-	int32 phase = 1;
+	uint32 phase = 1;
 }
 
 // Encapsulates:
@@ -154,7 +152,6 @@ message SummonCard
 		SUMMON_SPECIAL = 1;
 		SUMMON_FLIP = 2;
 	}
-	
 	SummonType type = 1;
 	
 	// Card being summoned
@@ -182,7 +179,6 @@ message ChainAction
 		ACTION_CHAIN_NEGATED = 5;
 		ACTION_CHAIN_DISABLED = 6;
 	}
-	
 	ActionType type = 1;
 	
 	// Card that started the chain
@@ -192,8 +188,8 @@ message ChainAction
 	Data.Place place = 3; // Place where the chain started
 	Data.EffectDesc ed = 4; // Effect that started the chain
 	
-	int32 chain_number = 5;
 	// NOTE: ACTION_CHAIN_END does not set this
+	uint32 chain_number = 5;
 }
 
 // Encapsulates:
@@ -219,13 +215,11 @@ message SelectedCards
 		SELECTION_CARD_DETARGET = 4;
 		//SELECTION_CARD_UNEQUIP = 5; // NOTE: UNUSED but implemented on duelclient.cpp
 	}
-
 	SelectionType type = 1;
 
 	//bool targeter_player = 2; // NOTE: UNUSED
 
 	Data.CardInfo targeting_card = 3;
-
 	repeated Data.CardInfo cards = 4;
 }
 
@@ -251,11 +245,9 @@ message LpChange
 		CHANGE_BECOME = 2; // sets value
 		CHANGE_PAY = 3; // substract
 	}
-	
 	ChangeType type = 1;
-
+	
 	bool player = 2;
-
 	uint32 amount = 3;
 }
 
@@ -269,7 +261,6 @@ message CounterChange
 		CHANGE_ADD = 0;
 		CHANGE_REMOVE = 1;
 	}
-	
 	ChangeType type = 1;
 	
 	Data.Counter counter = 2;
@@ -312,7 +303,7 @@ message Result
 
 	// results of dices or coin tosses
 	// in case of RPS, both player hand result
-	repeated int32 results = 3;
+	repeated uint32 results = 3;
 }
 
 // Encapsulates:
@@ -336,7 +327,6 @@ message MiscAction
 		ACTION_SWAP_GY_WITH_DECK = 4; // by the effect of: Exchange of the Spirit
 		ACTION_REVERSE_DECK = 5; // by the effect of: Convulsion of Nature
 	}
-	
 	ActionType type = 1;
 	
 	bool player = 2;
@@ -351,8 +341,8 @@ message CardHint
 {
 // TODO: rework hints
 	Data.CardInfo card = 1;
-	int32 type = 2;
-	int64 data = 3;
+	uint32 type = 2;
+	uint64 data = 3;
 }
 
 // Encapsulates:
@@ -361,8 +351,8 @@ message PlayerHint
 {
 // TODO: rework hints
 	bool player = 1;
-	int32 type = 2;
-	int64 data = 3;
+	uint32 type = 2;
+	uint64 data = 3;
 }
 
 // Encapsulates:
@@ -370,7 +360,7 @@ message PlayerHint
 message SwapPlayer
 {
 	bool player = 1;
-	int32 main_deck_count = 2;
+	uint32 main_deck_count = 2;
 	Data.CardInfo top_of_deck = 3;
 	repeated Data.CardInfo hand_cards = 4;
 	repeated Data.CardInfo extra_cards = 5;

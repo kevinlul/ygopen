@@ -14,7 +14,6 @@ message SelectCmd
 		COMMAND_BATTLE = 0;
 		COMMAND_IDLE = 1;
 	}
-
 	CmdType type = 1;
 
 	// Can the player go to these phases?
@@ -77,7 +76,6 @@ message SelectCards
 		SELECTION_SELECT_UNSELECT = 3;
 		SELECTION_COUNTER = 4;
 	}
-	
 	SelectionType type = 1;
 	
 	// Can the player cancel the selection completely?
@@ -85,13 +83,13 @@ message SelectCards
 	// Can the player finish the selection as is?
 	bool can_accept = 3;
 	// Minimum cards to select
-	int32 min = 4;
+	uint32 min = 4;
 	// Maximum cards to select
-	int32 max = 5;
+	uint32 max = 5;
 	
 	// Sum needed to satisfy selection
 	// FIXME: explain this value properly
-	int32 sum = 6;
+	uint32 sum = 6;
 	
 	// Counter type and number of counters the player
 	// can distribute among the selectable cards
@@ -122,10 +120,10 @@ message SortCards
 message SelectPlaces
 {
 	// Minimum places to select
-	int32 min = 2;
+	uint32 min = 1;
 	
 	// Places to select from
-	repeated Data.Place places = 3;
+	repeated Data.Place places = 2;
 }
 
 // Encapsulates:
@@ -146,7 +144,7 @@ message DeclareCard
 	// of operations to determine (client side) the card filter
 	// NOTE: empty list means ANY card
 	// NOTE: opcodes from ocgcore/common.h
-	repeated int64 opcodes = 1;
+	repeated uint64 opcodes = 1;
 }
 
 // Encapsulates:
@@ -161,17 +159,16 @@ message DeclareMisc
 		DECLARE_ATTRIBUTE = 1;
 		DECLARE_NUMBER = 2;
 	}
-	
 	DeclareType type = 1;
 
 	// Number of Races/Attributes you must choose
 	// NOTE: Unused if type == DECLARE_NUMBER
-	int32 count = 2;
+	uint32 count = 2;
 	
 	// either Attributes/Races to choose from
 	// in a single value (they are OR'd together)
 	// or numbers the player must select from
-	repeated int64 available = 3;
+	repeated uint64 available = 3;
 }
 
 
@@ -198,7 +195,7 @@ message SelectToChain
 	// Is any effect mandatory
 	bool forced = 1;
 	
-	//int32 spe_count = 2; // NOTE: might not be required
+	//int32 spe_count = 2; // TODO: might not be required
 
 	// Cards that can be chained or resolved
 	repeated ChainableCard cards_w_effect = 3;
