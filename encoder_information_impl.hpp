@@ -11,8 +11,6 @@ CASE_FIRST(MSG_WIN)
 	win->set_is_match_kill(pimpl->isMatchKill);
 	if(pimpl->isMatchKill)
 		win->set_code(pimpl->matchKillCardId);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CONFIRM_DECKTOP)
 #ifndef FILTERING
@@ -24,8 +22,6 @@ CASE(MSG_CONFIRM_DECKTOP)
 	
 	CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
 	ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CONFIRM_CARDS)
 #ifndef FILTERING
@@ -37,8 +33,6 @@ CASE(MSG_CONFIRM_CARDS)
 	
 	CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
 	ReadCardVector<cardcount_t, small_location_t, sequence_t>(wrapper, add_cards);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SHUFFLE_DECK)
 #ifndef FILTERING
@@ -49,8 +43,6 @@ CASE(MSG_SHUFFLE_DECK)
 	shuffleLocation->set_location(0x01); // LOCATION_DECK
 	
 	// NOTE: empty decklist
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SHUFFLE_HAND)
 #ifndef FILTERING
@@ -68,8 +60,6 @@ CASE(MSG_SHUFFLE_HAND)
 		ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 		card->set_location(0x02); // LOCATION_HAND
 	}
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SWAP_GRAVE_DECK)
 #ifndef FILTERING
@@ -78,8 +68,6 @@ CASE(MSG_SWAP_GRAVE_DECK)
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_SWAP_GY_WITH_DECK);
 	
 	miscAction->set_player(wrapper->read<player_t>("player"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SHUFFLE_SET_CARD)
 #ifndef FILTERING
@@ -93,16 +81,12 @@ CASE(MSG_SHUFFLE_SET_CARD)
 		ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, add_cards_previous());
 	for(decltype(count) i = 0; i < count; i++)
 		ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, add_cards_current());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_REVERSE_DECK)
 #ifndef FILTERING
 	auto miscAction = information->mutable_misc_action();
 	
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_REVERSE_DECK);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_DECK_TOP)
 #ifndef FILTERING
@@ -118,8 +102,6 @@ CASE(MSG_DECK_TOP)
 	auto current = updateCard->mutable_current();
 	ToCardCode(wrapper->read<cardcode_t>("card code"), current);
 	// NOTE: maybe move the dirty bit to the position parameter?
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SHUFFLE_EXTRA)
 #ifndef FILTERING
@@ -137,24 +119,18 @@ CASE(MSG_SHUFFLE_EXTRA)
 		ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
 		card->set_location(0x40); // LOCATION_EXTRA
 	}
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_NEW_TURN)
 #ifndef FILTERING
 	auto newTurn = information->mutable_new_turn();
 	
 	newTurn->set_turn_player(wrapper->read<player_t>("turn player"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_NEW_PHASE)
 #ifndef FILTERING
 	auto newPhase = information->mutable_new_phase();
 	
 	newPhase->set_phase(wrapper->read<uint16_t>("phase"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CONFIRM_EXTRATOP)
 #ifndef FILTERING
@@ -166,8 +142,6 @@ CASE(MSG_CONFIRM_EXTRATOP)
 	
 	CardSpawner add_cards = BindFromPointer(confirmCards, add_cards);
 	ReadCardVector<cardcount_t, small_location_t, small_sequence_t>(wrapper, add_cards);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_MOVE)
 #ifndef FILTERING
@@ -187,8 +161,6 @@ CASE(MSG_MOVE)
 	ReadCardInfo(updateCard->mutable_current(), 1);
 	
 	updateCard->set_core_reason(wrapper->read<uint32_t>("core reason"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_POS_CHANGE)
 #ifndef FILTERING
@@ -206,8 +178,6 @@ CASE(MSG_POS_CHANGE)
 	previous->set_sequence(wrapper->read<small_sequence_t>("sequence"));
 	previous->set_position(wrapper->read<small_position_t>("position"));
 	current->set_position(wrapper->read<small_position_t>("current position"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SET)
 #ifndef FILTERING
@@ -224,8 +194,6 @@ CASE(MSG_SET)
 	previous->set_location(wrapper->read<small_location_t>("location"));
 	previous->set_sequence(wrapper->read<sequence_t>("sequence"));
 	current->set_position(wrapper->read<position_t>("current position"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SWAP)
 #ifndef FILTERING
@@ -239,8 +207,6 @@ CASE(MSG_SWAP)
 	
 	ReadCardInfo(swapCards->mutable_card1(), 0);
 	ReadCardInfo(swapCards->mutable_card2(), 1);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_FIELD_DISABLED)
 #ifndef FILTERING
@@ -288,8 +254,6 @@ CASE(MSG_FIELD_DISABLED)
 	
 	ExtractPlaces(0, 0);
 	ExtractPlaces(1, 16);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SUMMONING)
 #ifndef FILTERING
@@ -300,16 +264,12 @@ CASE(MSG_SUMMONING)
 	auto card = summonCard->mutable_card();
 	ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SUMMONED)
 #ifndef FILTERING
 	auto summonCard = information->mutable_summon_card();
 	
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SPSUMMONING)
 #ifndef FILTERING
@@ -320,16 +280,12 @@ CASE(MSG_SPSUMMONING)
 	auto card = summonCard->mutable_card();
 	ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SPSUMMONED)
 #ifndef FILTERING
 	auto summonCard = information->mutable_summon_card();
 	
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_FLIPSUMMONING)
 #ifndef FILTERING
@@ -340,16 +296,12 @@ CASE(MSG_FLIPSUMMONING)
 	auto card = summonCard->mutable_card();
 	ToCardCode(wrapper->read<cardcode_t>("cardcode"), card);
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, card);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_FLIPSUMMONED)
 #ifndef FILTERING
 	auto summonCard = information->mutable_summon_card();
 	
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAINING)
 #ifndef FILTERING
@@ -368,55 +320,41 @@ CASE(MSG_CHAINING)
 	ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), chainAction->mutable_ed());
 	
 	chainAction->set_chain_number(wrapper->read<uint32_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAINED)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINED);
 	chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAIN_SOLVING)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVING);
 	chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAIN_SOLVED)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_SOLVED);
 	chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAIN_END)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_END);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAIN_NEGATED)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_NEGATED);
 	chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CHAIN_DISABLED)
 #ifndef FILTERING
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_DISABLED);
 	chainAction->set_chain_number(wrapper->read<uint8_t>("chain num"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_RANDOM_SELECTED)
 #ifndef FILTERING
@@ -428,8 +366,6 @@ CASE(MSG_RANDOM_SELECTED)
 	auto count = wrapper->read<cardcount_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_BECOME_TARGET)
 #ifndef FILTERING
@@ -439,8 +375,6 @@ CASE(MSG_BECOME_TARGET)
 	auto count = wrapper->read<cardcount_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, selectedCards->add_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_DRAW)
 #ifndef FILTERING
@@ -450,8 +384,6 @@ CASE(MSG_DRAW)
 	auto count = wrapper->read<cardcount_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		ToCardCode(wrapper->read<cardcode_t>("cardcode", (int)i), draw->add_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_DAMAGE)
 #ifndef FILTERING
@@ -459,8 +391,6 @@ CASE(MSG_DAMAGE)
 	lpChange->set_type(Core::Msg::LpChange::CHANGE_DAMAGE);
 	lpChange->set_player(wrapper->read<player_t>("player"));
 	lpChange->set_amount(wrapper->read<uint32_t>("amount"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_RECOVER)
 #ifndef FILTERING
@@ -468,8 +398,6 @@ CASE(MSG_RECOVER)
 	lpChange->set_type(Core::Msg::LpChange::CHANGE_RECOVER);
 	lpChange->set_player(wrapper->read<player_t>("player"));
 	lpChange->set_amount(wrapper->read<uint32_t>("amount"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_LPUPDATE)
 #ifndef FILTERING
@@ -477,8 +405,6 @@ CASE(MSG_LPUPDATE)
 	lpChange->set_type(Core::Msg::LpChange::CHANGE_BECOME);
 	lpChange->set_player(wrapper->read<player_t>("player"));
 	lpChange->set_amount(wrapper->read<uint32_t>("amount"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_PAY_LPCOST)
 #ifndef FILTERING
@@ -486,8 +412,6 @@ CASE(MSG_PAY_LPCOST)
 	lpChange->set_type(Core::Msg::LpChange::CHANGE_PAY);
 	lpChange->set_player(wrapper->read<player_t>("player"));
 	lpChange->set_amount(wrapper->read<uint32_t>("amount"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CARD_TARGET)
 #ifndef FILTERING
@@ -496,8 +420,6 @@ CASE(MSG_CARD_TARGET)
 	
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, selectedCards->mutable_targeting_card());
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, selectedCards->add_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CANCEL_TARGET)
 #ifndef FILTERING
@@ -506,8 +428,6 @@ CASE(MSG_CANCEL_TARGET)
 	
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 0, selectedCards->mutable_targeting_card());
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, selectedCards->add_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ADD_COUNTER)
 #ifndef FILTERING
@@ -521,8 +441,6 @@ CASE(MSG_ADD_COUNTER)
 	place->set_location(wrapper->read<small_location_t>("location"));
 	place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
 	counter->set_count(wrapper->read<uint16_t>("counter count"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_REMOVE_COUNTER)
 #ifndef FILTERING
@@ -536,8 +454,6 @@ CASE(MSG_REMOVE_COUNTER)
 	place->set_location(wrapper->read<small_location_t>("location"));
 	place->set_sequence(wrapper->read<small_sequence_t>("sequence"));
 	counter->set_count(wrapper->read<uint16_t>("counter count"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ATTACK)
 #ifndef FILTERING
@@ -552,8 +468,6 @@ CASE(MSG_ATTACK)
 	// clear card if location is empty
 	if(atkTarget->location() == 0 && atkTarget->sequence() == 0)
 		onAttack->clear_attack_target();
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_BATTLE)
 #ifndef FILTERING
@@ -576,29 +490,21 @@ CASE(MSG_BATTLE)
 	// clear card if location is empty
 	if(atkTarget->location() == 0 && atkTarget->sequence() == 0)
 		onAttack->clear_attack_target();
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ATTACK_DISABLED)
 #ifndef FILTERING
 	auto miscAction = information->mutable_misc_action();
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_ATTACK_NEGATED);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_DAMAGE_STEP_START)
 #ifndef FILTERING
 	auto miscAction = information->mutable_misc_action();
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_START);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_DAMAGE_STEP_END)
 #ifndef FILTERING
 	auto miscAction = information->mutable_misc_action();
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_END);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_TOSS_COIN)
 #ifndef FILTERING
@@ -610,8 +516,6 @@ CASE(MSG_TOSS_COIN)
 	auto count = wrapper->read<uint8_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		result->add_results(wrapper->read<uint8_t>("result ", (int)i));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_TOSS_DICE)
 #ifndef FILTERING
@@ -623,8 +527,6 @@ CASE(MSG_TOSS_DICE)
 	auto count = wrapper->read<uint8_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		result->add_results(wrapper->read<uint8_t>("result ", (int)i));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_HAND_RES)
 #ifndef FILTERING
@@ -634,8 +536,6 @@ CASE(MSG_HAND_RES)
 	auto handResults = wrapper->read<uint8_t>("hand results");
 	result->add_results((handResults & 0x3) - 1);
 	result->add_results(((handResults >> 2) & 0x3) - 1);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_CARD_HINT)
 #ifndef FILTERING
@@ -646,8 +546,6 @@ CASE(MSG_CARD_HINT)
 	
 	cardHint->set_type(wrapper->read<uint8_t>("hint type"));
 	cardHint->set_data(wrapper->read<uint64_t>("hint data"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_PLAYER_HINT)
 #ifndef FILTERING
@@ -656,8 +554,6 @@ CASE(MSG_PLAYER_HINT)
 	playerHint->set_player(wrapper->read<player_t>("player"));
 	playerHint->set_type(wrapper->read<uint8_t>("hint type"));
 	playerHint->set_data(wrapper->read<uint64_t>("hint data"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_TAG_SWAP)
 #ifndef FILTERING
@@ -677,15 +573,11 @@ CASE(MSG_TAG_SWAP)
 	
 	for(decltype(extraCount) i = 0; i < extraCount; i++)
 		ToCardCode(wrapper->read<cardcode_t>("extra card ", (int)i), swapPlayer->add_extra_cards());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_MATCH_KILL)
 #ifndef FILTERING
 	pimpl->isMatchKill = true;
 	pimpl->matchKillCardId = wrapper->read<cardcode_t>("card code");
-	
-	encoded = false;
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING

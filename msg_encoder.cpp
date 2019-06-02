@@ -34,7 +34,7 @@ using msg_type_map = std::array<bool, 255>;
 // sequence = 4 bytes (sequence_t)
 // position = 4 bytes (position_t)
 
-// reads a effectdesc_t value and places the right content on the given EffectDesc
+// parses a effectdesc_t and puts information on to the given EffectDesc
 void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
 {
 	msg->set_code(ed >> 4);
@@ -133,19 +133,17 @@ MsgEncoder::MsgEncoder() : pimpl(new impl())
 MsgEncoder::~MsgEncoder() = default;
 
 // INFORMATION MESSAGES
-inline bool MsgEncoder::InformationMsg(Core::AnyMsg& msg, const int msgType)
+inline void MsgEncoder::InformationMsg(int msgType, Core::AnyMsg& msg)
 {
-	bool encoded;
 	Buffer::ibufferw wrapper{&pimpl->ib};
 	auto information = msg.mutable_information();
 	switch(msgType)
 	{
 #include "encoder_information_impl.hpp"
 	}
-	return encoded;
 }
 
-static const msg_type_map MSG_INFO_MAP = []
+static const msg_type_map MSG_INFORMATION_MAP = []
 {
 	const auto CheckOne = [](int i)
 	{
@@ -162,9 +160,8 @@ static const msg_type_map MSG_INFO_MAP = []
 }();
 
 // SPECIFIC REQUEST MESSAGES
-inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
+inline void MsgEncoder::RequestMsg(int msgType, Core::AnyMsg& msg)
 {
-	bool encoded;
 	Buffer::ibufferw wrapper(&pimpl->ib);
 	auto specific = msg.mutable_specific();
 	specific->set_player(wrapper->read<player_t>("player"));
@@ -172,7 +169,6 @@ inline bool MsgEncoder::SpecificRequestMsg(Core::AnyMsg& msg, const int msgType)
 	{
 #include "encoder_request_impl.hpp"
 	}
-	return encoded;
 }
 
 static const msg_type_map MSG_REQUEST_MAP = []
@@ -192,19 +188,17 @@ static const msg_type_map MSG_REQUEST_MAP = []
 }();
 
 // SPECIFIC INFORMATION MESSAGES
-inline bool MsgEncoder::SpecificInformationMsg(Core::AnyMsg& msg, const int msgType)
+inline void MsgEncoder::SpecInformationMsg(int msgType, Core::AnyMsg& msg)
 {
-	bool encoded;
 	Buffer::ibufferw wrapper(&pimpl->ib);
 	auto specific = msg.mutable_specific();
 	switch(msgType)
 	{
 #include "encoder_spec_information_impl.hpp"
 	}
-	return encoded;
 }
 
-static const msg_type_map MSG_SPEC_INFO_MAP = []
+static const msg_type_map MSG_SPEC_INFORMATION_MAP = []
 {
 	const auto CheckOne = [](int i)
 	{
@@ -220,22 +214,21 @@ static const msg_type_map MSG_SPEC_INFO_MAP = []
 	return a;
 }();
 
-Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length, bool& encoded)
+Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
 	Core::AnyMsg msg{};
-
 	pimpl->ib.open(buffer, length);
-
-	const int msgType = (int)pimpl->ib.read<uint8_t>("Message type");
 	pimpl->ib.log("Message Type: ", msgType, " (", MSG_NAMES.at(msgType), ')', '\n');
+	const int msgType = (int)pimpl->ib.read<uint8_t>("msg number");
 	
-	if(MSG_INFO_MAP[msgType])
-		encoded = InformationMsg(msg, msgType);
+	if(MSG_INFORMATION_MAP[msgType])
+		InformationMsg(msgType, msg);
 	else if(MSG_REQUEST_MAP[msgType])
-		encoded = SpecificRequestMsg(msg, msgType);
-	else if(MSG_SPEC_INFO_MAP[msgType])
-		encoded = SpecificInformationMsg(msg, msgType);
-	else { pimpl->ib.log("Warning: Unhandled Message\n"); encoded = false; }
+		RequestMsg(msgType, msg);
+	else if(MSG_SPEC_INFORMATION_MAP[msgType])
+		SpecInformationMsg(msgType, msg);
+	else
+		pimpl->ib.log("Warning: Unhandled Message\n");
 	
 	return (lastMsg = msg);
 }

@@ -22,8 +22,6 @@ CASE_FIRST(MSG_SELECT_BATTLECMD)
 	
 	selectCmd->set_able_to_mp2(wrapper->read<uint8_t>("to_mp2"));
 	selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_IDLECMD)
 #ifndef FILTERING
@@ -56,8 +54,6 @@ CASE(MSG_SELECT_IDLECMD)
 	selectCmd->set_able_to_bp(wrapper->read<uint8_t>("to_bp"));
 	selectCmd->set_able_to_ep(wrapper->read<uint8_t>("to_ep"));
 	selectCmd->set_can_shuffle(wrapper->read<uint8_t>("can_shuffle"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_EFFECTYN)
 #ifndef FILTERING
@@ -73,8 +69,6 @@ CASE(MSG_SELECT_YESNO)
 	auto selectYesNo = specific->mutable_request()->mutable_select_yesno();
 
 	ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc"), selectYesNo->mutable_effect());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_OPTION)
 #ifndef FILTERING
@@ -83,8 +77,6 @@ CASE(MSG_SELECT_OPTION)
 	const auto count = wrapper->read<uint8_t>("number of effects");
 	for(int i = 0; i < count; i++)
 		ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)count), selectOption->add_effects());
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_CARD)
 #ifndef FILTERING
@@ -100,8 +92,6 @@ CASE(MSG_SELECT_CARD)
 
 	CardSpawner add_selectable = BindFromPointer(selectCards, add_cards_selectable);
 	ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_selectable);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_CHAIN)
 #ifndef FILTERING
@@ -129,8 +119,6 @@ CASE(MSG_SELECT_CHAIN)
 		ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, i, card);
 		ToEffectDesc(wrapper->read<effectdesc_t>("effectdesc ", (int)i), card->mutable_effect_desc());
 	}
-	
-	encoded = true;
 }
 break;
 case MSG_SELECT_PLACE:
@@ -183,8 +171,6 @@ case MSG_SELECT_PLACE:
 
 	ExtractPlaces(0, 0);
 	ExtractPlaces(1, 16);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_POSITION)
 #ifndef FILTERING
@@ -194,8 +180,6 @@ CASE(MSG_SELECT_POSITION)
 	
 	ToCardCode(wrapper->read<cardcode_t>("card code"), card);
 	card->set_position(wrapper->read<small_position_t>("positions"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_TRIBUTE)
 #ifndef FILTERING
@@ -215,8 +199,6 @@ CASE(MSG_SELECT_TRIBUTE)
 		card->set_tribute_count(wrapper->read<uint8_t>("release_param ", count));
 	};
 	ReadCardVector<cardcount_t, small_location_t, sequence_t, void>(wrapper, add_selectable, nullptr, ReadReleaseParam);
-	
-	encoded = true;
 }
 break;
 // case MSG_SORT_CARD:
@@ -225,8 +207,6 @@ case MSG_SORT_CHAIN:
 	auto sortCards = specific->mutable_request()->mutable_sort_cards();
 	CardSpawner add_cards_to_sort = BindFromPointer(sortCards, add_cards_to_sort);
 	ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_cards_to_sort);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_COUNTER)
 #ifndef FILTERING
@@ -249,8 +229,6 @@ CASE(MSG_SELECT_COUNTER)
 	ReadCardVector<cardcount_t, small_location_t, small_sequence_t, void>(wrapper, add_cards_selectable, nullptr, ReadCounterCount);
 	
 	// TODO: Set right counter type to each card?
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_SUM)
 #ifndef FILTERING
@@ -276,8 +254,6 @@ CASE(MSG_SELECT_SUM)
 	
 	CardSpawner add_cards_selectable = BindFromPointer(selectCards, add_cards_selectable);
 	ReadCardVector<cardcount_t, small_location_t, sequence_t, void>(wrapper, add_cards_selectable, nullptr, ReadSumParam);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_SELECT_UNSELECT_CARD)
 #ifndef FILTERING
@@ -293,13 +269,10 @@ CASE(MSG_SELECT_UNSELECT_CARD)
 	
 	CardSpawner add_unselectable = BindFromPointer(selectCards, add_cards_unselectable);
 	ReadCardVector<cardcount_t, small_location_t, sequence_t, position_t>(wrapper, add_unselectable);
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ROCK_PAPER_SCISSORS)
 #ifndef FILTERING
 	specific->mutable_request()->set_select_rps(true);
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ANNOUNCE_RACE)
 #ifndef FILTERING
@@ -309,8 +282,6 @@ CASE(MSG_ANNOUNCE_RACE)
 	declareMisc->set_count(wrapper->read<uint8_t>("count"));
 	
 	declareMisc->add_available(wrapper->read<uint32_t>("races available"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ANNOUNCE_ATTRIB)
 #ifndef FILTERING
@@ -320,8 +291,6 @@ CASE(MSG_ANNOUNCE_ATTRIB)
 	declareMisc->set_count(wrapper->read<uint8_t>("count"));
 	
 	declareMisc->add_available(wrapper->read<uint32_t>("attrs available"));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ANNOUNCE_CARD)
 #ifndef FILTERING
@@ -347,8 +316,6 @@ CASE(MSG_ANNOUNCE_CARD)
 			declareCard->add_opcodes(0x40000102); // ISTYPE
 		}
 	}
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ANNOUNCE_NUMBER)
 #ifndef FILTERING
@@ -358,8 +325,6 @@ CASE(MSG_ANNOUNCE_NUMBER)
 	auto count = wrapper->read<uint8_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		declareMisc->add_available(wrapper->read<uint64_t>("number ", (int)i));
-	
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_ANNOUNCE_CARD_FILTER)
 #ifndef FILTERING
@@ -368,8 +333,6 @@ CASE(MSG_ANNOUNCE_CARD_FILTER)
 	auto count = wrapper->read<uint8_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		declareCard->add_opcodes(wrapper->read<uint64_t>("opcode ", (int)i));
-	
-	encoded = true;
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING

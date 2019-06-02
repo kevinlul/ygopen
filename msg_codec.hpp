@@ -14,15 +14,15 @@ protected:
 };
 
 // Input Game Message Encoder
-// takes a raw buffer from the core and transform it into a GMsg protobuf message
+// takes a memory buffer and "encodes" it onto a AnyMsg protobuf message
 class MsgEncoder : virtual public MsgCodecBase
 {
 	struct impl;
 	std::unique_ptr<impl> pimpl;
 	
-	inline bool SpecificRequestMsg(Core::AnyMsg& msg, const int msgType);
-	inline bool SpecificInformationMsg(Core::AnyMsg& msg, const int msgType);
-	inline bool InformationMsg(Core::AnyMsg& msg, const int msgType);
+	inline void RequestMsg(int msgType, Core::AnyMsg& msg);
+	inline void InformationMsg(int msgType, Core::AnyMsg& msg);
+	inline void SpecInformationMsg(int msgType, Core::AnyMsg& msg);
 public:
 	MsgEncoder();
 
@@ -34,12 +34,12 @@ public:
 	~MsgEncoder();
 
 	// Input: A buffer and buffer length
-	// Output: A encoded message (if any) and a boolean telling if we got a message
-	Core::AnyMsg Encode(void* buffer, size_t length, bool& encoded);
+	// Output: A encoded message (if any)
+	Core::AnyMsg Encode(void* buffer, size_t length);
 };
 
 // Output Game Message Decoder
-// takes a GMsg protobuf message and transform it into a core readable answer buffer
+// takes a protobuf message and "decodes" it onto a core compatible buffer
 class MsgDecoder : virtual public MsgCodecBase
 {
 };
@@ -47,7 +47,6 @@ class MsgDecoder : virtual public MsgCodecBase
 // Input/Output Game Message Stream
 class MsgCodec : public MsgEncoder, public MsgDecoder
 {
-
 };
 
 } // namespace YGOpen

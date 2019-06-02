@@ -11,7 +11,6 @@ CASE_FIRST(MSG_HINT)
 	
 	hint->set_data(wrapper->read<uint64_t>("hint data"));
 	// TODO: handle each hint
-	encoded = true;
 #endif // FILTERING
 CASE(MSG_MISSED_EFFECT)
 #ifndef FILTERING
@@ -22,8 +21,6 @@ CASE(MSG_MISSED_EFFECT)
 	
 	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, card);
 	ToCardCode(wrapper->read<cardcode_t>("card code 1"), card);
-	
-	encoded = true;
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING
