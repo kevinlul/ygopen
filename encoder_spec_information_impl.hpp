@@ -4,7 +4,7 @@ CASE_FIRST(MSG_HINT)
 #ifndef FILTERING
 	auto hint = specific->mutable_information()->mutable_hint();
 	
-	const int type = wrapper->read<uint8_t>("hint type");
+	const int type = wrapper->read<s_count_t>("hint type");
 	hint->set_type(type);
 	
 	specific->set_player(wrapper->read<player_t>("player"));
@@ -19,8 +19,8 @@ CASE(MSG_MISSED_EFFECT)
 	
 	auto card = miscAction->mutable_card();
 	
-	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, card);
-	ToCardCode(wrapper->read<cardcode_t>("card code"), card);
+	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(wrapper, card);
+	ToCardCode(wrapper->read<code_t>("card code"), card);
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING

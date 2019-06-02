@@ -9,46 +9,45 @@
 
 namespace YGOpen
 {
-// Types that represent the right size type for what they hold
-using player_t = uint8_t; // used for controller too
-using cardcount_t = uint32_t;
-using cardcode_t = uint32_t;
-using location_t = uint32_t;
-using sequence_t = uint32_t;
-using position_t = uint32_t;
-using effectdesc_t = uint64_t;
+// Types used to read the right values size from core messages
+using player_t = uint8_t;  // used for controller too
+using count_t  = uint32_t; // count type, used for arrays read
+using code_t   = uint32_t; // card code type
+using loc_t    = uint32_t; // location type
+using seq_t    = uint32_t; // sequence type
+using pos_t    = uint32_t; // position type
+using ed_t     = uint64_t; // effect descriptor type
 
-using field_cardcount_t = uint8_t;
+// Smaller (used) versions of the above types
+using s_count_t = uint8_t;
+using s_loc_t   = uint8_t;
+using s_seq_t   = uint8_t;
+using s_pos_t   = uint8_t;
 
-// Types that should be changed (increased) in far future
-using small_location_t = uint8_t;
-using small_sequence_t = uint8_t;
-using small_position_t = uint8_t;
+// NOTE: core write_info_location type and sizes:
+// controller = 1 byte (player_t)
+// location = 1 byte (s_loc_t)
+// sequence = 4 bytes (seq_t)
+// position = 4 bytes (pos_t)
 
 // Used to identify which messages are part of the different hierarchies
 using msg_type_map = std::array<bool, 255>;
 
-// NOTE: write info location sizes:
-// controller = 1 byte (player_t)
-// location = 1 byte (small_location_t)
-// sequence = 4 bytes (sequence_t)
-// position = 4 bytes (position_t)
-
-// parses a effectdesc_t and puts information on to the given EffectDesc
-void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
+// Parses a ed_t and puts information on to the given EffectDesc
+void ToEffectDesc(const ed_t ed, Core::Data::EffectDesc* msg)
 {
 	msg->set_code(ed >> 4);
 	msg->set_string_id(ed & 0xF);
 }
 
-// reads a card code and sets the right values of a CardInfo message
-void ToCardCode(const cardcode_t code, Core::Data::CardInfo* card)
+// Reads a card code and puts information on to the given CardInfo
+void ToCardCode(const code_t code, Core::Data::CardInfo* card)
 {
 	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
 	card->set_bit(code & 0x80000000);
 }
 
-// Function prototype that returns a different CardInfo on consecutive calls
+// Function prototype that returns a different CardInfo on consecutive calls,
 // normally the protobuf msg->add_* functions
 using CardSpawner = std::function<Core::Data::CardInfo*()>;
 
@@ -109,7 +108,7 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 		if(bcr) bcr(wrapper, card);
 
 		// Card Code & Dirty Bit
-		ToCardCode(wrapper->read<cardcode_t>("card code"), card);
+		ToCardCode(wrapper->read<code_t>("card code"), card);
 
 		// Location Info
 		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, card);
