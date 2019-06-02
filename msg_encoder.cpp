@@ -41,46 +41,45 @@ void ToEffectDesc(const effectdesc_t ed, Core::Data::EffectDesc* msg)
 	msg->set_string_id(ed & 0xF);
 }
 
-// reads a card code and sets the right values of a Data.CardInfo message
+// reads a card code and sets the right values of a CardInfo message
 void ToCardCode(const cardcode_t code, Core::Data::CardInfo* card)
 {
 	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
 	card->set_bit(code & 0x80000000);
 }
 
-// Function prototype that returns a CardInfo (newly created most likely).
-// The returned card should be inside of a array,
-// managed by a GMsg; normally the [gmsg]->add_* functions
+// Function prototype that returns a different CardInfo on consecutive calls
+// normally the protobuf msg->add_* functions
 using CardSpawner = std::function<Core::Data::CardInfo*()>;
 
-// Binds a function from a object pointer, without needing to write the full object path.
-// NOTE: Can be improved but this works right now.
-#define BindFromPointer(object, member) std::bind(&std::remove_pointer<decltype(object)>::type::member, object)
+// Shorthand to bind a object function address to a object pointer
+#define BIND_FUNC_TO_OBJ_PTR(o, f) \
+	std::bind(&std::remove_pointer<decltype(o)>::type::f, o)
 
 // Function prototype that reads data from a given wrapper and places the right content on the given card.
-using InlineCardRead = std::function<void(Buffer::ibufferw&, const int, Core::Data::CardInfo*)>;
+using InlineCardRead = std::function<void(Buffer::ibufferw&, Core::Data::CardInfo*)>;
 
 // Reads a single card location info from the given wrapper
 // NOTE: Use void to not read a specific value at compile time
 template<typename Controller, typename Location, typename Sequence, typename Position>
-inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, Core::Data::CardInfo* card)
+inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, Core::Data::CardInfo* card)
 {
 	// Controller
 	if constexpr(!std::is_same<void, Controller>())
-		card->set_controller(wrapper->read<Controller>("controller ", count));
+		card->set_controller(wrapper->read<Controller>("controller"));
 
 	// Location
 	if constexpr(!std::is_same<void, Location>())
-		card->set_location(wrapper->read<Location>("location ", count));
+		card->set_location(wrapper->read<Location>("location"));
 
 	// Sequence
 	if constexpr(!std::is_same<void, Sequence>())
-		card->set_sequence(wrapper->read<Sequence>("sequence ", count));
+		card->set_sequence(wrapper->read<Sequence>("sequence"));
 
 	// Position
 	if constexpr(!std::is_same<void, Position>())
 	{
-		const auto pos = wrapper->read<Position>("position ", count);
+		const auto pos = wrapper->read<Position>("position");
 		if(card->location() & 0x80) // if the card is overlay
 		{
 			card->set_overlay_sequence(pos);
@@ -99,22 +98,24 @@ inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, const int count, Core::Da
 template<typename Count, typename Location, typename Sequence, typename Position = void>
 void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
 {
-	const Count count = wrapper->read<Count>(".size()");
+	auto count = wrapper->read<Count>(".size()");
 	for(Count i = 0; i < count; i++)
 	{
+		wrapper->log("read card ", (int)i, " from vector");
+
 		Core::Data::CardInfo* card = cs();
 		
 		// Before Card Read
-		if(bcr) bcr(wrapper, i, card);
+		if(bcr) bcr(wrapper, card);
 
 		// Card Code & Dirty Bit
-		ToCardCode(wrapper->read<cardcode_t>("card code ", (int)i), card);
+		ToCardCode(wrapper->read<cardcode_t>("card code"), card);
 
 		// Location Info
-		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, i, card);
+		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, card);
 
 		// After Card Read
-		if(acr) acr(wrapper, i, card);
+		if(acr) acr(wrapper, card);
 	}
 }
 

@@ -19,8 +19,8 @@ CASE(MSG_MISSED_EFFECT)
 	
 	auto card = miscAction->mutable_card();
 	
-	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, 1, card);
-	ToCardCode(wrapper->read<cardcode_t>("card code 1"), card);
+	ReadCardLocInfo<player_t, small_location_t, sequence_t, position_t>(wrapper, card);
+	ToCardCode(wrapper->read<cardcode_t>("card code"), card);
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING
