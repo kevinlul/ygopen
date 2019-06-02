@@ -55,30 +55,27 @@ using CardSpawner = std::function<Core::Data::CardInfo*()>;
 #define BIND_FUNC_TO_OBJ_PTR(o, f) \
 	std::bind(&std::remove_pointer<decltype(o)>::type::f, o)
 
-// Function prototype that reads data from a given wrapper and places the right content on the given card.
+// Function prototype that reads data from a given wrapper,
+// and puts information on the given CardInfo.
 using InlineCardRead = std::function<void(Buffer::ibufferw&, Core::Data::CardInfo*)>;
 
 // Reads a single card location info from the given wrapper
 // NOTE: Use void to not read a specific value at compile time
-template<typename Controller, typename Location, typename Sequence, typename Position>
-inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, Core::Data::CardInfo* card)
+template<typename Player, typename Loc, typename Seq, typename Pos>
+inline void ReadCardLocInfo(Buffer::ibufferw& w, Core::Data::CardInfo* card)
 {
-	// Controller
-	if constexpr(!std::is_same<void, Controller>())
-		card->set_controller(wrapper->read<Controller>("controller"));
+	if constexpr(!std::is_same<void, Player>())
+		card->set_controller(w->read<Player>("controller"));
 
-	// Location
-	if constexpr(!std::is_same<void, Location>())
-		card->set_location(wrapper->read<Location>("location"));
+	if constexpr(!std::is_same<void, Loc>())
+		card->set_location(w->read<Loc>("location"));
 
-	// Sequence
-	if constexpr(!std::is_same<void, Sequence>())
-		card->set_sequence(wrapper->read<Sequence>("sequence"));
+	if constexpr(!std::is_same<void, Seq>())
+		card->set_sequence(w->read<Seq>("sequence"));
 
-	// Position
-	if constexpr(!std::is_same<void, Position>())
+	if constexpr(!std::is_same<void, Pos>())
 	{
-		const auto pos = wrapper->read<Position>("position");
+		const auto pos = w->read<Pos>("position");
 		if(card->location() & 0x80) // if the card is overlay
 		{
 			card->set_overlay_sequence(pos);
@@ -92,29 +89,28 @@ inline void ReadCardLocInfo(Buffer::ibufferw& wrapper, Core::Data::CardInfo* car
 }
 
 // Reads a card vector from the given wrapper.
-// a CardSpawner must be given, which should give a new card each time it is called
 // aditionally, two functions before and after the default card read can be given, in case aditional info should be read
-template<typename Count, typename Location, typename Sequence, typename Position = void>
-void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
+template<typename Count, typename Loc, typename Seq, typename Pos = void>
+void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
 {
-	auto count = wrapper->read<Count>(".size()");
+	auto count = w->read<Count>(".size()");
 	for(Count i = 0; i < count; i++)
 	{
-		wrapper->log("read card ", (int)i, " from vector");
+		w->log("read card ", (int)i, " from vector");
 
 		Core::Data::CardInfo* card = cs();
-		
+
 		// Before Card Read
-		if(bcr) bcr(wrapper, card);
+		if(bcr) bcr(w, card);
 
 		// Card Code & Dirty Bit
-		ToCardCode(wrapper->read<code_t>("card code"), card);
+		ToCardCode(w->read<code_t>("card code"), card);
 
 		// Location Info
-		ReadCardLocInfo<player_t, Location, Sequence, Position>(wrapper, card);
+		ReadCardLocInfo<player_t, Loc, Seq, Pos>(w, card);
 
 		// After Card Read
-		if(acr) acr(wrapper, card);
+		if(acr) acr(w, card);
 	}
 }
 
@@ -132,7 +128,7 @@ MsgEncoder::~MsgEncoder() = default;
 // INFORMATION MESSAGES
 inline void MsgEncoder::InformationMsg(int msgType, Core::AnyMsg& msg)
 {
-	Buffer::ibufferw wrapper{&pimpl->ib};
+	Buffer::ibufferw w{&pimpl->ib};
 	auto information = msg.mutable_information();
 	switch(msgType)
 	{
@@ -159,9 +155,9 @@ static const msg_type_map MSG_INFORMATION_MAP = []
 // SPECIFIC REQUEST MESSAGES
 inline void MsgEncoder::RequestMsg(int msgType, Core::AnyMsg& msg)
 {
-	Buffer::ibufferw wrapper(&pimpl->ib);
+	Buffer::ibufferw w(&pimpl->ib);
 	auto specific = msg.mutable_specific();
-	specific->set_player(wrapper->read<player_t>("player"));
+	specific->set_player(w->read<player_t>("player"));
 	switch(msgType)
 	{
 #include "encoder_request_impl.hpp"
@@ -187,7 +183,7 @@ static const msg_type_map MSG_REQUEST_MAP = []
 // SPECIFIC INFORMATION MESSAGES
 inline void MsgEncoder::SpecInformationMsg(int msgType, Core::AnyMsg& msg)
 {
-	Buffer::ibufferw wrapper(&pimpl->ib);
+	Buffer::ibufferw w(&pimpl->ib);
 	auto specific = msg.mutable_specific();
 	switch(msgType)
 	{
