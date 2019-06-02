@@ -20,8 +20,6 @@ message Win
 {
 	uint32 player = 1;
 	uint32 reason = 2;
-	uint32 code = 3;
-	bool is_match_kill = 4;
 }
 
 // Encapsulates:

@@ -58,6 +58,7 @@ message MsgInformation
 		Msg.CardHint card_hint = 22;
 		Msg.PlayerHint player_hint = 23;
 		Msg.SwapPlayer swap_player = 24;
+		uint32 match_killer = 25; // card code for match killer
 	}
 }
 

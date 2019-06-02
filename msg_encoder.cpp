@@ -121,9 +121,6 @@ void ReadCardVector(Buffer::ibufferw& wrapper, CardSpawner cs, InlineCardRead bc
 struct MsgEncoder::impl
 {
 	Buffer::ibuffer ib{};
-	
-	bool isMatchKill{};
-	uint32_t matchKillCardId{};
 };
 
 MsgEncoder::MsgEncoder() : pimpl(new impl())

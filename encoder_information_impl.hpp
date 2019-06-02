@@ -6,11 +6,6 @@ CASE_FIRST(MSG_WIN)
 	
 	win->set_player(wrapper->read<player_t>("player"));
 	win->set_reason(wrapper->read<uint8_t>("reason"));
-	
-	// this information is set when reading MSG_MATCH_KILL
-	win->set_is_match_kill(pimpl->isMatchKill);
-	if(pimpl->isMatchKill)
-		win->set_code(pimpl->matchKillCardId);
 #endif // FILTERING
 CASE(MSG_CONFIRM_DECKTOP)
 #ifndef FILTERING
@@ -576,8 +571,7 @@ CASE(MSG_TAG_SWAP)
 #endif // FILTERING
 CASE(MSG_MATCH_KILL)
 #ifndef FILTERING
-	pimpl->isMatchKill = true;
-	pimpl->matchKillCardId = wrapper->read<cardcode_t>("card code");
+	information->set_match_killer(wrapper->read<cardcode_t>("card code"));
 #endif // FILTERING
 CASE_FINAL()
 #ifdef FILTERING
