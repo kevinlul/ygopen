@@ -6,19 +6,19 @@ CASE_FIRST(MSG_SELECT_BATTLECMD)
 	
 	selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_BATTLE);
 
-	CardSpawner add_w_effect = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_w_effect);
-	InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_w_effect);
+	auto ReadEffectDesc = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		ToEffectDesc(w->read<ed_t>("effectdesc"), card->mutable_effect_desc());
 	};
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_w_effect, nullptr, ReadEffectDesc);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add1, ReadEffectDesc);
 	
-	CardSpawner add_can_attack = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_can_attack);
-	InlineCardRead ReadAtkDirectly = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto Add2 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_can_attack);
+	auto ReadAtkDirectly = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		card->set_can_attack_directly(w->read<uint8_t>("can_attack_directly"));
 	};
-	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, add_can_attack, nullptr, ReadAtkDirectly);
+	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, Add2, ReadAtkDirectly);
 	
 	selectCmd->set_able_to_mp2(w->read<uint8_t>("to_mp2"));
 	selectCmd->set_able_to_ep(w->read<uint8_t>("to_ep"));
@@ -29,27 +29,27 @@ CASE(MSG_SELECT_IDLECMD)
 
 	selectCmd->set_type(Core::Msg::SelectCmd::COMMAND_IDLE);
 
-	CardSpawner add_summonable = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_summonable);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_summonable);
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_summonable);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add1);
 
-	CardSpawner add_spsummonable = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_spsummonable);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_spsummonable);
+	auto Add2 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_spsummonable);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add2);
 
-	CardSpawner add_repositionable = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_repositionable);
-	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, add_repositionable);
+	auto Add3 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_repositionable);
+	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, Add3);
 
-	CardSpawner add_msetable = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_msetable);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_msetable);
+	auto Add4 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_msetable);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add4);
 
-	CardSpawner add_ssetable = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_ssetable);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_ssetable);
+	auto Add5 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_ssetable);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add5);
 
-	CardSpawner add_w_effect = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_w_effect);
-	InlineCardRead ReadEffectDesc = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto Add6 = BIND_FUNC_TO_OBJ_PTR(selectCmd, add_cards_w_effect);
+	auto ReadEffectDesc = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		ToEffectDesc(w->read<ed_t>("effectdesc"), card->mutable_effect_desc());
 	};
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_w_effect, nullptr, ReadEffectDesc);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add6, ReadEffectDesc);
 
 	selectCmd->set_able_to_bp(w->read<uint8_t>("to_bp"));
 	selectCmd->set_able_to_ep(w->read<uint8_t>("to_ep"));
@@ -61,7 +61,7 @@ CASE(MSG_SELECT_EFFECTYN)
 
 	auto card = selectYesNo->mutable_card();
 	ToCardCode(w->read<code_t>("card code"), card);
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	READ_INFO_LOC_CORE(w, card);
 	ToEffectDesc(w->read<ed_t>("effectdesc"), card->mutable_effect_desc());
 #endif // FILTERING
 CASE(MSG_SELECT_YESNO)
@@ -74,9 +74,10 @@ CASE(MSG_SELECT_OPTION)
 #ifndef FILTERING
 	auto selectOption = specific->mutable_request()->mutable_select_option();
 
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectOption, add_effects);
 	auto count = w->read<uint8_t>("number of effects");
 	for(decltype(count) i = 0; i < count; i++)
-		ToEffectDesc(w->read<ed_t>("effectdesc ", (int)count), selectOption->add_effects());
+		ToEffectDesc(w->read<ed_t>("effectdesc", (int)count), Add1());
 #endif // FILTERING
 CASE(MSG_SELECT_CARD)
 #ifndef FILTERING
@@ -90,8 +91,8 @@ CASE(MSG_SELECT_CARD)
 	selectCards->set_min(w->read<uint32_t>("min"));
 	selectCards->set_max(w->read<uint32_t>("max"));
 
-	CardSpawner add_selectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
-	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, add_selectable);
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
+	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, Add1);
 #endif // FILTERING
 CASE(MSG_SELECT_CHAIN)
 #ifndef FILTERING
@@ -116,7 +117,7 @@ CASE(MSG_SELECT_CHAIN)
 		auto card = chainCard->mutable_card();
 
 		ToCardCode(w->read<code_t>("card code"), card);
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+		READ_INFO_LOC_CORE(w, card);
 		ToEffectDesc(w->read<ed_t>("effectdesc"), card->mutable_effect_desc());
 	}
 }
@@ -174,9 +175,9 @@ case MSG_SELECT_PLACE:
 #endif // FILTERING
 CASE(MSG_SELECT_POSITION)
 #ifndef FILTERING
-	auto selectPosition = specific->mutable_request()->mutable_select_position();
+	auto selectPos = specific->mutable_request()->mutable_select_position();
 	
-	auto card = selectPosition->mutable_card();
+	auto card = selectPos->mutable_card();
 	
 	ToCardCode(w->read<code_t>("card code"), card);
 	card->set_position(w->read<s_pos_t>("positions"));
@@ -193,20 +194,20 @@ CASE(MSG_SELECT_TRIBUTE)
 	selectCards->set_min(w->read<uint32_t>("min"));
 	selectCards->set_max(w->read<uint32_t>("max"));
 
-	CardSpawner add_selectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
-	InlineCardRead ReadReleaseParam = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
+	auto ReadReleaseParam = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		card->set_tribute_count(w->read<uint8_t>("release_param"));
 	};
-	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, add_selectable, nullptr, ReadReleaseParam);
+	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, Add1, ReadReleaseParam);
 }
 break;
 // case MSG_SORT_CARD:
 case MSG_SORT_CHAIN:
 {
 	auto sortCards = specific->mutable_request()->mutable_sort_cards();
-	CardSpawner add_cards_to_sort = BIND_FUNC_TO_OBJ_PTR(sortCards, add_cards_to_sort);
-	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, add_cards_to_sort);
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(sortCards, add_cards_to_sort);
+	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, Add1);
 #endif // FILTERING
 CASE(MSG_SELECT_COUNTER)
 #ifndef FILTERING
@@ -221,12 +222,12 @@ CASE(MSG_SELECT_COUNTER)
 	counter->set_type(w->read<uint16_t>("counter_type"));
 	counter->set_count(w->read<uint16_t>("counter_type"));
 	
-	CardSpawner add_cards_selectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
-	InlineCardRead ReadCounterCount = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
+	auto ReadCounterCount = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		card->mutable_counter()->set_count(w->read<uint16_t>("counter count"));
 	};
-	ReadCardVector<count_t, s_loc_t, s_seq_t, void>(w, add_cards_selectable, nullptr, ReadCounterCount);
+	ReadCardVector<count_t, s_loc_t, s_seq_t, void>(w, Add1, ReadCounterCount);
 	
 	// TODO: Set right counter type to each card?
 #endif // FILTERING
@@ -244,16 +245,16 @@ CASE(MSG_SELECT_SUM)
 	selectCards->set_min(w->read<uint32_t>("min"));
 	selectCards->set_max(w->read<uint32_t>("max"));
 	
-	InlineCardRead ReadSumParam = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
+	auto ReadSumParam = [](Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	{
 		card->set_sum_param(w->read<uint32_t>("sum param"));
 	};
 	
-	CardSpawner add_cards_must_select = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_must_select);
-	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, add_cards_must_select, nullptr, ReadSumParam);
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_must_select);
+	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, Add1, ReadSumParam);
 	
-	CardSpawner add_cards_selectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
-	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, add_cards_selectable, nullptr, ReadSumParam);
+	auto Add2 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
+	ReadCardVector<count_t, s_loc_t, seq_t, void>(w, Add2, ReadSumParam);
 #endif // FILTERING
 CASE(MSG_SELECT_UNSELECT_CARD)
 #ifndef FILTERING
@@ -264,11 +265,11 @@ CASE(MSG_SELECT_UNSELECT_CARD)
 	selectCards->set_min(w->read<uint32_t>("min"));
 	selectCards->set_max(w->read<uint32_t>("max"));
 	
-	CardSpawner add_selectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
-	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, add_selectable);
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_selectable);
+	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, Add1);
 	
-	CardSpawner add_unselectable = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_unselectable);
-	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, add_unselectable);
+	auto Add2 = BIND_FUNC_TO_OBJ_PTR(selectCards, add_cards_unselectable);
+	ReadCardVector<count_t, s_loc_t, seq_t, pos_t>(w, Add2);
 #endif // FILTERING
 CASE(MSG_ROCK_PAPER_SCISSORS)
 #ifndef FILTERING

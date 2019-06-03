@@ -53,16 +53,12 @@ using CardSpawner = std::function<Core::Data::CardInfo*()>;
 
 // Shorthand to bind a object function address to a object pointer
 #define BIND_FUNC_TO_OBJ_PTR(o, f) \
-	std::bind(&std::remove_pointer<decltype(o)>::type::f, o)
-
-// Function prototype that reads data from a given wrapper,
-// and puts information on the given CardInfo.
-using InlineCardRead = std::function<void(Buffer::ibufferw&, Core::Data::CardInfo*)>;
+	std::bind(&std::remove_pointer_t<decltype(o)>::f, o)
 
 // Reads a single card location info from the given wrapper
 // NOTE: Use void to not read a specific value at compile time
 template<typename Player, typename Loc, typename Seq, typename Pos>
-inline void ReadCardLocInfo(Buffer::ibufferw& w, Core::Data::CardInfo* card)
+inline void ReadInfoLoc(Buffer::ibufferw& w, Core::Data::CardInfo* card)
 {
 	if constexpr(!std::is_same<void, Player>())
 		card->set_controller(w->read<Player>("controller"));
@@ -88,29 +84,33 @@ inline void ReadCardLocInfo(Buffer::ibufferw& w, Core::Data::CardInfo* card)
 	}
 }
 
+// Shorthand for the function used in the core to write location info
+#define READ_INFO_LOC_CORE ReadInfoLoc<player_t, s_loc_t, seq_t, pos_t>
+
+// Function prototype that reads data from a given wrapper,
+// and puts information on the given CardInfo.
+using CardRead = std::function<void(Buffer::ibufferw&, Core::Data::CardInfo*)>;
+
 // Reads a card vector from the given wrapper.
-// aditionally, two functions before and after the default card read can be given, in case aditional info should be read
+// a optional CardRead function can be given to read aditional info.
 template<typename Count, typename Loc, typename Seq, typename Pos = void>
-void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, InlineCardRead bcr = nullptr, InlineCardRead acr = nullptr)
+void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, CardRead pos = nullptr)
 {
 	auto count = w->read<Count>(".size()");
 	for(Count i = 0; i < count; i++)
 	{
-		w->log("read card ", (int)i, " from vector");
+		w->log("read card ", (int)i, " from vector\n");
 
 		Core::Data::CardInfo* card = cs();
-
-		// Before Card Read
-		if(bcr) bcr(w, card);
 
 		// Card Code & Dirty Bit
 		ToCardCode(w->read<code_t>("card code"), card);
 
 		// Location Info
-		ReadCardLocInfo<player_t, Loc, Seq, Pos>(w, card);
+		ReadInfoLoc<player_t, Loc, Seq, Pos>(w, card);
 
-		// After Card Read
-		if(acr) acr(w, card);
+		// Postfix read
+		if(pos) pos(w, card);
 	}
 }
 

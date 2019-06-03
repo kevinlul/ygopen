@@ -15,8 +15,8 @@ CASE(MSG_CONFIRM_DECKTOP)
 	
 	w->seek(1, Buffer::seek_dir::cur, "player");
 	
-	CardSpawner add_cards = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
-	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, add_cards);
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
+	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, Add1);
 #endif // FILTERING
 CASE(MSG_CONFIRM_CARDS)
 #ifndef FILTERING
@@ -26,32 +26,32 @@ CASE(MSG_CONFIRM_CARDS)
 	
 	w->seek(1, Buffer::seek_dir::cur, "player");
 	
-	CardSpawner add_cards = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, add_cards);
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
+	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add1);
 #endif // FILTERING
 CASE(MSG_SHUFFLE_DECK)
 #ifndef FILTERING
-	auto shuffleLocation = information->mutable_shuffle_location();
+	auto shuffleLoc = information->mutable_shuffle_location();
 	
-	shuffleLocation->set_player(w->read<player_t>("player"));
+	shuffleLoc->set_player(w->read<player_t>("player"));
 	
-	shuffleLocation->set_location(0x01); // LOCATION_DECK
+	shuffleLoc->set_location(0x01); // LOCATION_DECK
 	
 	// NOTE: empty decklist
 #endif // FILTERING
 CASE(MSG_SHUFFLE_HAND)
 #ifndef FILTERING
-	auto shuffleLocation = information->mutable_shuffle_location();
+	auto shuffleLoc = information->mutable_shuffle_location();
 	
-	shuffleLocation->set_player(w->read<player_t>("player"));
+	shuffleLoc->set_player(w->read<player_t>("player"));
 	
-	shuffleLocation->set_location(0x02); // LOCATION_HAND
+	shuffleLoc->set_location(0x02); // LOCATION_HAND
 	
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(shuffleLoc, add_shuffled_cards);
 	auto count = w->read<count_t>(".size()");
-	CardSpawner add_shuffled_cards = BIND_FUNC_TO_OBJ_PTR(shuffleLocation, add_shuffled_cards);
 	for(decltype(count) i = 0; i < count; i++)
 	{
-		Core::Data::CardInfo* card = add_shuffled_cards();
+		Core::Data::CardInfo* card = Add1();
 		ToCardCode(w->read<code_t>("card code ", (int)i), card);
 		card->set_location(0x02); // LOCATION_HAND
 	}
@@ -66,16 +66,16 @@ CASE(MSG_SWAP_GRAVE_DECK)
 #endif // FILTERING
 CASE(MSG_SHUFFLE_SET_CARD)
 #ifndef FILTERING
-	auto shuffleSetCards = information->mutable_shuffle_set_cards();
+	auto shuffleSet = information->mutable_shuffle_set_cards();
 	w->seek(1, Buffer::seek_dir::cur, "location");
 	
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(shuffleSet, add_cards_previous);
+	CardSpawner Add2 = BIND_FUNC_TO_OBJ_PTR(shuffleSet, add_cards_current);
 	auto count = w->read<s_count_t>(".size()");
-	CardSpawner add_cards_previous = BIND_FUNC_TO_OBJ_PTR(shuffleSetCards, add_cards_previous);
-	CardSpawner add_cards_current = BIND_FUNC_TO_OBJ_PTR(shuffleSetCards, add_cards_current);
 	for(decltype(count) i = 0; i < count; i++)
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, add_cards_previous());
+		READ_INFO_LOC_CORE(w, Add1());
 	for(decltype(count) i = 0; i < count; i++)
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, add_cards_current());
+		READ_INFO_LOC_CORE(w, Add2());
 #endif // FILTERING
 CASE(MSG_REVERSE_DECK)
 #ifndef FILTERING
@@ -100,17 +100,17 @@ CASE(MSG_DECK_TOP)
 #endif // FILTERING
 CASE(MSG_SHUFFLE_EXTRA)
 #ifndef FILTERING
-	auto shuffleLocation = information->mutable_shuffle_location();
+	auto shuffleLoc = information->mutable_shuffle_location();
 	
-	shuffleLocation->set_player(w->read<player_t>("player"));
+	shuffleLoc->set_player(w->read<player_t>("player"));
 	
-	shuffleLocation->set_location(0x40); // LOCATION_EXTRA
+	shuffleLoc->set_location(0x40); // LOCATION_EXTRA
 	
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(shuffleLoc, add_shuffled_cards);
 	auto count = w->read<count_t>(".size()");
-	CardSpawner add_shuffled_cards = BIND_FUNC_TO_OBJ_PTR(shuffleLocation, add_shuffled_cards);
 	for(decltype(count) i = 0; i < count; i++)
 	{
-		Core::Data::CardInfo* card = add_shuffled_cards();
+		Core::Data::CardInfo* card = Add1();
 		ToCardCode(w->read<code_t>("card code ", (int)i), card);
 		card->set_location(0x40); // LOCATION_EXTRA
 	}
@@ -135,8 +135,8 @@ CASE(MSG_CONFIRM_EXTRATOP)
 	
 	w->seek(1, Buffer::seek_dir::cur, "player");
 	
-	CardSpawner add_cards = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
-	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, add_cards);
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
+	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, Add1);
 #endif // FILTERING
 CASE(MSG_MOVE)
 #ifndef FILTERING
@@ -149,7 +149,7 @@ CASE(MSG_MOVE)
 	auto ReadCardInfo = [&w, cardCode](Core::Data::CardInfo* card)
 	{
 		ToCardCode(cardCode, card);
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+		READ_INFO_LOC_CORE(w, card);
 	};
 	
 	ReadCardInfo(updateCard->mutable_previous());
@@ -166,7 +166,7 @@ CASE(MSG_POS_CHANGE)
 	auto previous = updateCard->mutable_previous();
 	auto current = updateCard->mutable_current();
 	
-	ToCardCode(w->read<code_t>("cardcode"), current);
+	ToCardCode(w->read<code_t>("card code"), current);
 	
 	previous->set_controller(w->read<player_t>("controller"));
 	previous->set_location(w->read<s_loc_t>("location"));
@@ -183,7 +183,7 @@ CASE(MSG_SET)
 	auto previous = updateCard->mutable_previous();
 	auto current = updateCard->mutable_current();
 	
-	ToCardCode(w->read<code_t>("cardcode"), current);
+	ToCardCode(w->read<code_t>("card code"), current);
 	
 	previous->set_controller(w->read<player_t>("controller"));
 	previous->set_location(w->read<s_loc_t>("location"));
@@ -196,8 +196,8 @@ CASE(MSG_SWAP)
 	
 	auto ReadCardInfo = [&w](Core::Data::CardInfo* card)
 	{
-		ToCardCode(w->read<code_t>("cardcode"), card);
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+		ToCardCode(w->read<code_t>("card code"), card);
+		READ_INFO_LOC_CORE(w, card);
 	};
 	
 	ReadCardInfo(swapCards->mutable_card1());
@@ -209,9 +209,9 @@ CASE(MSG_FIELD_DISABLED)
 	
 	std::bitset<32> flag(w->read<uint32_t>("flag"));
 
-	// NOTE: This one is different from the one used to handle MSG_SELECT_PLACE.
+	// NOTE: different from MSG_SELECT_PLACE.
 	// The flag checkings are reversed.
-	auto ExtractPlaces = [&disableZones, &flag](const int player, const int indexStart)
+	auto ExtractPlaces = [&disableZones, &flag](int player, int indexStart)
 	{
 		int i = indexStart;
 		
@@ -257,8 +257,8 @@ CASE(MSG_SUMMONING)
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
 	
 	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("cardcode"), card);
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	ToCardCode(w->read<code_t>("card code"), card);
+	READ_INFO_LOC_CORE(w, card);
 #endif // FILTERING
 CASE(MSG_SUMMONED)
 #ifndef FILTERING
@@ -273,8 +273,8 @@ CASE(MSG_SPSUMMONING)
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
 	
 	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("cardcode"), card);
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	ToCardCode(w->read<code_t>("card code"), card);
+	READ_INFO_LOC_CORE(w, card);
 #endif // FILTERING
 CASE(MSG_SPSUMMONED)
 #ifndef FILTERING
@@ -289,8 +289,8 @@ CASE(MSG_FLIPSUMMONING)
 	summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
 	
 	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("cardcode"), card);
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	ToCardCode(w->read<code_t>("card code"), card);
+	READ_INFO_LOC_CORE(w, card);
 #endif // FILTERING
 CASE(MSG_FLIPSUMMONED)
 #ifndef FILTERING
@@ -304,8 +304,8 @@ CASE(MSG_CHAINING)
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINING);
 	
 	auto card = chainAction->mutable_card();
-	ToCardCode(w->read<code_t>("cardcode"), card);
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	ToCardCode(w->read<code_t>("card code"), card);
+	READ_INFO_LOC_CORE(w, card);
 	
 	auto place = chainAction->mutable_place();
 	place->set_controller(w->read<player_t>("player"));
@@ -358,27 +358,30 @@ CASE(MSG_RANDOM_SELECTED)
 	
 	w->seek(1, Buffer::seek_dir::cur, "player");
 	
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectedCards, add_cards);
 	auto count = w->read<count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->add_cards());
+		READ_INFO_LOC_CORE(w, Add1());
 #endif // FILTERING
 CASE(MSG_BECOME_TARGET)
 #ifndef FILTERING
 	auto selectedCards = information->mutable_selected_cards();
 	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_BECOME);
 	
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectedCards, add_cards);
 	auto count = w->read<count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
-		ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->add_cards());
+		READ_INFO_LOC_CORE(w, Add1());
 #endif // FILTERING
 CASE(MSG_DRAW)
 #ifndef FILTERING
 	auto draw = information->mutable_draw();
 	draw->set_player(w->read<player_t>("player"));
 	
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(draw, add_cards);
 	auto count = w->read<count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
-		ToCardCode(w->read<code_t>("cardcode", (int)i), draw->add_cards());
+		ToCardCode(w->read<code_t>("card code", (int)i), Add1());
 #endif // FILTERING
 CASE(MSG_DAMAGE)
 #ifndef FILTERING
@@ -413,16 +416,16 @@ CASE(MSG_CARD_TARGET)
 	auto selectedCards = information->mutable_selected_cards();
 	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_TARGET);
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->mutable_targeting_card());
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->add_cards());
+	READ_INFO_LOC_CORE(w, selectedCards->mutable_targeting_card());
+	READ_INFO_LOC_CORE(w, selectedCards->add_cards());
 #endif // FILTERING
 CASE(MSG_CANCEL_TARGET)
 #ifndef FILTERING
 	auto selectedCards = information->mutable_selected_cards();
 	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_DETARGET);
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->mutable_targeting_card());
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, selectedCards->add_cards());
+	READ_INFO_LOC_CORE(w, selectedCards->mutable_targeting_card());
+	READ_INFO_LOC_CORE(w, selectedCards->add_cards());
 #endif // FILTERING
 CASE(MSG_ADD_COUNTER)
 #ifndef FILTERING
@@ -455,10 +458,10 @@ CASE(MSG_ATTACK)
 	auto onAttack = information->mutable_on_attack();
 	onAttack->set_status(Core::Msg::OnAttack::STATUS_ATTACK_DECLARATION);
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, onAttack->mutable_attacker());
+	READ_INFO_LOC_CORE(w, onAttack->mutable_attacker());
 	
 	auto atkTarget = onAttack->mutable_attack_target();
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, atkTarget);
+	READ_INFO_LOC_CORE(w, atkTarget);
 	
 	// clear card if location is empty
 	if(atkTarget->location() == 0 && atkTarget->sequence() == 0)
@@ -472,12 +475,12 @@ CASE(MSG_BATTLE)
 	auto attacker = onAttack->mutable_attacker();
 	auto atkTarget = onAttack->mutable_attack_target();
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, attacker);
+	READ_INFO_LOC_CORE(w, attacker);
 	attacker->set_atk(w->read<uint32_t>("attacker atk"));
 	attacker->set_def(w->read<uint32_t>("attacker def"));
 	w->seek(1, Buffer::seek_dir::cur, "attacker battle destroyed");
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, atkTarget);
+	READ_INFO_LOC_CORE(w, atkTarget);
 	atkTarget->set_atk(w->read<uint32_t>("attack_target atk"));
 	atkTarget->set_def(w->read<uint32_t>("attack_target def"));
 	w->seek(1, Buffer::seek_dir::cur, "attack_target battle destroyed");
@@ -537,7 +540,7 @@ CASE(MSG_CARD_HINT)
 	auto cardHint = information->mutable_card_hint();
 	
 	auto card = cardHint->mutable_card();
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	READ_INFO_LOC_CORE(w, card);
 	
 	cardHint->set_type(w->read<uint8_t>("hint type"));
 	cardHint->set_data(w->read<uint64_t>("hint data"));
@@ -558,16 +561,19 @@ CASE(MSG_TAG_SWAP)
 	swapPlayer->set_main_deck_count(w->read<count_t>("main deck count"));
 	
 	auto extraCount = w->read<count_t>("extra deck count");
-	w->seek(sizeof(count_t), Buffer::seek_dir::cur, "extra_p_count (face-up pendulums)");
+	w->seek(sizeof(count_t), Buffer::seek_dir::cur, "face-up pendulums");
 	auto handCount = w->read<count_t>("hand deck count");
 	
-	ToCardCode(w->read<code_t>("top of deck"), swapPlayer->mutable_top_of_deck());
+	ToCardCode(w->read<code_t>("decktop"), swapPlayer->mutable_decktop());
+	
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(swapPlayer, add_hand_cards);
+	auto Add2 = BIND_FUNC_TO_OBJ_PTR(swapPlayer, add_extra_cards);
 	
 	for(decltype(handCount) i = 0; i < handCount; i++)
-		ToCardCode(w->read<code_t>("hand card ", (int)i), swapPlayer->add_hand_cards());
+		ToCardCode(w->read<code_t>("hand card ", (int)i), Add1());
 	
 	for(decltype(extraCount) i = 0; i < extraCount; i++)
-		ToCardCode(w->read<code_t>("extra card ", (int)i), swapPlayer->add_extra_cards());
+		ToCardCode(w->read<code_t>("extra card ", (int)i), Add2());
 #endif // FILTERING
 CASE(MSG_MATCH_KILL)
 #ifndef FILTERING

@@ -19,7 +19,7 @@ CASE(MSG_MISSED_EFFECT)
 	
 	auto card = miscAction->mutable_card();
 	
-	ReadCardLocInfo<player_t, s_loc_t, seq_t, pos_t>(w, card);
+	READ_INFO_LOC_CORE(w, card);
 	ToCardCode(w->read<code_t>("card code"), card);
 #endif // FILTERING
 CASE_FINAL()

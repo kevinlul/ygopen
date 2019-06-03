@@ -359,7 +359,7 @@ message SwapPlayer
 {
 	uint32 player = 1;
 	uint32 main_deck_count = 2;
-	Data.CardInfo top_of_deck = 3;
+	Data.CardInfo decktop = 3;
 	repeated Data.CardInfo hand_cards = 4;
 	repeated Data.CardInfo extra_cards = 5;
 }
