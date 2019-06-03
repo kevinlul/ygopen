@@ -64,7 +64,7 @@ CASE(MSG_SELECT_OPTION)
 #ifndef FILTERING
 	auto selectOption = specific->mutable_request()->mutable_select_option();
 	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectOption, add_effects);
-	auto count = w->read<uint8_t>("number of effects");
+	auto count = w->read<s_count_t>("number of effects");
 	for(decltype(count) i = 0; i < count; i++)
 		ToEffectDesc(w->read<ed_t>("effectdesc", (int)count), Add1());
 #endif // FILTERING
@@ -84,18 +84,17 @@ CASE(MSG_SELECT_CARD)
 CASE(MSG_SELECT_CHAIN)
 #ifndef FILTERING
 	auto selectToChain = specific->mutable_request()->mutable_select_to_chain();
-	auto count = w->read<uint32_t>("number of chains");
+	auto count = w->read<count_t>("number of chains");
 	w->seek(1, Buffer::seek_dir::cur, "spe_count");
 	selectToChain->set_forced(w->read<uint8_t>("forced"));
 	w->seek(8, Buffer::seek_dir::cur, "hint_timing x 2");
-	// NOTE: can probably be improved upon but i cannot think
-	// of a better way of doing it right now
+
 	for(decltype(count) i = 0; i < count; i++)
 	{
-		w->log("chain card", (int)i);
+		w->log("chain card ", (int)i);
 		auto chainCard = selectToChain->add_cards_w_effect();
-		chainCard->set_effect_desc_type(w->read<uint8_t>("EDESC ", (int)i));
 		auto card = chainCard->mutable_card();
+		chainCard->set_effect_desc_type(w->read<uint8_t>("EDESC ", (int)i));
 		ToCardCode(w->read<code_t>("card code"), card);
 		READ_INFO_LOC_CORE(w, card);
 		ToEffectDesc(w->read<ed_t>("effectdesc"), card->mutable_effect_desc());
@@ -283,7 +282,7 @@ CASE(MSG_ANNOUNCE_NUMBER)
 #ifndef FILTERING
 	auto declareMisc = specific->mutable_request()->mutable_declare_misc();
 	declareMisc->set_type(Core::Msg::DeclareMisc::DECLARE_NUMBER);
-	auto count = w->read<uint8_t>("count");
+	auto count = w->read<s_count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		declareMisc->add_available(w->read<uint64_t>("number ", (int)i));
 #endif // FILTERING
@@ -292,7 +291,7 @@ CASE(MSG_ANNOUNCE_CARD_FILTER)
 #ifndef FILTERING
 	auto declareCard = specific->mutable_request()->mutable_declare_card();
 	
-	auto count = w->read<uint8_t>("count");
+	auto count = w->read<s_count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		declareCard->add_opcodes(w->read<uint64_t>("opcode ", (int)i));
 #endif // FILTERING

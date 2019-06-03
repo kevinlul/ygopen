@@ -479,7 +479,7 @@ CASE(MSG_TOSS_COIN)
 	auto result = information->mutable_result();
 	result->set_type(Core::Msg::Result::RESULT_TOSS_COIN);
 	result->set_player(w->read<player_t>("player"));
-	auto count = w->read<uint8_t>("count");
+	auto count = w->read<s_count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		result->add_results(w->read<uint8_t>("result ", (int)i));
 #endif // FILTERING
@@ -489,7 +489,7 @@ CASE(MSG_TOSS_DICE)
 	auto result = information->mutable_result();
 	result->set_type(Core::Msg::Result::RESULT_TOSS_DICE);
 	result->set_player(w->read<player_t>("player"));
-	auto count = w->read<uint8_t>("count");
+	auto count = w->read<s_count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		result->add_results(w->read<uint8_t>("result ", (int)i));
 #endif // FILTERING
