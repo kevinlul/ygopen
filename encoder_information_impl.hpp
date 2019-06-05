@@ -6,21 +6,19 @@ CASE(MSG_WIN,
 	win->set_reason(w->read<uint8_t>("reason"));
 );
 
+#define CONFIRM_CARDS(t, size) \
+	auto confirmCards = information->mutable_confirm_cards(); \
+	confirmCards->set_type(Core::Msg::ConfirmCards::t); \
+	w->seek(1, Buffer::seek_dir::cur, "player"); \
+	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards); \
+	ReadCardVector<count_t, s_loc_t, size>(w, Add1);
 CASE(MSG_CONFIRM_DECKTOP,
-	auto confirmCards = information->mutable_confirm_cards();
-	confirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_DECKTOP);
-	w->seek(1, Buffer::seek_dir::cur, "player");
-	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
-	ReadCardVector<count_t, s_loc_t, s_seq_t>(w, Add1);
+	CONFIRM_CARDS(CONFIRM_DECKTOP, s_seq_t)
 );
-
 CASE(MSG_CONFIRM_CARDS,
-	auto confirmCards = information->mutable_confirm_cards();
-	confirmCards->set_type(Core::Msg::ConfirmCards::CONFIRM_CARDS);
-	w->seek(1, Buffer::seek_dir::cur, "player");
-	CardSpawner Add1 = BIND_FUNC_TO_OBJ_PTR(confirmCards, add_cards);
-	ReadCardVector<count_t, s_loc_t, seq_t>(w, Add1);
+	CONFIRM_CARDS(CONFIRM_MULTIPLE, seq_t)
 );
+#undef CONFIRM_CARDS
 
 CASE(MSG_SHUFFLE_DECK,
 	auto shuffleLoc = information->mutable_shuffle_location();
@@ -45,9 +43,7 @@ CASE(MSG_SHUFFLE_HAND,
 
 CASE(MSG_SWAP_GRAVE_DECK,
 	auto miscAction = information->mutable_misc_action();
-	
 	miscAction->set_type(Core::Msg::MiscAction::ACTION_SWAP_GY_WITH_DECK);
-	
 	miscAction->set_player(w->read<player_t>("player"));
 );
 
@@ -61,11 +57,6 @@ CASE(MSG_SHUFFLE_SET_CARD,
 		READ_INFO_LOC_CORE(w, Add1());
 	for(decltype(count) i = 0; i < count; i++)
 		READ_INFO_LOC_CORE(w, Add2());
-);
-
-CASE(MSG_REVERSE_DECK,
-	auto miscAction = information->mutable_misc_action();
-	miscAction->set_type(Core::Msg::MiscAction::ACTION_REVERSE_DECK);
 );
 
 CASE(MSG_DECK_TOP,
@@ -200,64 +191,40 @@ CASE(MSG_FIELD_DISABLED,
 	ExtractPlaces(1, 16);
 );
 
+#define SUMMON_CARD1(t) \
+	auto summonCard = information->mutable_summon_card(); \
+	summonCard->set_type(Core::Msg::SummonCard::t); \
+	auto card = summonCard->mutable_card(); \
+	ToCardCode(w->read<code_t>("card code"), card); \
+	READ_INFO_LOC_CORE(w, card);
+#define SUMMON_CARD2(t) \
+	auto summonCard = information->mutable_summon_card(); \
+	summonCard->set_type(Core::Msg::SummonCard::t);
 CASE(MSG_SUMMONING,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
-	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("card code"), card);
-	READ_INFO_LOC_CORE(w, card);
+	SUMMON_CARD1(SUMMON_NORMAL)
 );
-
-CASE(MSG_SUMMONED,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_NORMAL);
-);
-
 CASE(MSG_SPSUMMONING,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
-	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("card code"), card);
-	READ_INFO_LOC_CORE(w, card);
+	SUMMON_CARD1(SUMMON_SPECIAL)
 );
-
-CASE(MSG_SPSUMMONED,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_SPECIAL);
-);
-
 CASE(MSG_FLIPSUMMONING,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
-	auto card = summonCard->mutable_card();
-	ToCardCode(w->read<code_t>("card code"), card);
-	READ_INFO_LOC_CORE(w, card);
+	SUMMON_CARD1(SUMMON_FLIP)
 );
-
+CASE(MSG_SUMMONED,
+	SUMMON_CARD2(SUMMON_NORMAL)
+);
+CASE(MSG_SPSUMMONED,
+	SUMMON_CARD2(SUMMON_SPECIAL)
+);
 CASE(MSG_FLIPSUMMONED,
-	auto summonCard = information->mutable_summon_card();
-	summonCard->set_type(Core::Msg::SummonCard::SUMMON_FLIP);
+	SUMMON_CARD2(SUMMON_FLIP)
 );
-
-CASE(MSG_CHAINING,
-	auto chainAction = information->mutable_chain_action();
-	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINING);
-	auto card = chainAction->mutable_card();
-	ToCardCode(w->read<code_t>("card code"), card);
-	READ_INFO_LOC_CORE(w, card);
-	auto place = chainAction->mutable_place();
-	place->set_controller(w->read<player_t>("player"));
-	place->set_location(w->read<s_loc_t>("location"));
-	place->set_sequence(w->read<seq_t>("sequence"));
-	ToEffectDesc(w->read<ed_t>("effectdesc"), chainAction->mutable_ed());
-	chainAction->set_chain_number(w->read<uint32_t>("chain num"));
-);
+#undef SUMMON_CARD1
+#undef SUMMON_CARD2
 
 #define CHAIN_ACTION(a) \
 	auto chainAction = information->mutable_chain_action(); \
 	chainAction->set_type(Core::Msg::ChainAction::a); \
 	chainAction->set_chain_number(w->read<uint8_t>("chain num"));
-
 CASE(MSG_CHAINED,
 	CHAIN_ACTION(ACTION_CHAINED)
 );
@@ -273,31 +240,25 @@ CASE(MSG_CHAIN_NEGATED,
 CASE(MSG_CHAIN_DISABLED,
 	CHAIN_ACTION(ACTION_CHAIN_DISABLED)
 );
-
 #undef CHAIN_ACTION
+
+CASE(MSG_CHAINING,
+	auto chainAction = information->mutable_chain_action();
+	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAINING);
+	auto card = chainAction->mutable_card();
+	ToCardCode(w->read<code_t>("card code"), card);
+	READ_INFO_LOC_CORE(w, card);
+	auto place = chainAction->mutable_place();
+	place->set_controller(w->read<player_t>("player"));
+	place->set_location(w->read<s_loc_t>("location"));
+	place->set_sequence(w->read<seq_t>("sequence"));
+	ToEffectDesc(w->read<ed_t>("effectdesc"), chainAction->mutable_ed());
+	chainAction->set_chain_number(w->read<uint32_t>("chain num"));
+);
 
 CASE(MSG_CHAIN_END,
 	auto chainAction = information->mutable_chain_action();
 	chainAction->set_type(Core::Msg::ChainAction::ACTION_CHAIN_END);
-);
-
-CASE(MSG_RANDOM_SELECTED,
-	auto selectedCards = information->mutable_selected_cards();
-	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_RANDOM);
-	w->seek(1, Buffer::seek_dir::cur, "player");
-	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectedCards, add_cards);
-	auto count = w->read<count_t>("count");
-	for(decltype(count) i = 0; i < count; i++)
-		READ_INFO_LOC_CORE(w, Add1());
-);
-
-CASE(MSG_BECOME_TARGET,
-	auto selectedCards = information->mutable_selected_cards();
-	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_BECOME);
-	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectedCards, add_cards);
-	auto count = w->read<count_t>("count");
-	for(decltype(count) i = 0; i < count; i++)
-		READ_INFO_LOC_CORE(w, Add1());
 );
 
 CASE(MSG_DRAW,
@@ -306,7 +267,7 @@ CASE(MSG_DRAW,
 	auto Add1 = BIND_FUNC_TO_OBJ_PTR(draw, add_cards);
 	auto count = w->read<count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
-		ToCardCode(w->read<code_t>("card code", (int)i), Add1());
+		ToCardCode(w->read<code_t>("card code ", (int)i), Add1());
 );
 
 #define LP_CHANGE(t) \
@@ -314,7 +275,6 @@ CASE(MSG_DRAW,
 	lpChange->set_type(Core::Msg::LpChange::t); \
 	lpChange->set_player(w->read<player_t>("player")); \
 	lpChange->set_amount(w->read<uint32_t>("amount"));
-
 CASE(MSG_DAMAGE,
 	LP_CHANGE(CHANGE_DAMAGE)
 );
@@ -327,46 +287,53 @@ CASE(MSG_LPUPDATE,
 CASE(MSG_PAY_LPCOST,
 	LP_CHANGE(CHANGE_PAY)
 );
-
 #undef LP_CHANGE
 
+#define SELECTED1(t, ...) \
+	auto selectedCards = information->mutable_selected_cards(); \
+	selectedCards->set_type(Core::Msg::SelectedCards::t); \
+	__VA_ARGS__ \
+	auto Add1 = BIND_FUNC_TO_OBJ_PTR(selectedCards, add_cards); \
+	auto count = w->read<count_t>("count"); \
+	for(decltype(count) i = 0; i < count; i++) \
+		READ_INFO_LOC_CORE(w, Add1());
+#define SELECTED2(t) \
+	auto selectedCards = information->mutable_selected_cards(); \
+	selectedCards->set_type(Core::Msg::SelectedCards::t); \
+	READ_INFO_LOC_CORE(w, selectedCards->mutable_targeting_card()); \
+	READ_INFO_LOC_CORE(w, selectedCards->add_cards());
+CASE(MSG_RANDOM_SELECTED,
+	SELECTED1(SELECTION_RANDOM, w->seek(1, Buffer::seek_dir::cur, "player");)
+);
+CASE(MSG_BECOME_TARGET,
+	SELECTED1(SELECTION_BECOME)
+);
 CASE(MSG_CARD_TARGET,
-	auto selectedCards = information->mutable_selected_cards();
-	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_TARGET);
-	READ_INFO_LOC_CORE(w, selectedCards->mutable_targeting_card());
-	READ_INFO_LOC_CORE(w, selectedCards->add_cards());
+	SELECTED2(SELECTION_CARD_TARGET)
 );
-
 CASE(MSG_CANCEL_TARGET,
-	auto selectedCards = information->mutable_selected_cards();
-	selectedCards->set_type(Core::Msg::SelectedCards::SELECTION_CARD_DETARGET);
-	READ_INFO_LOC_CORE(w, selectedCards->mutable_targeting_card());
-	READ_INFO_LOC_CORE(w, selectedCards->add_cards());
+	SELECTED2(SELECTION_CARD_DETARGET)
 );
+#undef SELECTED1
+#undef SELECTED2
 
+#define COUNTER_CHANGE(t) \
+	auto counterChange = information->mutable_counter_change(); \
+	counterChange->set_type(Core::Msg::CounterChange::t); \
+	auto counter = counterChange->mutable_counter(); \
+	auto place = counterChange->mutable_place(); \
+	counter->set_type(w->read<uint16_t>("counter type")); \
+	place->set_controller(w->read<player_t>("player")); \
+	place->set_location(w->read<s_loc_t>("location")); \
+	place->set_sequence(w->read<s_seq_t>("sequence")); \
+	counter->set_count(w->read<uint16_t>("counter count"));
 CASE(MSG_ADD_COUNTER,
-	auto counterChange = information->mutable_counter_change();
-	counterChange->set_type(Core::Msg::CounterChange::CHANGE_ADD);
-	auto counter = counterChange->mutable_counter();
-	auto place = counterChange->mutable_place();
-	counter->set_type(w->read<uint16_t>("counter type"));
-	place->set_controller(w->read<player_t>("player"));
-	place->set_location(w->read<s_loc_t>("location"));
-	place->set_sequence(w->read<s_seq_t>("sequence"));
-	counter->set_count(w->read<uint16_t>("counter count"));
+	COUNTER_CHANGE(CHANGE_ADD)
 );
-
 CASE(MSG_REMOVE_COUNTER,
-	auto counterChange = information->mutable_counter_change();
-	counterChange->set_type(Core::Msg::CounterChange::CHANGE_REMOVE);
-	auto counter = counterChange->mutable_counter();
-	auto place = counterChange->mutable_place();
-	counter->set_type(w->read<uint16_t>("counter type"));
-	place->set_controller(w->read<player_t>("player"));
-	place->set_location(w->read<s_loc_t>("location"));
-	place->set_sequence(w->read<s_seq_t>("sequence"));
-	counter->set_count(w->read<uint16_t>("counter count"));
+	COUNTER_CHANGE(CHANGE_REMOVE)
 );
+#undef COUNTER_CHANGE
 
 CASE(MSG_ATTACK,
 	auto onAttack = information->mutable_on_attack();
@@ -397,38 +364,37 @@ CASE(MSG_BATTLE,
 		onAttack->clear_attack_target();
 );
 
+#define MISC_ACTION(t) \
+	auto miscAction = information->mutable_misc_action(); \
+	miscAction->set_type(Core::Msg::MiscAction::t);
+CASE(MSG_REVERSE_DECK,
+	MISC_ACTION(ACTION_REVERSE_DECK)
+);
 CASE(MSG_ATTACK_DISABLED,
-	auto miscAction = information->mutable_misc_action();
-	miscAction->set_type(Core::Msg::MiscAction::ACTION_ATTACK_NEGATED);
+	MISC_ACTION(ACTION_ATTACK_NEGATED)
 );
-
 CASE(MSG_DAMAGE_STEP_START,
-	auto miscAction = information->mutable_misc_action();
-	miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_START);
+	MISC_ACTION(ACTION_DAMAGE_STEP_START)
 );
-
 CASE(MSG_DAMAGE_STEP_END,
-	auto miscAction = information->mutable_misc_action();
-	miscAction->set_type(Core::Msg::MiscAction::ACTION_DAMAGE_STEP_END);
+	MISC_ACTION(ACTION_DAMAGE_STEP_END)
 );
+#undef MISC_ACTION
 
+#define RESULT(t) \
+	auto result = information->mutable_result(); \
+	result->set_type(Core::Msg::Result::t); \
+	result->set_player(w->read<player_t>("player")); \
+	auto count = w->read<s_count_t>("count"); \
+	for(decltype(count) i = 0; i < count; i++) \
+		result->add_results(w->read<uint8_t>("result ", (int)i));
 CASE(MSG_TOSS_COIN,
-	auto result = information->mutable_result();
-	result->set_type(Core::Msg::Result::RESULT_TOSS_COIN);
-	result->set_player(w->read<player_t>("player"));
-	auto count = w->read<s_count_t>("count");
-	for(decltype(count) i = 0; i < count; i++)
-		result->add_results(w->read<uint8_t>("result ", (int)i));
+	RESULT(RESULT_TOSS_COIN)
 );
-
 CASE(MSG_TOSS_DICE,
-	auto result = information->mutable_result();
-	result->set_type(Core::Msg::Result::RESULT_TOSS_DICE);
-	result->set_player(w->read<player_t>("player"));
-	auto count = w->read<s_count_t>("count");
-	for(decltype(count) i = 0; i < count; i++)
-		result->add_results(w->read<uint8_t>("result ", (int)i));
+	RESULT(RESULT_TOSS_DICE)
 );
+#undef RESULT
 
 CASE(MSG_HAND_RES,
 	auto result = information->mutable_result();

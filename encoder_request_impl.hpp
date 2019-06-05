@@ -81,7 +81,6 @@ CASE(MSG_SELECT_CHAIN,
 	w->seek(1, Buffer::seek_dir::cur, "spe_count");
 	selectToChain->set_forced(w->read<uint8_t>("forced"));
 	w->seek(8, Buffer::seek_dir::cur, "hint_timing x 2");
-
 	for(decltype(count) i = 0; i < count; i++)
 	{
 		w->log("chain card ", (int)i);
@@ -248,7 +247,6 @@ CASE(MSG_ANNOUNCE_CARD,
 			declareCard->add_opcodes(0x40000102); // ISTYPE
 		}
 	}
-	
 );
 #undef f
 
@@ -262,7 +260,6 @@ CASE(MSG_ANNOUNCE_NUMBER,
 
 CASE(MSG_ANNOUNCE_CARD_FILTER,
 	auto declareCard = specific->mutable_request()->mutable_declare_card();
-	
 	auto count = w->read<s_count_t>("count");
 	for(decltype(count) i = 0; i < count; i++)
 		declareCard->add_opcodes(w->read<uint64_t>("opcode ", (int)i));
