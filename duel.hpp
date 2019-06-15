@@ -43,6 +43,8 @@ public:
 
 	void Start(int options);
 
+	void PreloadScript(const std::string& file);
+
 	void SetPlayerInfo(int playerID, int startLP, int startHand, int drawCount);
 
 	void Process();
