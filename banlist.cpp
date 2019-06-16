@@ -7,31 +7,38 @@
 namespace YGOpen
 {
 
-Banlist::Banlist() : mode(MODE_BLACKLIST)
-{
-	
-}
-
 int Banlist::GetMode() const
 {
 	return mode;
 }
 
-bool Banlist::FromJSON(nlohmann::json& j)
+bool Banlist::FromJSON(const nlohmann::json& j)
 {
-	std::vector<int> v;
-
-	v = j.at("semilimited").get<std::vector<int>>();
-	semilimited = std::set<int>(v.begin(), v.end());
-
-	v = j.at("limited").get<std::vector<int>>();
-	limited = std::set<int>(v.begin(), v.end());
-
-	v = j.at("forbidden").get<std::vector<int>>();
-	forbidden = std::set<int>(v.begin(), v.end());
-
-	std::printf("Loaded banlist %s\n", j["name"].get<std::string>().c_str());
-
+	std::vector<uint32_t> v;
+	try
+	{
+		std::string modeStr = j.at("mode").get<std::string>();
+		if(modeStr == "blacklist")
+			mode == MODE_BLACKLIST;
+		else if (modeStr == "whitelist")
+			mode == MODE_WHITELIST;
+		v = j.at("semilimited").get<std::vector<uint32_t>>();
+		semilimited = std::set<uint32_t>(v.begin(), v.end());
+		v = j.at("limited").get<std::vector<uint32_t>>();
+		limited = std::set<uint32_t>(v.begin(), v.end());
+		v = j.at("forbidden").get<std::vector<uint32_t>>();
+		forbidden = std::set<uint32_t>(v.begin(), v.end());
+		if(mode == MODE_WHITELIST && j.count("whitelist") > 0)
+		{
+			v = j.at("whitelist").get<std::vector<uint32_t>>();
+			whitelist = std::set<uint32_t>(v.begin(), v.end());
+		}
+	}
+	catch(std::exception& e)
+	{
+		std::puts(e.what());
+		return false;
+	}
 	return true;
 }
 

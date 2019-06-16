@@ -7,10 +7,7 @@
 namespace YGOpen
 {
 
-Deck::Deck() : verified(false), usable(false)
-{}
-
-unsigned int Deck::Verify(DatabaseManager& dbm)
+uint32_t Deck::Verify(DatabaseManager& dbm)
 {
 	for(auto& card : main)
 	{

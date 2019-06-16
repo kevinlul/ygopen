@@ -10,21 +10,17 @@ namespace YGOpen
 
 class Banlist
 {
-	int mode;
 public:
 	enum {MODE_BLACKLIST, MODE_WHITELIST};
-
-	Banlist();
-
-	std::set<int> semilimited;
-	std::set<int> limited;
-	std::set<int> forbidden;
-
-	std::set<int> whitelist;
+	std::set<uint32_t> whitelist;
+	std::set<uint32_t> semilimited;
+	std::set<uint32_t> limited;
+	std::set<uint32_t> forbidden;
 
 	int GetMode() const;
-
-	bool FromJSON(nlohmann::json& j);
+	bool FromJSON(const nlohmann::json& j);
+private:
+	int mode{MODE_BLACKLIST};
 };
 
 } // namespace YGOpen

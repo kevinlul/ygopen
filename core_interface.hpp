@@ -13,11 +13,6 @@ typedef unsigned int (*message_handler)(void*, unsigned int);
 
 class CoreInterface
 {
-	std::string activeCorePath;
-	void* handle;
-
-	template<typename T>
-	T LoadFunction(void* handle, T* func, const char* name, bool unload);
 public:
 	// Core loading
 	CoreInterface(bool Loadlibrary);
@@ -56,7 +51,13 @@ public:
 
 	// Core unloading
 	~CoreInterface();
-	void UnloadCore(); 
+	void UnloadCore();
+private:
+	std::string activeCorePath;
+	void* handle;
+	
+	template<typename T>
+	T LoadFunction(void* handle, T* func, const char* name, bool unload);
 };
 
 } // namespace YGOpen
