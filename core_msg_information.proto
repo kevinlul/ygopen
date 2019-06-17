@@ -80,20 +80,21 @@ message UpdateCard
 		// undefined: assume full update.
 		REASON_NO_REASON = 0;
 		// Shows a card from the top of the deck.
-		// previous: controller, location, sequence; current: code
+		// previous: controller, location, sequence;
+		// current: code
 		// NOTE: sequence in previous is reversed, 0 means top of the stack
 		REASON_DECK_TOP = 1;
 		// Moves a card from one location to another.
-		// previous: code, controller, location, sequence, or nothing set;
-		// current: code, controller, location, sequence, or nothing set.
-		// if previous is not set, then creates a card in place (token)
-		// if current is not set, then removes a card in place (token)
+		// previous: code, controller, location, sequence;
+		// current: code, controller, location, sequence.
 		REASON_MOVE = 2;
 		// Changes the position of a card in place.
-		// previous: controller, location, sequence, position; current: code, position
+		// previous: controller, location, sequence, position;
+		// current: code, position
 		REASON_POS_CHANGE = 3;
 		// Sets a card in place.
-		// previous: controller, location, sequence; current: code, position
+		// previous: controller, location, sequence; 
+		// current: code, position
 		REASON_SET = 4;
 	}
 	UpdateReason reason = 1;
@@ -103,6 +104,31 @@ message UpdateCard
 	
 	Data.CardInfo previous = 4;
 	Data.CardInfo current = 5;
+}
+
+// Creates a card in place (token)
+// previous: code, controller, location, sequence.
+// REASON_ADD = 3;
+// Removes a card in place (token)
+// current: code, controller, location, sequence.
+// REASON_REMOVE = 4;
+
+// Encapsulates:
+// MSG_MOVE
+message AddCard
+{
+	uint32 core_reason = 1;
+	Data.CardInfo card = 2;
+}
+
+// NOTE: these two messages are purposedly not combined
+
+// Encapsulates:
+// MSG_MOVE
+message RemoveCard
+{
+	uint32 core_reason = 1;
+	Data.CardInfo card = 2;
 }
 
 // Encapsulates:
@@ -225,7 +251,7 @@ message SelectedCards
 // MSG_DRAW
 message Draw
 {
-	bool player = 1;
+	uint32 player = 1;
 	repeated Data.CardInfo cards = 2;
 }
 
@@ -261,8 +287,8 @@ message CounterChange
 	}
 	ChangeType type = 1;
 	
-	Data.Counter counter = 2;
-	Data.Place place = 3;
+	Data.Place place = 2;
+	Data.Counter counter = 3;
 }
 
 // Encapsulates:

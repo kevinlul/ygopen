@@ -104,17 +104,38 @@ CASE(MSG_CONFIRM_EXTRATOP,
 );
 
 CASE(MSG_MOVE,
-	auto updateCard = information->mutable_update_card();
-	updateCard->set_reason(Core::Msg::UpdateCard::REASON_MOVE);
+	auto previous = new Core::Data::CardInfo();
+	auto current = new Core::Data::CardInfo();
 	const auto cardCode = w->read<code_t>("card code");
 	auto ReadCardInfo = [&w, cardCode](Core::Data::CardInfo* card)
 	{
 		ToCardCode(cardCode, card);
 		READ_INFO_LOC_CORE(w, card);
 	};
-	ReadCardInfo(updateCard->mutable_previous());
-	ReadCardInfo(updateCard->mutable_current());
-	updateCard->set_core_reason(w->read<uint32_t>("core reason"));
+	ReadCardInfo(previous);
+	ReadCardInfo(current);
+	if(previous->location() == 0)
+	{
+		auto addCard = information->mutable_add_card();
+		addCard->set_allocated_card(current);
+		delete previous;
+		addCard->set_core_reason(w->read<uint32_t>("core reason"));
+	}
+	else if(current->location() == 0)
+	{
+		auto removeCard = information->mutable_remove_card();
+		removeCard->set_allocated_card(previous);
+		delete current;
+		removeCard->set_core_reason(w->read<uint32_t>("core reason"));
+	}
+	else
+	{
+		auto updateCard = information->mutable_update_card();
+		updateCard->set_reason(Core::Msg::UpdateCard::REASON_MOVE);
+		updateCard->set_allocated_previous(previous);
+		updateCard->set_allocated_current(current);
+		updateCard->set_core_reason(w->read<uint32_t>("core reason"));
+	}
 );
 
 CASE(MSG_POS_CHANGE,
@@ -306,7 +327,7 @@ CASE(MSG_RANDOM_SELECTED,
 	SELECTED1(SELECTION_RANDOM, w->seek(1, Buffer::seek_dir::cur, "player");)
 );
 CASE(MSG_BECOME_TARGET,
-	SELECTED1(SELECTION_BECOME)
+	SELECTED1(SELECTION_BECOME, {})
 );
 CASE(MSG_CARD_TARGET,
 	SELECTED2(SELECTION_CARD_TARGET)

@@ -100,15 +100,11 @@ void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, CardRead pos = nullptr)
 	for(Count i = 0; i < count; i++)
 	{
 		w->log("read card ", (int)i, " from vector\n");
-
 		Core::Data::CardInfo* card = cs();
-
 		// Card Code & Dirty Bit
 		ToCardCode(w->read<code_t>("card code"), card);
-
 		// Location Info
 		ReadInfoLoc<player_t, Loc, Seq, Pos>(w, card);
-
 		// Postfix read
 		if(pos) pos(w, card);
 	}
@@ -147,7 +143,7 @@ static const msg_type_map MSG_INFORMATION_MAP = []
 		}
 	};
 	msg_type_map a;
-	for(int i = 0; i < a.max_size(); i++)
+	for(unsigned int i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
@@ -175,7 +171,7 @@ static const msg_type_map MSG_REQUEST_MAP = []
 		}
 	};
 	msg_type_map a;
-	for(int i = 0; i < a.max_size(); i++)
+	for(unsigned int i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
@@ -202,7 +198,7 @@ static const msg_type_map MSG_SPEC_INFORMATION_MAP = []
 		}
 	};
 	msg_type_map a;
-	for(int i = 0; i < a.max_size(); i++)
+	for(unsigned int i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
