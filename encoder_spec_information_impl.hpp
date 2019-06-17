@@ -2,7 +2,7 @@
 
 CASE(MSG_HINT,
 	auto hint = specific->mutable_information()->mutable_hint();
-	const int type = w->read<s_count_t>("hint type");
+	const int type = w->read<uint8_t>("hint type");
 	hint->set_type(type);
 	specific->set_player(w->read<player_t>("player"));
 	hint->set_data(w->read<uint64_t>("hint data"));

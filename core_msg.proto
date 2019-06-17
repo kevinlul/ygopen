@@ -8,10 +8,10 @@ import "core_msg_information.proto";
 // Core Game message that requires an answer from the player, see MsgSpecific.
 // Can be stripped in case selections or choices have non-public cards on it
 // Not saved into replay.
-message MsgRequest
+message Request
 {
 	bool stripped = 2; // used 2 to maintain consistency with MsgSpecific
-	oneof MsgRequest
+	oneof Request
 	{
 		bool retry = 3; // the last answer was REJECTED by the core
 		Msg.SelectCmd select_cmd = 4;
@@ -31,46 +31,52 @@ message MsgRequest
 // Core Game message about information of the game, they do not require an answer.
 // Sent to specific player or everyone, either stripped or unstripped.
 // Saved unstripped to a replay server-side.
-message MsgInformation
+message Information
 {
 	bool stripped = 2; // used 2 to maintain consistency with MsgSpecific
-	oneof MsgInformation
+	oneof Information
 	{
-		Msg.Hint hint = 3;
-		Msg.Win win = 4;
-		Msg.ConfirmCards confirm_cards = 5;
-		Msg.ShuffleLocation shuffle_location = 6;
-		Msg.ShuffleSetCards shuffle_set_cards = 7;
-		Msg.UpdateCard update_card = 8;
-		Msg.SwapCards swap_cards = 9;
-		Msg.NewTurn new_turn = 10;
-		Msg.NewPhase new_phase = 11;
-		Msg.DisableZones disable_zones = 12;
-		Msg.SummonCard summon_card = 13;
-		Msg.ChainAction chain_action = 14;
-		Msg.SelectedCards selected_cards = 15;
-		Msg.Draw draw = 16;
-		Msg.LpChange lp_change = 17;
-		Msg.CounterChange counter_change = 18;
-		Msg.OnAttack on_attack = 19;
-		Msg.Result result = 20;
-		Msg.MiscAction misc_action = 21;
-		Msg.CardHint card_hint = 22;
-		Msg.PlayerHint player_hint = 23;
-		Msg.SwapPlayer swap_player = 24;
-		uint32 match_killer = 25; // card code for match killer
+		// Critical messages: these messages MUST be interpreted by the client,
+		// otherwise, they will end up on a invalid game state
+		Msg.UpdateCard update_card = 3;
+		Msg.AddCard add_card = 4;
+		Msg.RemoveCard remove_card = 5;
+		Msg.Draw draw = 6;
+		Msg.SwapCards swap_cards = 7;
+		Msg.ShuffleLocation shuffle_location = 8;
+		Msg.ShuffleSetCards shuffle_set_cards = 9;
+		Msg.CounterChange counter_change = 10;
+		Msg.DisableZones disable_zones = 11;
+		Msg.LpChange lp_change = 12;
+		Msg.ChainAction chain_action = 13;
+		Msg.NewTurn new_turn = 14;
+		Msg.NewPhase new_phase = 15;
+		Msg.MiscAction misc_action = 16;
+		Msg.SwapPlayer swap_player = 17;
+		// Non-critical messages: These messages can be safely ignored by
+		// clients without getting a invalid game state
+		Msg.Result result = 18;
+		Msg.Hint hint = 19;
+		Msg.Win win = 20;
+		Msg.ConfirmCards confirm_cards = 21;
+		Msg.SummonCard summon_card = 22;
+		Msg.SelectedCards selected_cards = 23;
+		Msg.OnAttack on_attack = 24;
+		Msg.CardHint card_hint = 25;
+		Msg.PlayerHint player_hint = 26;
+		uint32 match_killer = 27; // card code for match killer
 	}
 }
 
 // Core Game message for a specific player.
 // Must always have player set.
-message MsgSpecific
+message Specific
 {
 	uint32 player = 1;
-	oneof MsgSpecific
+	oneof Specific
 	{
-		MsgRequest request = 2;
-		MsgInformation information = 3;
+		Request request = 2;
+		Information information = 3;
 	}
 }
 
@@ -79,8 +85,8 @@ message AnyMsg
 {
 	oneof AnyMsg
 	{
-		MsgSpecific specific = 1;
-		MsgInformation information = 2;
+		Specific specific = 1;
+		Information information = 2;
 		//MsgBoardState board_state = 3; // Probably needed in the future
 	}
 	//repeated Core.Msg.Query before_msg_query = 4;
