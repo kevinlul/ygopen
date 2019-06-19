@@ -83,7 +83,7 @@ CASE(MSG_SELECT_CHAIN,
 	w->seek(8, Buffer::seek_dir::cur, "hint_timing x 2");
 	for(decltype(count) i = 0; i < count; i++)
 	{
-		w->log("chain card ", (int)i);
+// 		w->log("chain card ", (int)i);
 		auto chainCard = selectToChain->add_cards_w_effect();
 		auto card = chainCard->mutable_card();
 		chainCard->set_effect_desc_type(w->read<uint8_t>("EDESC ", (int)i));
