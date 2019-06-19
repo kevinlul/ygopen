@@ -2,10 +2,22 @@
 #include <bitset>
 #include <array>
 
-
 #include "msg_codec.hpp"
 #include "buffer.hpp"
 #include "core_message.hpp"
+
+#ifdef BUFFER_DEBUG
+#include <google/protobuf/util/json_util.h>
+#include "msgs_map.hpp"
+
+#define LOG_MSG() \
+	std::string str; \
+	google::protobuf::util::JsonOptions options; \
+	options.add_whitespace = true; \
+	options.always_print_primitive_fields = false; \
+	google::protobuf::util::MessageToJsonString(msg, &str, options); \
+	w->log(str);
+#endif // BUFFER_DEBUG
 
 namespace YGOpen
 {
@@ -99,7 +111,9 @@ void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, CardRead pos = nullptr)
 	auto count = w->read<Count>(".size()");
 	for(Count i = 0; i < count; i++)
 	{
+#ifdef BUFFER_DEBUG
 		w->log("read card ", (int)i, " from vector\n");
+#endif // BUFFER_DEBUG
 		Core::Data::CardInfo* card = cs();
 		// Card Code & Dirty Bit
 		ToCardCode(w->read<code_t>("card code"), card);
@@ -130,9 +144,12 @@ inline void MsgEncoder::InformationMsg(int msgType, Core::AnyMsg& msg)
 	{
 #include "encoder_information_impl.hpp"
 	}
+#ifdef BUFFER_DEBUG
+	LOG_MSG();
+#endif // #ifdef BUFFER_DEBUG
 }
 
-static const msg_type_map MSG_INFORMATION_MAP = []
+static const msg_type_map MSG_INFORMATION_MAP = []()
 {
 	const auto CheckOne = [](int i)
 	{
@@ -158,9 +175,12 @@ inline void MsgEncoder::RequestMsg(int msgType, Core::AnyMsg& msg)
 	{
 #include "encoder_request_impl.hpp"
 	}
+#ifdef BUFFER_DEBUG
+	LOG_MSG();
+#endif // BUFFER_DEBUG
 }
 
-static const msg_type_map MSG_REQUEST_MAP = []
+static const msg_type_map MSG_REQUEST_MAP = []()
 {
 	const auto CheckOne = [](int i)
 	{
@@ -185,9 +205,12 @@ inline void MsgEncoder::SpecInformationMsg(int msgType, Core::AnyMsg& msg)
 	{
 #include "encoder_spec_information_impl.hpp"
 	}
+#ifdef BUFFER_DEBUG
+	LOG_MSG();
+#endif // BUFFER_DEBUG
 }
 
-static const msg_type_map MSG_SPEC_INFORMATION_MAP = []
+static const msg_type_map MSG_SPEC_INFORMATION_MAP = []()
 {
 	const auto CheckOne = [](int i)
 	{
@@ -207,17 +230,20 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
 	Core::AnyMsg msg{};
 	pimpl->ib.open(buffer, length);
-	pimpl->ib.log("Message Type: ", msgType, " (", MSG_NAMES.at(msgType), ')', '\n');
 	const int msgType = (int)pimpl->ib.read<uint8_t>("msg number");
-	
+#ifdef BUFFER_DEBUG
+	pimpl->ib.log("Msg: ", msgType, " (", MSG_NAMES.at(msgType), ")\n");
+#endif // BUFFER_DEBUG
 	if(MSG_INFORMATION_MAP[msgType])
 		InformationMsg(msgType, msg);
 	else if(MSG_REQUEST_MAP[msgType])
 		RequestMsg(msgType, msg);
 	else if(MSG_SPEC_INFORMATION_MAP[msgType])
 		SpecInformationMsg(msgType, msg);
+#ifdef BUFFER_DEBUG
 	else
 		pimpl->ib.log("Warning: Unhandled Message\n");
+#endif // BUFFER_DEBUG
 	
 	return (lastMsg = msg);
 }
