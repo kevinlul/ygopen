@@ -55,20 +55,17 @@ typedef enum
 
 class buffer_base
 {
-protected:
-	uint8_t* sp{nullptr}; // starting pos
-	uint8_t* cp{nullptr}; // current pos
-	uint8_t* ep{nullptr}; // ending pos
 public:
 #ifdef BUFFER_DEBUG
 	std::fstream log_file;
-	
+
 	template<typename ...Params>
 	void log(Params&& ...args)
 	{
 		(log_file << ... << args);
 		log_file.flush();
 	}
+
 #endif // BUFFER_DEBUG
 	buffer_base()
 	{
@@ -77,19 +74,15 @@ public:
 		time_t rn = std::time(nullptr);
 		char rn_str[100];
 		std::strftime(rn_str, sizeof(rn_str), "%c", std::localtime(&rn));
-		
 		std::stringstream ss;
 		ss << std::to_string(rn)
 		   << "-bufferio-"
 		   << std::hex << "0x" << reinterpret_cast<std::uintptr_t>(this)
 		   << "-debug.log";
-		
 		std::string log_filename = ss.str();
 		log_file.open(log_filename, std::ios::out);
-		
 		ss.str(std::string());
 		ss.clear();
-		
 		log("Logging started at ", rn_str, " this buffer_base was created\n");
 #endif // BUFFER_DEBUG
 	}
@@ -157,12 +150,10 @@ public:
 			log(" byte(s) from the end");
 		else if(dir == seek_dir::cur)
 			log(" byte(s) relatively");
-
 		if(sizeof...(args) == 0)
 			log(", Reason(s): ", reason_unspecified);
 		else
 			log(", Reason(s): ", std::forward<Reasons>(args)...);
-
 		log(".\n");
 #endif // BUFFER_DEBUG
 		if(dir == seek_dir::beg)
@@ -172,17 +163,14 @@ public:
 		else if(dir == seek_dir::cur)
 			cp = cp + off;
 	}
+protected:
+	uint8_t* sp{nullptr}; // starting pos
+	uint8_t* cp{nullptr}; // current pos
+	uint8_t* ep{nullptr}; // ending pos
 };
 
 class ibuffer : virtual public buffer_base
 {
-	template<typename T>
-	T read_base() const
-	{
-		T ret;
-		std::memcpy(&ret, cp, sizeof(T));
-		return ret;
-	}
 public:
 	ibuffer() : buffer_base() {};
 	ibuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
@@ -205,15 +193,18 @@ public:
 		seek(sizeof(T), seek_dir::cur, "called from ibuffer::read()");
 		return ret;
 	}
+private:
+	template<typename T>
+	const T read_base() const
+	{
+		T ret;
+		std::memcpy(&ret, cp, sizeof(T));
+		return ret;
+	}
 };
 
 class obuffer : virtual public buffer_base
 {
-	template<typename T>
-	void write_base(T val)
-	{
-		std::memcpy(cp, &val, sizeof(T));
-	}
 public:
 	obuffer() : buffer_base() {};
 	obuffer(const basic_buffer& buffer) : buffer_base(buffer) {};
@@ -234,6 +225,12 @@ public:
 #endif // BUFFER_DEBUG
 		write_base(std::forward<T>(val));
 		seek(sizeof(T), seek_dir::cur, "called from obuffer::write()");
+	}
+private:
+	template<typename T>
+	void write_base(T val)
+	{
+		std::memcpy(cp, &val, sizeof(T));
 	}
 };
 
