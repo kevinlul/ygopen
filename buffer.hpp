@@ -31,7 +31,7 @@ namespace Buffer
 
 // Type used to pass buffers around, keep in mind that
 // this object does not have ownership of the underlying pointer.
-typedef std::pair<void*, std::size_t> basic_buffer;
+using basic_buffer = std::pair<void*, std::size_t>;
 
 // Syntatic sugar.
 basic_buffer make_buffer(void* buffer, std::size_t size)
@@ -39,10 +39,10 @@ basic_buffer make_buffer(void* buffer, std::size_t size)
 	return std::pair<void*, std::size_t>(buffer, size);
 }
 
-// Defines the type of the positioning variable the buffer manipulator will use.
-typedef int pos_type;
+// Defines the type used for new positions.
+using pos_type = int;
 
-// Types of seeks.
+// Types of seeks
 // beg: from the beggining
 // end: from the end
 // cur: relatively
@@ -273,9 +273,9 @@ private:
 	BufferType* buff_ptr;
 };
 
-typedef buffer_wrapper<Buffer::ibuffer> ibufferw;
-typedef buffer_wrapper<Buffer::obuffer> obufferw;
-typedef buffer_wrapper<iobuffer> iobufferw;
+using ibufferw = buffer_wrapper<Buffer::ibuffer>;
+using obufferw = buffer_wrapper<Buffer::obuffer>;
+using iobufferw = buffer_wrapper<iobuffer>;
 
 } // namespace Buffer
 } // namespace YGOpen
