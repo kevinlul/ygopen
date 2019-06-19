@@ -8,21 +8,23 @@
 #ifndef BUFFER_DEBUG
 #define BUFFER_DEBUG
 #endif // BUFFER_DEBUG
+#endif // defined(_DEBUG)
 
+#ifdef BUFFER_DEBUG
 #include <ctime>
 #include <sstream>
 #include <string>
 #include <fstream>
 #include <iomanip> // std::setw
 
-#include <type_traits> // std::is_base_of
-
 constexpr unsigned n_width = 3;
 const char* reason_unspecified = "Unspecified";
-#endif // defined(_DEBUG)
+#endif // BUFFER_DEBUG
 
-// TODO: add a note explaining that this file does not follow the main project code style
-// but is more near to that style used on the standard libraries
+#include <type_traits> // std::is_base_of
+
+// TODO: add a note explaining that this file does not follow the main project
+// code style but is more near to that style used on the standard libraries
 
 namespace YGOpen
 {
@@ -75,7 +77,8 @@ public:
 		char rn_str[100];
 		std::strftime(rn_str, sizeof(rn_str), "%c", std::localtime(&rn));
 		std::stringstream ss;
-		ss << std::to_string(rn)
+		ss << "logs/"
+		   << std::to_string(rn)
 		   << "-bufferio-"
 		   << std::hex << "0x" << reinterpret_cast<std::uintptr_t>(this)
 		   << "-debug.log";
@@ -91,7 +94,8 @@ public:
 	void open(const basic_buffer& buffer)
 	{
 #ifdef BUFFER_DEBUG
-		log("Setting buffer at ", std::hex, "0x", reinterpret_cast<std::uintptr_t>(buffer.first));
+		log("Setting buffer at ", std::hex, "0x",
+		    reinterpret_cast<std::uintptr_t>(buffer.first));
 		log(" with size ", std::dec, buffer.second, ".\n");
 #endif // BUFFER_DEBUG
 		sp = cp = reinterpret_cast<uint8_t*>(buffer.first);
@@ -251,7 +255,7 @@ public:
 	buffer_wrapper(BufferType* buf) : buff_ptr(buf)
 	{
 #ifdef BUFFER_DEBUG
-		buff_ptr->log("Wrapper created.\n");
+		buff_ptr->log("{\nWrapper created.\n");
 #endif // BUFFER_DEBUG
 	}
 
@@ -260,7 +264,8 @@ public:
 	{
 		buff_ptr->log("Wrapper destroyed. ");
 		buff_ptr->log("byte(s) read/written: ", buff_ptr->tell(), ". ");
-		buff_ptr->log("byte(s) leftover: ", buff_ptr->tell(seek_dir::end), ".\n");
+		buff_ptr->log("byte(s) leftover: ", buff_ptr->tell(seek_dir::end),
+		              ".\n}\n");
 	}
 #endif // BUFFER_DEBUG
 
