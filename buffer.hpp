@@ -180,7 +180,7 @@ public:
 	// Aditionally, moves the current position forward
 	// the same number of bytes read.
 	template<typename T, typename ...Reasons>
-	T read([[maybe_unused]] Reasons&& ...args)
+	const T read([[maybe_unused]] Reasons&& ...args)
 	{
 #ifdef BUFFER_DEBUG
 		log("Reading:", std::setw(n_width), sizeof(T), " byte(s)");
@@ -190,7 +190,7 @@ public:
 			log(", Reason(s): ", std::forward<Reasons>(args)...);
 		log(".\n");
 #endif // BUFFER_DEBUG
-		T ret = read_base<T>();
+		const T ret = read_base<T>();
 		seek(sizeof(T), seek_dir::cur, "called from ibuffer::read()");
 		return ret;
 	}
