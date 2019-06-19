@@ -114,7 +114,7 @@ public:
 	}
 
 	// Returns the current position of the buffer.
-	// if dir == seek_dir::beg then the returned value is relative to the beggining
+	// seek_dir::beg == returned value is relative to the beggining
 	// otherwise it is relative to the end
 	pos_type tell(const seek_dir dir = seek_dir::beg) const
 	{
@@ -136,11 +136,12 @@ public:
 	}
 
 	// Move current position.
-	// if dir == seek_dir::beg then the position is restarted to the beggining plus off
-	// if dir == seek_dir::end then the position is set at the end plus off
-	// if dir == seek_dir::cur then the position is added relatively to the current position
+	// seek_dir::beg == restarts to the beggining plus off
+	// seek_dir::end == position is set at the end plus off
+	// seek_dir::cur == position is added relatively to the current position
 	template<typename ...Reasons>
-	void seek(const pos_type off, const seek_dir dir = seek_dir::beg, [[maybe_unused]] Reasons&& ...args)
+	void seek(const pos_type off, const seek_dir dir = seek_dir::beg,
+	          [[maybe_unused]] Reasons&& ...args)
 	{
 #ifdef false
 		log("Moving :", std::setw(n_width), off);
@@ -244,7 +245,8 @@ public:
 template<typename BufferType>
 class buffer_wrapper
 {
-	static_assert(std::is_base_of<buffer_base, BufferType>::value, "BufferType must inherit from buffer_base");
+	static_assert(std::is_base_of<buffer_base, BufferType>::value,
+	              "BufferType must inherit from buffer_base");
 public:
 	buffer_wrapper(BufferType* buf) : buff_ptr(buf)
 	{
