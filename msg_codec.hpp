@@ -1,7 +1,7 @@
 #ifndef __MSG_CODEC_HPP__
 #define __MSG_CODEC_HPP__
 #include <memory> // std::unique_ptr
-#include "generated/core_msg.pb.h"
+#include "core_msg.pb.h"
 
 namespace YGOpen
 {
