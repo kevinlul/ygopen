@@ -1,2 +1,3 @@
 build/
 src/ocgcore-proto
+libraries/nlohmann_json
