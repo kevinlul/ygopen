@@ -24,20 +24,29 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-option(USE_EXTERNAL_JSON "Use system's nlohmann JSON header" ON)
-if(USE_EXTERNAL_JSON)
-  find_package(nlohmann_json 3.2.0 REQUIRED)
+option(USE_SYSTEM_JSON "Use system's JSON for Modern C++" ON)
+if(USE_SYSTEM_JSON)
+  find_package(nlohmann_json REQUIRED)
 else()
   set(JSON_BuildTests OFF CACHE INTERNAL "")
   add_subdirectory(libraries/nlohmann_json)
 endif()
 
+option(USE_SYSTEM_FMT "Use system's {fmt} library" ON)
+if(USE_SYSTEM_FMT)
+  find_package(fmt REQUIRED)
+else()
+  add_subdirectory(libraries/fmt) # TODO: test needed
+endif()
+
 add_executable(${PROJECT_EXECUTABLE})
 target_include_directories(${PROJECT_EXECUTABLE} PRIVATE ${SDL2_INCLUDE_DIRS}
                            ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR})
-target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE ocgcore-proto OpenGL::GL
-                      nlohmann_json::nlohmann_json ${SDL2_LIBRARIES}
+target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE OpenGL::GL ${SDL2_LIBRARIES}
                       ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
+
+target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE nlohmann_json::nlohmann_json
+                      fmt::fmt)
 
 if(MSVC)
 # TODO
@@ -49,3 +58,4 @@ else()
 endif()
 
 add_subdirectory(src)
+target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE ocgcore-proto)
