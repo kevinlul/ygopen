@@ -39,11 +39,14 @@ else()
   add_subdirectory(libraries/fmt) # TODO: test needed
 endif()
 
+find_package(glm REQUIRED)
+
 add_executable(${PROJECT_EXECUTABLE})
 target_include_directories(${PROJECT_EXECUTABLE} PRIVATE ${SDL2_INCLUDE_DIRS}
                            ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR})
-target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE OpenGL::GL ${SDL2_LIBRARIES}
-                      ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
+target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE OpenGL::GL glm
+                      ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES}
+                      ${SDL2_TTF_LIBRARIES})
 
 target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE nlohmann_json::nlohmann_json
                       fmt::fmt)
