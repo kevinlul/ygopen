@@ -19,7 +19,7 @@ project(${PROJECT_NAME} CXX)
 
 # TODO: Replay record and discord presence options
 
-find_package(OpenGL REQUIRED)
+# find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
@@ -48,7 +48,7 @@ target_include_directories(${PROJECT_EXECUTABLE} PRIVATE
                            ${SDL2_TTF_INCLUDE_DIR}
                            )
 target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE 
-                      OpenGL::GL
+#                       OpenGL::GL
                       ${SDL2_LIBRARIES}
                       ${SDL2_IMAGE_LIBRARIES}
                       ${SDL2_TTF_LIBRARIES}
