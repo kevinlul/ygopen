@@ -56,6 +56,12 @@ target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE
                       nlohmann_json::nlohmann_json
                       fmt::fmt
                       )
+target_compile_definitions(${PROJECT_EXECUTABLE} PUBLIC
+                           GLM_FORCE_CXX17
+                           GLM_FORCE_INLINE
+                           GLM_FORCE_SIZE_T_LENGTH
+                           GLM_FORCE_INTRINSICS
+                           )
 
 if(MSVC)
 # TODO
