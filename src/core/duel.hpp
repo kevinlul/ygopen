@@ -49,9 +49,7 @@ public:
 
 	void Process();
 
-	void NewCard(int code, int owner, int playerID, int location, int sequence, int position);
-	void NewTagCard(int code, int owner, int location);
-	void NewRelayCard(int code, int owner, int location, int playerNumber);
+	void NewCard(int code, int owner, int playerID, int location, int sequence, int position, int duelist);
 
 	// Any call to the following functions invalidates the result of the last function called
 	std::pair<void*, size_t> QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache = false);

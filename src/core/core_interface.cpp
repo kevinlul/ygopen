@@ -157,6 +157,8 @@ bool CoreInterface::LoadCore(const char* path)
 #define LF(x) if(LoadFunction(handle, &x, #x, true) == nullptr) \
               	return false;
 
+	LF(get_api_version)
+
 	LF(set_script_reader)
 	LF(set_card_reader)
 	LF(set_message_handler)
@@ -169,8 +171,7 @@ bool CoreInterface::LoadCore(const char* path)
 	LF(get_message)
 	LF(process)
 	LF(new_card)
-	LF(new_tag_card)
-	LF(new_relay_card)
+	LF(get_cached_query)
 	LF(query_card)
 	LF(query_field_count)
 	LF(query_field_card)

@@ -165,6 +165,8 @@ Duel::Duel(CoreInterface& core, unsigned int seed) :
 	pduel(0)
 {
 	pduel = core.create_duel(seed);
+	PreloadScript("constant.lua");
+	PreloadScript("utility.lua");
 }
 
 Duel::~Duel()
@@ -184,7 +186,7 @@ void Duel::Start(int options)
 
 void Duel::PreloadScript(const std::string& file)
 {
-	core.preload_script(pduel, (char*)file.c_str(), 0);
+	core.preload_script(pduel, (char*)file.c_str(), 0, 0, nullptr);
 }
 
 void Duel::Process()
@@ -205,24 +207,14 @@ void Duel::Process()
 	}
 }
 
-void Duel::NewCard(int code, int owner, int playerID, int location, int sequence, int position)
+void Duel::NewCard(int code, int owner, int playerID, int location, int sequence, int position, int duelist)
 {
-	core.new_card(pduel, code, owner, playerID, location, sequence, position);
-}
-
-void Duel::NewTagCard(int code, int owner, int location)
-{
-	core.new_tag_card(pduel, code, owner, location);
-}
-
-void Duel::NewRelayCard(int code, int owner, int location, int playerNumber)
-{
-	core.new_relay_card(pduel, code, owner, location, playerNumber);
+	core.new_card(pduel, code, owner, playerID, location, sequence, position, duelist);
 }
 
 std::pair<void*, size_t> Duel::QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, queryBuffer, useCache);
+	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, queryBuffer, useCache, 0);
 	return std::make_pair((void*)queryBuffer, bufferLength);
 }
 
@@ -233,7 +225,7 @@ int Duel::QueryFieldCount(int playerID, int location)
 
 std::pair<void*, size_t> Duel::QueryFieldCard(int playerID, int location, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, queryBuffer, useCache);
+	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, queryBuffer, useCache, 0);
 	return std::make_pair((void*)queryBuffer, bufferLength);
 }
 
