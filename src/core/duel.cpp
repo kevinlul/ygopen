@@ -165,8 +165,6 @@ Duel::Duel(CoreInterface& core, unsigned int seed) :
 	pduel(0)
 {
 	pduel = core.create_duel(seed);
-	PreloadScript("constant.lua");
-	PreloadScript("utility.lua");
 }
 
 Duel::~Duel()
