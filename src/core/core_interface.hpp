@@ -41,7 +41,7 @@ public:
 	int (*query_field_card)(uintptr_t, unsigned char, unsigned char, int, unsigned char*, int, int);
 	int (*query_field_info)(uintptr_t, unsigned char*);
 	void (*set_responsei)(uintptr_t, int);
-	void (*set_responseb)(uintptr_t, unsigned char*);
+	void (*set_responseb)(uintptr_t, unsigned char*, size_t);
 	int (*preload_script)(uintptr_t, char*, int, int, char*);
 
 	// Core extension functions

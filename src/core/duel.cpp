@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdint>
 #include <map>
+#include <algorithm> //std::max
 
 #include "duel.hpp"
 
@@ -97,7 +98,6 @@ static const std::map<CoreMessage, DuelMessage> msgResults =
 	{CoreMessage::AnnounceAttrib, DuelMessage::NeedResponse},
 	{CoreMessage::AnnounceCard, DuelMessage::NeedResponse},
 	{CoreMessage::AnnounceNumber, DuelMessage::NeedResponse},
-	{CoreMessage::AnnounceCardFilter, DuelMessage::NeedResponse},
 	{CoreMessage::CardHint, DuelMessage::Continue},
 	{CoreMessage::TagSwap, DuelMessage::Continue},
 	{CoreMessage::ReloadField, DuelMessage::Continue},
@@ -117,7 +117,7 @@ static const std::map<CoreMessage, unsigned int> msgLengths =
 	{CoreMessage::RefreshDeck    , 1},
 	{CoreMessage::SwapGraveDeck  , 1},
 	{CoreMessage::ReverseDeck    , 0},
-	{CoreMessage::DeckTop        , 6},
+	{CoreMessage::DeckTop        , 9},
 	{CoreMessage::NewTurn        , 1},
 	{CoreMessage::NewPhase       , 2},
 	{CoreMessage::Move           , 28},
@@ -131,7 +131,7 @@ static const std::map<CoreMessage, unsigned int> msgLengths =
 	{CoreMessage::SpSummoned     , 0},
 	{CoreMessage::FlipSummoning  , 14},
 	{CoreMessage::FlipSummoned   , 0},
-	{CoreMessage::Chaining       , 26},
+	{CoreMessage::Chaining       , 32},
 	{CoreMessage::Chained        , 1},
 	{CoreMessage::ChainSolving   , 1},
 	{CoreMessage::ChainSolved    , 1},
@@ -192,11 +192,13 @@ void Duel::Process()
 	DuelMessage lastMessage = DuelMessage::Continue;
 	while (true) 
 	{
-		const int bufferLength = core.process(pduel) & 0xFFFF;
+		/*const int processorFlag = */core.process(pduel);
+		const int bufferLength = core.get_message(pduel, nullptr);
 
 		if (bufferLength > 0)
 		{
-			core.get_message(pduel, (unsigned char*)&buffer);
+			buffer.resize(bufferLength);
+			core.get_message(pduel, buffer.data());
 			lastMessage = Analyze(bufferLength);
 		}
 
@@ -212,8 +214,10 @@ void Duel::NewCard(int code, int owner, int playerID, int location, int sequence
 
 std::pair<void*, size_t> Duel::QueryCard(int playerID, int location, int sequence, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, queryBuffer, useCache, 0);
-	return std::make_pair((void*)queryBuffer, bufferLength);
+	const size_t bufferLength = core.query_card(pduel, playerID, location, sequence, queryFlag, nullptr, useCache, 0);
+	queryBuffer.resize(bufferLength);
+	core.get_cached_query(pduel, queryBuffer.data());
+	return std::make_pair((void*)queryBuffer.data(), bufferLength);
 }
 
 int Duel::QueryFieldCount(int playerID, int location)
@@ -223,14 +227,18 @@ int Duel::QueryFieldCount(int playerID, int location)
 
 std::pair<void*, size_t> Duel::QueryFieldCard(int playerID, int location, int queryFlag, bool useCache)
 {
-	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, queryBuffer, useCache, 0);
-	return std::make_pair((void*)queryBuffer, bufferLength);
+	const size_t bufferLength = core.query_field_card(pduel, playerID, location, queryFlag, nullptr, useCache, 0);
+	queryBuffer.resize(bufferLength);
+	core.get_cached_query(pduel, queryBuffer.data());
+	return std::make_pair((void*)queryBuffer.data(), bufferLength);
 }
 
 std::pair<void*, size_t> Duel::QueryFieldInfo()
 {
-	const size_t bufferLength = core.query_field_info(pduel, queryBuffer);
-	return std::make_pair((void*)queryBuffer, bufferLength);
+	const size_t bufferLength = core.query_field_info(pduel, nullptr);
+	queryBuffer.resize(bufferLength);
+	core.get_cached_query(pduel, queryBuffer.data());
+	return std::make_pair((void*)queryBuffer.data(), bufferLength);
 }
 
 void Duel::SetResponseInteger(int val)
@@ -240,15 +248,16 @@ void Duel::SetResponseInteger(int val)
 
 void Duel::SetResponseBuffer(void* buff, size_t length)
 {
-	void* b = std::calloc(1, 64);
+	size_t resLength = std::max(64u, length);
+	void* b = std::calloc(1, resLength);
 	std::memcpy(b, buff, length);
-	core.set_responseb(pduel, (unsigned char*)b);
+	core.set_responseb(pduel, (unsigned char*)b, resLength);
 	std::free(b);
 }
 
 DuelMessage Duel::Analyze(unsigned int bufferLen)
 {
-	BufferManipulator bm(buffer, bufferLen);
+	BufferManipulator bm(buffer.data(), bufferLen);
 	while(bm.CanAdvance())
 	{
 		// Notify all observers about a new message
@@ -309,7 +318,7 @@ DuelMessage Duel::HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm)
 				bm->Forward(bm->Read<uint8_t>() * 4);
 			break;
 			case CoreMessage::ShuffleSetCard:
-				bm->Forward(2);
+				bm->Forward(1);
 				bm->Forward(bm->Read<uint8_t>() * 20);
 			break;
 			case CoreMessage::TossCoin:
