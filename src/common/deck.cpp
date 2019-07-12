@@ -7,7 +7,7 @@
 namespace YGOpen
 {
 
-uint32_t Deck::Verify(DatabaseManager& dbm)
+uint32_t Deck::Verify(const DatabaseManager& dbm)
 {
 	for(auto& card : main)
 	{
@@ -45,7 +45,7 @@ bool Deck::IsVerified() const
 	return verified;
 }
 
-unsigned int Deck::CheckUsability(Banlist& bl, const int minmd, const int maxmd, const int mined, const int maxed, const int minsd, const int maxsd)
+unsigned int Deck::CheckUsability(const Banlist& bl, const int minmd, const int maxmd, const int mined, const int maxed, const int minsd, const int maxsd)
 {
 	if((int)main.size() < minmd || (int)main.size() > maxmd)
 	{
