@@ -1,8 +1,15 @@
 #include <memory>
 #include "game_instance.hpp"
+#include "drawing/api.hpp"
 
 static std::unique_ptr<YGOpen::GameInstance> gi;
 [[noreturn]] static void quit(int rc);
+
+#if defined(__ANDROID__)
+static const Drawing::Backend DEFAULT_BACKEND = Drawing::OPENGL_ES;
+#else
+static const Drawing::Backend DEFAULT_BACKEND = Drawing::OPENGL_CORE;
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -12,16 +19,10 @@ int main(int argc, char *argv[])
 		                "Unable to initialize SDL: %s\n", SDL_GetError());
 		quit(1);
 	}
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-// 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, GL_USED_MAJOR_VERSION);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, GL_USED_MINOR_VERSION);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, GL_USED_PROFILE);
+	// TODO: select backend from commandline and fallback
+	Drawing::API::PreloadBackend(DEFAULT_BACKEND);
 	gi = std::make_unique<YGOpen::GameInstance>();
-	if(gi->Init() != 0)
+	if(gi->Init(DEFAULT_BACKEND) != 0)
 	{
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
 		                "Unable to initialize main game instance");

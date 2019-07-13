@@ -17,9 +17,9 @@ set(PROJECT_VERSION 0.1)
 set(PROJECT_EXECUTABLE ${PROJECT_NAME})
 project(${PROJECT_NAME} CXX)
 
-# TODO: Replay record and discord presence options
+# TODO: Replay record and discord rich presence options
 
-find_package(OpenGL REQUIRED)
+# find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
@@ -48,7 +48,7 @@ target_include_directories(${PROJECT_EXECUTABLE} PRIVATE
                            ${SDL2_TTF_INCLUDE_DIR}
                            )
 target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE 
-                      OpenGL::GL
+#                       OpenGL::GL
                       ${SDL2_LIBRARIES}
                       ${SDL2_IMAGE_LIBRARIES}
                       ${SDL2_TTF_LIBRARIES}
@@ -56,14 +56,20 @@ target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE
                       nlohmann_json::nlohmann_json
                       fmt::fmt
                       )
+target_compile_definitions(${PROJECT_EXECUTABLE} PUBLIC
+                           GLM_FORCE_CXX17
+                           GLM_FORCE_INLINE
+                           GLM_FORCE_SIZE_T_LENGTH
+                           GLM_FORCE_INTRINSICS
+                           )
 
 if(MSVC)
 # TODO
 else()
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ggdb3 -O2 -DDEBUGGING")
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ggdb3 -O2 -D_DEBUG")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-	set(CMAKE_CXX_FLAGS_DEBUG  "-ggdb3 -Og -DDEBUGGING")
+	set(CMAKE_CXX_FLAGS_DEBUG  "-ggdb3 -Og -D_DEBUG")
 endif()
 
 add_subdirectory(src)

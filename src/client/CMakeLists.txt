@@ -6,11 +6,25 @@ target_sources(${PROJECT_EXECUTABLE} PRIVATE
                ${CMAKE_CURRENT_SOURCE_DIR}/game_instance.cpp
                ${CMAKE_CURRENT_SOURCE_DIR}/game_instance.hpp
                ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_common_include.h
-               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_mesh.cpp
-               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_mesh.hpp
-               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shader_and_program.cpp
-               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shader_and_program.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/state.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/api.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/api.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_core_funcs.h
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_es2_funcs.h
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_include_defines.h
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_include.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_include.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/primitive.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/types.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_core/primitive.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_core/primitive.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_es/primitive.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_es/primitive.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shared/common.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shared/program.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shared/program.hpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shared/shader.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/drawing/gl_shared/shader.hpp
                ${CMAKE_CURRENT_SOURCE_DIR}/states/loading.cpp
                ${CMAKE_CURRENT_SOURCE_DIR}/states/loading.hpp
                ${CMAKE_CURRENT_SOURCE_DIR}/states/menu.cpp

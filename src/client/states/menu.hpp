@@ -2,7 +2,8 @@
 #define MENU_HPP
 #include <memory>
 #include "../state.hpp"
-#include "../drawing/gl_common_include.h"
+#include "../drawing/api.hpp"
+#include "../drawing/primitive.hpp"
 
 namespace OGL
 {
@@ -24,9 +25,7 @@ public:
 	void Tick() override;
 	void Draw() override;
 private:
-	std::shared_ptr<OGL::Program> program;
-	std::shared_ptr<OGL::Mesh> circle;
-	std::size_t vertexCount;
+	Drawing::Primitive triangle;
 };
 
 } // State
