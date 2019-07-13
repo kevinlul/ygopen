@@ -17,7 +17,7 @@ set(PROJECT_VERSION 0.1)
 set(PROJECT_EXECUTABLE ${PROJECT_NAME})
 project(${PROJECT_NAME} CXX)
 
-# TODO: Replay record and discord presence options
+# TODO: Replay record and discord rich presence options
 
 # find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
@@ -67,9 +67,9 @@ if(MSVC)
 # TODO
 else()
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ggdb3 -O2 -DDEBUGGING")
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ggdb3 -O2 -D_DEBUG")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-	set(CMAKE_CXX_FLAGS_DEBUG  "-ggdb3 -Og -DDEBUGGING")
+	set(CMAKE_CXX_FLAGS_DEBUG  "-ggdb3 -Og -D_DEBUG")
 endif()
 
 add_subdirectory(src)
