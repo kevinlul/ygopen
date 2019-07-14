@@ -31,5 +31,5 @@ On Linux, do `cmake .. && make`.
 
 On Windows, do `cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]\scripts\buildsystems\vcpkg.cmake` to create the solution files and then build from the generated Visual Studio `.sln` file.
 
-On macOS, do `cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_CXX_FLAGS=-lc++ && make` to build with GCC9. Clang support is coming soon.
+On macOS, do `cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_EXE_LINKER_FLAGS=-lc++ && make` to build with GCC9. Clang support is coming soon.
 
