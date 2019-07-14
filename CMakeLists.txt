@@ -47,6 +47,9 @@ target_include_directories(${PROJECT_EXECUTABLE} PRIVATE
                            ${SDL2_IMAGE_INCLUDE_DIR}
                            ${SDL2_TTF_INCLUDE_DIR}
                            )
+if(WIN32)
+  set(SDL2_LIBRARIES SDL2::SDL2 SDL2::SDL2main)
+endif()
 target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE 
 #                       OpenGL::GL
                       ${SDL2_LIBRARIES}
