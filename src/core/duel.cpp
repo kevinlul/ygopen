@@ -309,14 +309,14 @@ DuelMessage Duel::HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm)
 			case CoreMessage::ConfirmCards:
 			case CoreMessage::RandomSelected:
 				bm->Forward(1);
-				bm->Forward(bm->Read<uint8_t>() * 10);
+				bm->Forward(bm->Read<uint32_t>() * 10);
 			break;
 			case CoreMessage::ShuffleHand:
 			case CoreMessage::ShuffleExtra:
 			case CoreMessage::CardSelected:
 			case CoreMessage::Draw:
 				bm->Forward(1);
-				bm->Forward(bm->Read<uint8_t>() * 4);
+				bm->Forward(bm->Read<uint32_t>() * 4);
 			break;
 			case CoreMessage::ShuffleSetCard:
 				bm->Forward(2);
@@ -328,7 +328,7 @@ DuelMessage Duel::HandleCoreMessage(CoreMessage msgType, BufferManipulator* bm)
 				bm->Forward(bm->Read<uint8_t>());
 			break;
 			case CoreMessage::BecomeTarget:
-				bm->Forward(bm->Read<uint8_t>() * 10);
+				bm->Forward(bm->Read<uint32_t>() * 10);
 			break;
 			
 			default:
