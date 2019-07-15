@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
-#include "card.hpp"
+#include "pod_card.hpp"
 
 struct sqlite3_stmt;
 

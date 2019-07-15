@@ -3,7 +3,6 @@
 #include <cstring>
 
 #include "enums/type.hpp"
-#include "card.hpp"
 
 namespace YGOpen
 {

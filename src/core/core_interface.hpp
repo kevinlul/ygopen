@@ -2,7 +2,7 @@
 #define __CORE_INTERFACE__
 #include <string>
 
-#include "card.hpp"
+#include "pod_card.hpp"
 
 namespace YGOpen
 {

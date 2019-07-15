@@ -1,6 +1,6 @@
 #ifndef __CORE_AUXILIARY_HPP__
 #define __CORE_AUXILIARY_HPP__
-#include "card.hpp"
+#include "pod_card.hpp"
 
 namespace YGOpen
 {
