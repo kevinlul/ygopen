@@ -27,27 +27,25 @@ public:
 	void (*set_card_reader)(card_reader);
 	void (*set_message_handler)(message_handler);
 
-	long (*create_duel)(unsigned int);
-	void (*start_duel)(long, int);
-	void (*end_duel)(long);
-	void (*set_player_info)(long, int, int, int, int);
-	void (*get_log_message)(long, unsigned char*);
-	int (*get_message)(long, unsigned char*);
-	int (*process)(long);
-	void (*new_card)(long, unsigned int, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
-	void (*new_tag_card)(long, unsigned int, unsigned char, unsigned char);
-	void (*new_relay_card)(long, unsigned int, unsigned char, unsigned char, unsigned char);
-	int (*query_card)(long, unsigned char, unsigned char, unsigned char, int, unsigned char*, int);
-	int (*query_field_count)(long, unsigned char, unsigned char);
-	int (*query_field_card)(long, unsigned char, unsigned char, int, unsigned char*, int);
-	int (*query_field_info)(long, unsigned char*);
-	void (*set_responsei)(long, int);
-	void (*set_responseb)(long, unsigned char*);
-	int (*preload_script)(long, char*, int);
+	uintptr_t(*create_duel)(unsigned int);
+	void (*start_duel)(uintptr_t, int);
+	void (*end_duel)(uintptr_t);
+	void (*set_player_info)(uintptr_t, int, int, int, int);
+	void (*get_log_message)(uintptr_t, unsigned char*);
+	int (*get_message)(uintptr_t, unsigned char*);
+	int (*process)(uintptr_t);
+	void (*new_card)(uintptr_t, unsigned int, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, int);
+	int (*get_cached_query)(uintptr_t pduel, unsigned char* buf);
+	int (*query_card)(uintptr_t, unsigned char, unsigned char, unsigned char, int, unsigned char*, int, int);
+	int (*query_field_count)(uintptr_t, unsigned char, unsigned char);
+	int (*query_field_card)(uintptr_t, unsigned char, unsigned char, int, unsigned char*, int, int);
+	int (*query_field_info)(uintptr_t, unsigned char*);
+	void (*set_responsei)(uintptr_t, int);
+	void (*set_responseb)(uintptr_t, unsigned char*, size_t);
+	int (*preload_script)(uintptr_t, char*, int, int, char*);
 
 	// Core extension functions
-	//void (*query_version)(int*, int*, int*);
-	//const char* (*query_version_string)(void);
+	int(*get_api_version)(int*);
 
 	// Core unloading
 	~CoreInterface();
