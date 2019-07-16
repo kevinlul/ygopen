@@ -61,6 +61,7 @@ target_compile_definitions(${PROJECT_EXECUTABLE} PUBLIC
                            GLM_FORCE_INLINE
                            GLM_FORCE_SIZE_T_LENGTH
                            GLM_FORCE_INTRINSICS
+                           GLM_ENABLE_EXPERIMENTAL
                            )
 
 if(MSVC)
