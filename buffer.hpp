@@ -144,7 +144,7 @@ public:
 	// seek_dir::end == position is set at the end plus off
 	// seek_dir::cur == position is added relatively to the current position
 	template<typename ...Reasons>
-	void seek(const pos_type off, const seek_dir dir = seek_dir::beg,
+	void seek(const pos_type off, const seek_dir dir,
 	          [[maybe_unused]] Reasons&& ...args)
 	{
 #ifdef false
