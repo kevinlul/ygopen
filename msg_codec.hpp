@@ -1,5 +1,5 @@
-#ifndef __MSG_CODEC_HPP__
-#define __MSG_CODEC_HPP__
+#ifndef MSG_CODEC_HPP
+#define MSG_CODEC_HPP
 #include <memory> // std::unique_ptr
 #include "core_msg.pb.h"
 
@@ -51,4 +51,4 @@ class MsgCodec : public MsgEncoder, public MsgDecoder
 
 } // namespace YGOpen
 
-#endif // __MSG_CODEC_HPP__
+#endif // MSG_CODEC_HPP

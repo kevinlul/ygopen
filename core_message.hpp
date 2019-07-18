@@ -1,5 +1,5 @@
-#ifndef __CORE_MESSAGE_HPP__
-#define __CORE_MESSAGE_HPP__
+#ifndef CORE_MESSAGE_HPP
+#define CORE_MESSAGE_HPP
 
 // copied directly from common.h
 // TODO: convert into enum (or probably not?)
@@ -101,4 +101,4 @@
 // #define MSG_CUSTOM_MSG			180
 
 
-#endif // __CORE_MESSAGE_HPP__
+#endif // CORE_MESSAGE_HPP

@@ -1,5 +1,5 @@
-#ifndef __BUFFER_HPP__
-#define __BUFFER_HPP__
+#ifndef BUFFER_HPP
+#define BUFFER_HPP
 #include <cstdint> // uint8_t
 #include <cstring> // std::memcpy
 #include <utility> // std::forward, std::pair
@@ -284,4 +284,4 @@ using iobufferw = buffer_wrapper<iobuffer>;
 } // namespace Buffer
 } // namespace YGOpen
 
-#endif // __BUFFER_HPP__
+#endif // BUFFER_HPP
