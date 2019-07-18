@@ -72,16 +72,16 @@ using CardSpawner = std::function<Core::Data::CardInfo*()>;
 template<typename Player, typename Loc, typename Seq, typename Pos>
 inline void ReadInfoLoc(Buffer::ibufferw& w, Core::Data::CardInfo* card)
 {
-	if constexpr(!std::is_same<void, Player>())
+	if constexpr(!std::is_void<Player>())
 		card->set_controller(w->read<Player>("controller"));
 
-	if constexpr(!std::is_same<void, Loc>())
+	if constexpr(!std::is_void<Loc>())
 		card->set_location(w->read<Loc>("location"));
 
-	if constexpr(!std::is_same<void, Seq>())
+	if constexpr(!std::is_void<Seq>())
 		card->set_sequence(w->read<Seq>("sequence"));
 
-	if constexpr(!std::is_same<void, Pos>())
+	if constexpr(!std::is_void<Pos>())
 	{
 		const auto pos = w->read<Pos>("position");
 		if(card->location() & 0x80) // if the card is overlay
