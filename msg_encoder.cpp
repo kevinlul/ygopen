@@ -46,14 +46,14 @@ using s_pos_t   = uint8_t;
 using msg_type_map = std::array<bool, 255>;
 
 // Parses a ed_t and puts information on to the given EffectDesc
-void ToEffectDesc(const ed_t ed, Core::Data::EffectDesc* msg)
+inline void ToEffectDesc(ed_t ed, Core::Data::EffectDesc* msg)
 {
-	msg->set_code(ed >> 4);
+	msg->set_code(static_cast<code_t>(ed >> 4));
 	msg->set_string_id(ed & 0xF);
 }
 
 // Reads a card code and puts information on to the given CardInfo
-void ToCardCode(const code_t code, Core::Data::CardInfo* card)
+inline void ToCardCode(code_t code, Core::Data::CardInfo* card)
 {
 	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
 	card->set_bit(code & 0x80000000);
@@ -112,7 +112,7 @@ void ReadCardVector(Buffer::ibufferw& w, CardSpawner cs, CardRead pos = nullptr)
 	for(Count i = 0; i < count; i++)
 	{
 #ifdef BUFFER_DEBUG
-		w->log("read card ", (int)i, " from vector\n");
+		w->log("read card ", static_cast<int>(i), " from vector\n");
 #endif // BUFFER_DEBUG
 		Core::Data::CardInfo* card = cs();
 		// Card Code & Dirty Bit
@@ -151,7 +151,7 @@ inline void MsgEncoder::InformationMsg(int msgType, Core::AnyMsg& msg)
 
 static const msg_type_map MSG_INFORMATION_MAP = []()
 {
-	const auto CheckOne = [](int i)
+	const auto CheckOne = [](std::size_t i)
 	{
 		switch(i)
 		{
@@ -160,7 +160,7 @@ static const msg_type_map MSG_INFORMATION_MAP = []()
 		}
 	};
 	msg_type_map a;
-	for(unsigned int i = 0; i < a.max_size(); i++)
+	for(std::size_t i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
@@ -182,7 +182,7 @@ inline void MsgEncoder::RequestMsg(int msgType, Core::AnyMsg& msg)
 
 static const msg_type_map MSG_REQUEST_MAP = []()
 {
-	const auto CheckOne = [](int i)
+	const auto CheckOne = [](std::size_t i)
 	{
 		switch(i)
 		{
@@ -191,7 +191,7 @@ static const msg_type_map MSG_REQUEST_MAP = []()
 		}
 	};
 	msg_type_map a;
-	for(unsigned int i = 0; i < a.max_size(); i++)
+	for(std::size_t i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
@@ -212,7 +212,7 @@ inline void MsgEncoder::SpecInformationMsg(int msgType, Core::AnyMsg& msg)
 
 static const msg_type_map MSG_SPEC_INFORMATION_MAP = []()
 {
-	const auto CheckOne = [](int i)
+	const auto CheckOne = [](std::size_t i)
 	{
 		switch(i)
 		{
@@ -221,7 +221,7 @@ static const msg_type_map MSG_SPEC_INFORMATION_MAP = []()
 		}
 	};
 	msg_type_map a;
-	for(unsigned int i = 0; i < a.max_size(); i++)
+	for(std::size_t i = 0; i < a.max_size(); i++)
 		a[i] = CheckOne(i);
 	return a;
 }();
@@ -230,7 +230,7 @@ Core::AnyMsg MsgEncoder::Encode(void* buffer, size_t length)
 {
 	Core::AnyMsg msg{};
 	pimpl->ib.open(buffer, length);
-	const int msgType = (int)pimpl->ib.read<uint8_t>("msg number");
+	const auto msgType = pimpl->ib.read<uint8_t>("msg number");
 #ifdef BUFFER_DEBUG
 	pimpl->ib.log("Msg: ", msgType, " (", MSG_NAMES.at(msgType), ")\n");
 #endif // BUFFER_DEBUG
