@@ -8,9 +8,9 @@ The YGOpen project aims to create a free-as-in-freedom, cleanly-engineered Yu-Gi
 - [CMake](https://cmake.org/download/) 3.12 or higher
 - Platform C++ toolchain
   - Windows: [Visual Studio](https://visualstudio.microsoft.com/)
-  - macOS and Linux: GCC
+  - macOS and Linux: GCC or Clang
 
-- On macOS, use [Homebrew](https://brew.sh/) to get the prerequisites with `brew install cmake gcc`
+- On macOS, use [Homebrew](https://brew.sh/) to get the prerequisites with `brew install cmake`. If building with GCC, additionally do `brew install gcc`
 - On Windows, set up [`vcpkg`](https://github.com/microsoft/vcpkg)
 
 ## Dependencies
@@ -31,5 +31,5 @@ On Linux, do `cmake .. && make`.
 
 On Windows, do `cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]\scripts\buildsystems\vcpkg.cmake` to create the solution files and then build from the generated Visual Studio `.sln` file.
 
-On macOS, do `cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_EXE_LINKER_FLAGS=-lc++ && make` to build with GCC9. Clang support is coming soon.
+On macOS, do `cmake .. && make` to build with Clang. If building with GCC, do `cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_EXE_LINKER_FLAGS=-lc++ && make` instead.
 
