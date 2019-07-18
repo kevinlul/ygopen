@@ -4,11 +4,11 @@
 #include <cstring> // std::memcpy
 #include <utility> // std::forward, std::pair
 
-#if defined(DEBUGGING)
+#if defined(_DEBUG) || defined(DEBUG)
 #ifndef BUFFER_DEBUG
 #define BUFFER_DEBUG
 #endif // BUFFER_DEBUG
-#endif // defined(DEBUGGING)
+#endif // defined(_DEBUG) || defined(DEBUG)
 
 #ifdef BUFFER_DEBUG
 #include <ctime>
