@@ -1,5 +1,5 @@
 #include "database_manager.hpp"
-#include <sqlite3.h>
+#include "sqlite3.h"
 #include <cstring>
 
 #include "enums/type.hpp"
