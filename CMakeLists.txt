@@ -42,9 +42,17 @@ target_sources(ygopen PRIVATE
 	${CSR}/core_interface.cpp
 	${CSR}/database_manager.cpp
 	${CSR}/deck.cpp
-	# SQLite 3
-	${CSR}/sqlite3.c
-	${CSR}/sqlite3.h
+)
+
+set(SQLITE3_SOURCE ${CSR}/sqlite3.c ${CSR}/sqlite3.h)
+set_source_files_properties(${SQLITE3_SOURCE} PROPERTIES
+	LANGUAGE C
+)
+set_property(SOURCE ${SQLITE3_SOURCE} APPEND PROPERTY
+	COMPILE_OPTIONS $<${CLANG_OR_GNU}:-w> $<$<CXX_COMPILER_ID:MSVC>:/W0>
+)
+target_sources(ygopen PRIVATE
+	${SQLITE3_SOURCE}
 )
 
 target_sources(ygopen PUBLIC
