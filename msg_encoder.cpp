@@ -1,10 +1,10 @@
-#include <functional>
-#include <bitset>
 #include <array>
+#include <bitset>
+#include <functional>
 
-#include "msg_codec.hpp"
 #include "buffer.hpp"
 #include "core_message.hpp"
+#include "msg_codec.hpp"
 
 #ifdef BUFFER_DEBUG
 #include <google/protobuf/util/json_util.h>
@@ -56,7 +56,7 @@ inline void ToEffectDesc(ed_t ed, Core::Data::EffectDesc* msg)
 inline void ToCardCode(code_t code, Core::Data::CardInfo* card)
 {
 	card->set_code(code & 0x7FFFFFFF); // Do not include last bit
-	card->set_bit(code & 0x80000000);
+	card->set_bit((code & 0x80000000) != 0u);
 }
 
 // Function prototype that returns a different CardInfo on consecutive calls,
@@ -130,8 +130,7 @@ struct MsgEncoder::impl
 };
 
 MsgEncoder::MsgEncoder() : pimpl(new impl())
-{
-}
+{}
 
 MsgEncoder::~MsgEncoder() = default;
 

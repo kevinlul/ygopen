@@ -18,7 +18,7 @@ protected:
 class MsgEncoder : virtual public MsgCodecBase
 {
 	struct impl;
-	std::unique_ptr<impl> pimpl;
+	std::unique_ptr<impl> pimpl{};
 	
 	inline void RequestMsg(int msgType, Core::AnyMsg& msg);
 	inline void InformationMsg(int msgType, Core::AnyMsg& msg);
