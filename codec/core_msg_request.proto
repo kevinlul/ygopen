@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+import "core_data.proto";
+
+package YGOpen.Core.Msg;
+
+// Encapsulates:
+// MSG_SELECT_BATTLECMD
+// MSG_SELECT_IDLECMD
+message SelectCmd
+{
+	enum CmdType
+	{
+		COMMAND_BATTLE = 0;
+		COMMAND_IDLE = 1;
+	}
+	CmdType type = 1;
+
+	// Can the player go to these phases?
+	//bool able_to_dp = 2;  // Draw Phase // NOTE: UNUSED
+	//bool able_to_sp = 3;  // Standby Phase // NOTE: UNUSED
+	//bool able_to_mp1 = 4; // Main Phase 1 // NOTE: UNUSED
+	bool able_to_bp = 5;  // Battle Phase
+	bool able_to_mp2 = 6; // Main Phase 2
+	bool able_to_ep = 7;  // End Phase
+
+	bool can_shuffle = 8; // Can the player shuffle its hand
+
+	// Usable cards
+	repeated Data.CardInfo cards_w_effect = 9; // Cards anywhere in the field that can activate a ignition effect
+	repeated Data.CardInfo cards_can_attack = 10; // Cards that can declare an attack
+	repeated Data.CardInfo cards_summonable = 11; // Cards that can be either Normal or Tribute summoned
+	repeated Data.CardInfo cards_spsummonable = 12; // Cards that can be Special summoned (inherent)
+	repeated Data.CardInfo cards_repositionable = 13; // Cards that can change Battle Position
+	repeated Data.CardInfo cards_msetable = 14; // Cards that can be set on a Monster Zone
+	repeated Data.CardInfo cards_ssetable = 15; // Cards that can be set on a Spell/Trap Zone
+}
+
+// Encapsulates:
+// MSG_SELECT_EFFECTYN
+// MSG_SELECT_YESNO
+message SelectYesNo
+{
+	oneof SelectYesNo
+	{
+		// Asks for a effect by a specific card on a specific zone
+		// Example: From [Monster Zone] activate "Elemental HERO Stratos"?
+		Data.CardInfo card = 1;
+		// Asks for a effect
+		// Example: Banish "Return of the Dragon Lords" from the Graveyard instead?
+		Data.EffectDesc effect = 2;
+	}
+}
+
+// Encapsulates:
+// MSG_SELECT_OPTION
+message SelectOption
+{
+	// List of effects description the player can choose
+	repeated Data.EffectDesc effects = 3;
+}
+
+// Encapsulates:
+// MSG_SELECT_CARD
+// MSG_SELECT_TRIBUTE
+// MSG_SELECT_SUM
+// MSG_SELECT_UNSELECT_CARD
+// MSG_SELECT_COUNTER
+message SelectCards
+{
+	enum SelectionType
+	{
+		SELECTION_EFFECT = 0;
+		SELECTION_TRIBUTE = 1;
+		SELECTION_SUM = 2;
+		SELECTION_SUM_EXACTLY = 3;
+		SELECTION_SELECT_UNSELECT = 4;
+		SELECTION_COUNTER = 5;
+	}
+	SelectionType type = 1;
+	
+	// Can the player cancel the selection completely?
+	bool can_cancel = 2;
+	// Can the player finish the selection as is?
+	bool can_accept = 3;
+	// Minimum cards to select
+	uint32 min = 4;
+	// Maximum cards to select
+	uint32 max = 5;
+	
+	// Sum needed to satisfy selection
+	// FIXME: explain this value properly
+	uint32 sum = 6;
+	
+	// Counter type and number of counters the player
+	// can distribute among the selectable cards
+	Data.Counter counter = 7;
+	
+	// Cards that must be selected
+	repeated Data.CardInfo cards_must_select = 10;
+	
+	// Cards that can be selected
+	repeated Data.CardInfo cards_selectable = 11;
+	
+	// Cards that are selected and can be unselected
+	repeated Data.CardInfo cards_unselectable = 12;
+}
+
+// Encapsulates:
+// MSG_SORT_CARD
+// MSG_SORT_CHAIN
+message SortCards
+{
+	// Cards that you must place in the order you want them to activate
+	repeated Data.CardInfo cards_to_sort = 1;
+}
+
+// Encapsulates:
+// MSG_SELECT_PLACE
+// MSG_SELECT_DISFIELD
+message SelectPlaces
+{
+	// Minimum places to select
+	uint32 min = 1;
+	
+	// Places to select from
+	repeated Data.Place places = 2;
+}
+
+// Encapsulates:
+// MSG_SELECT_POSITION
+message SelectPosition
+{
+	// Has code of the card
+	// and available positions to choose from AND'd on position variable
+	Data.CardInfo card = 1;
+}
+
+// Encapsulates:
+// MSG_ANNOUNCE_CARD
+// MSG_ANNOUNCE_CARD_FILTER
+message DeclareCard
+{
+	// Use Reverse Polish Notation to create a list
+	// of operations to determine (client side) the card filter
+	// NOTE: empty list means ANY card
+	// NOTE: opcodes from ocgcore/common.h
+	repeated uint64 opcodes = 1;
+}
+
+// Encapsulates:
+// MSG_ANNOUNCE_RACE
+// MSG_ANNOUNCE_ATTRIB
+// MSG_ANNOUNCE_NUMBER
+message DeclareMisc
+{
+	enum DeclareType
+	{
+		DECLARE_RACE = 0;
+		DECLARE_ATTRIBUTE = 1;
+		DECLARE_NUMBER = 2;
+	}
+	DeclareType type = 1;
+
+	// Number of Races/Attributes you must choose
+	// NOTE: Unused if type == DECLARE_NUMBER
+	uint32 count = 2;
+	
+	// either Attributes/Races to choose from
+	// in a single value (they are OR'd together)
+	// or numbers the player must select from
+	repeated uint64 available = 3;
+}
+
+
+// Encapsulates:
+// MSG_SELECT_CHAIN
+message SelectToChain
+{
+	// holds a chain type along with a card (and its effect)
+	message ChainableCard
+	{
+		// NOTE: possible values
+		// #define EDESC_OPERATION 1
+		// #define EDESC_RESET     2
+		// or 0
+		// Tells the client if the effect is bound or not
+		// to the card location
+		// FIXME: use a bool instead?
+		int32 effect_desc_type = 1;
+		
+		// The card must hold a effect description
+		Data.CardInfo card = 2;
+	}
+
+	// Is any effect mandatory
+	bool forced = 1;
+	
+	//int32 spe_count = 2; // TODO: might not be required
+
+	// Cards that can be chained or resolved
+	repeated ChainableCard cards_w_effect = 3;
+}
+

@@ -1,0 +1,2 @@
+#undef CASE
+#undef FILTERING
