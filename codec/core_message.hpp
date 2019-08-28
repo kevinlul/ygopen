@@ -1,0 +1,104 @@
+#ifndef CORE_MESSAGE_HPP
+#define CORE_MESSAGE_HPP
+
+// copied directly from common.h
+// TODO: convert into enum (or probably not?)
+// TODO: comment unused values
+#define MSG_RETRY				1
+#define MSG_HINT				2 // DONE
+// #define MSG_WAITING				3
+// #define MSG_START				4
+#define MSG_WIN					5 // DONE
+// #define MSG_UPDATE_DATA			6
+// #define MSG_UPDATE_CARD			7
+// #define MSG_REQUEST_DECK		8
+#define MSG_SELECT_BATTLECMD	10 // DONE
+#define MSG_SELECT_IDLECMD		11 // DONE
+#define MSG_SELECT_EFFECTYN		12 // DONE
+#define MSG_SELECT_YESNO		13 // DONE
+#define MSG_SELECT_OPTION		14 // DONE
+#define MSG_SELECT_CARD			15 // DONE
+#define MSG_SELECT_CHAIN		16 // DONE
+#define MSG_SELECT_PLACE		18 // DONE
+#define MSG_SELECT_POSITION		19 // DONE
+#define MSG_SELECT_TRIBUTE		20 // DONE
+#define MSG_SORT_CHAIN			21 // DONE
+#define MSG_SELECT_COUNTER		22 // DONE
+#define MSG_SELECT_SUM			23 // DONE
+#define MSG_SELECT_DISFIELD		24 // TODO
+#define MSG_SORT_CARD			25 // TODO
+#define MSG_SELECT_UNSELECT_CARD	26 // DONE
+#define MSG_CONFIRM_DECKTOP		30 // DONE
+#define MSG_CONFIRM_CARDS		31 // DONE
+#define MSG_SHUFFLE_DECK		32 // DONE
+#define MSG_SHUFFLE_HAND		33 // DONE
+// #define MSG_REFRESH_DECK		34
+#define MSG_SWAP_GRAVE_DECK		35 // DONE
+#define MSG_SHUFFLE_SET_CARD	36 // DONE
+#define MSG_REVERSE_DECK		37 // DONE
+#define MSG_DECK_TOP			38 // DONE
+#define MSG_SHUFFLE_EXTRA		39 // DONE
+#define MSG_NEW_TURN			40 // DONE
+#define MSG_NEW_PHASE			41 // DONE
+#define MSG_CONFIRM_EXTRATOP	42 // DONE
+#define MSG_MOVE				50 // DONE
+#define MSG_POS_CHANGE			53 // DONE
+#define MSG_SET					54 // DONE
+#define MSG_SWAP				55 // DONE
+#define MSG_FIELD_DISABLED		56 // DONE
+#define MSG_SUMMONING			60 // DONE
+#define MSG_SUMMONED			61 // DONE
+#define MSG_SPSUMMONING			62 // DONE
+#define MSG_SPSUMMONED			63 // DONE
+#define MSG_FLIPSUMMONING		64 // DONE
+#define MSG_FLIPSUMMONED		65 // DONE
+#define MSG_CHAINING			70 // DONE
+#define MSG_CHAINED				71 // DONE
+#define MSG_CHAIN_SOLVING		72 // DONE
+#define MSG_CHAIN_SOLVED		73 // DONE
+#define MSG_CHAIN_END			74 // DONE
+#define MSG_CHAIN_NEGATED		75 // DONE
+#define MSG_CHAIN_DISABLED		76 // DONE
+// #define MSG_CARD_SELECTED		80
+#define MSG_RANDOM_SELECTED		81 // DONE
+#define MSG_BECOME_TARGET		83 // DONE
+#define MSG_DRAW				90 // DONE
+#define MSG_DAMAGE				91 // DONE
+#define MSG_RECOVER				92 // DONE
+#define MSG_EQUIP				93 // DONE
+#define MSG_LPUPDATE			94 // DONE
+// #define MSG_UNEQUIP				95
+#define MSG_CARD_TARGET			96 // DONE
+#define MSG_CANCEL_TARGET		97 // DONE
+#define MSG_PAY_LPCOST			100 // DONE
+#define MSG_ADD_COUNTER			101 // DONE
+#define MSG_REMOVE_COUNTER		102 // DONE
+#define MSG_ATTACK				110 // DONE
+#define MSG_BATTLE				111 // DONE
+#define MSG_ATTACK_DISABLED		112 // DONE
+#define MSG_DAMAGE_STEP_START	113 // DONE
+#define MSG_DAMAGE_STEP_END		114 // DONE
+#define MSG_MISSED_EFFECT		120 // DONE
+// #define MSG_BE_CHAIN_TARGET		121
+// #define MSG_CREATE_RELATION		122
+// #define MSG_RELEASE_RELATION	123
+#define MSG_TOSS_COIN			130 // DONE
+#define MSG_TOSS_DICE			131 // DONE
+#define MSG_ROCK_PAPER_SCISSORS	132 // DONE
+#define MSG_HAND_RES			133 // DONE
+#define MSG_ANNOUNCE_RACE		140 // DONE
+#define MSG_ANNOUNCE_ATTRIB		141 // DONE
+#define MSG_ANNOUNCE_CARD		142 // DONE
+#define MSG_ANNOUNCE_NUMBER		143 // DONE
+#define MSG_ANNOUNCE_CARD_FILTER	144 // DONE
+#define MSG_CARD_HINT			160 // DONE
+#define MSG_TAG_SWAP			161 // DONE
+#define MSG_RELOAD_FIELD		162 // semi-DONE - NOTE: puzzle stuff - Debug.ReloadFieldEnd()
+#define MSG_AI_NAME				163 // semi-DONE - NOTE: puzzle stuff
+#define MSG_SHOW_HINT			164 // semi-DONE - NOTE: puzzle stuff
+#define MSG_PLAYER_HINT			165 // DONE
+#define MSG_MATCH_KILL			170 // DONE
+// #define MSG_CUSTOM_MSG			180
+
+
+#endif // CORE_MESSAGE_HPP

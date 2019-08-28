@@ -1,0 +1,391 @@
+syntax = "proto3";
+
+import "core_data.proto";
+
+package YGOpen.Core.Msg;
+
+// Encapsulates:
+// MSG_HINT
+message Hint
+{
+// TODO: rework hints
+	uint32 type = 1;
+	uint64 data = 2;
+}
+
+// Encapsulates:
+// MSG_WIN
+// MSG_MATCH_KILL
+message Win
+{
+	uint32 player = 1;
+	uint32 reason = 2;
+}
+
+// Encapsulates:
+// MSG_CONFIRM_DECKTOP
+// MSG_CONFIRM_CARDS
+// MSG_CONFIRM_EXTRATOP
+message ConfirmCards
+{
+	enum ConfirmType
+	{
+		CONFIRM_DECKTOP = 0;
+		CONFIRM_MULTIPLE = 1;
+		CONFIRM_EXTRATOP = 2;
+	}
+	ConfirmType type = 1;
+
+	// Cards to confirm
+	repeated Data.CardInfo cards = 2;
+}
+
+// Encapsulates:
+// MSG_SHUFFLE_DECK
+// MSG_SHUFFLE_HAND
+// MSG_SHUFFLE_EXTRA
+message ShuffleLocation
+{
+	uint32 player = 1;
+	uint32 location = 2;
+	
+	// NOTE: can be empty
+	repeated Data.CardInfo shuffled_cards = 3;
+}
+
+// Encapsulates:
+// MSG_SHUFFLE_SET_CARD
+message ShuffleSetCards
+{
+	//uint32 location = 1; NOTE: UNUSED
+	
+	// Card positions to shuffle
+	repeated Data.CardInfo cards_previous = 2;
+	
+	// New locations of the shuffle cards, can be empty.
+	repeated Data.CardInfo cards_current = 3;
+}
+
+// Encapsulates:
+// MSG_DECK_TOP
+// MSG_MOVE
+// MSG_POS_CHANGE
+// MSG_SET
+// Updates a card info and/or location
+message UpdateCard
+{
+	// Defines the behaviour of this message
+	enum UpdateReason
+	{
+		// undefined: assume full update.
+		REASON_NO_REASON = 0;
+		// Shows a card from the top of the deck.
+		// previous: controller, location, sequence;
+		// current: code
+		// NOTE: sequence in previous is reversed, 0 means top of the stack
+		REASON_DECK_TOP = 1;
+		// Moves a card from one location to another.
+		// previous: code, controller, location, sequence;
+		// current: code, controller, location, sequence.
+		REASON_MOVE = 2;
+		// Changes the position of a card in place.
+		// previous: controller, location, sequence, position;
+		// current: code, position
+		REASON_POS_CHANGE = 3;
+		// Sets a card in place.
+		// previous: controller, location, sequence; 
+		// current: code, position
+		REASON_SET = 4;
+	}
+	UpdateReason reason = 1;
+	
+	// NOTE: reason used by MSG_MOVE
+	uint32 core_reason = 2;
+	
+	Data.CardInfo previous = 4;
+	Data.CardInfo current = 5;
+}
+
+// Creates a card in place (token)
+// previous: code, controller, location, sequence.
+// REASON_ADD = 3;
+// Removes a card in place (token)
+// current: code, controller, location, sequence.
+// REASON_REMOVE = 4;
+
+// Encapsulates:
+// MSG_MOVE
+message AddCard
+{
+	uint32 core_reason = 1;
+	Data.CardInfo card = 2;
+}
+
+// NOTE: these two messages are purposedly not combined
+
+// Encapsulates:
+// MSG_MOVE
+message RemoveCard
+{
+	uint32 core_reason = 1;
+	Data.CardInfo card = 2;
+}
+
+// Encapsulates:
+// MSG_SWAP
+message SwapCards
+{
+	Data.CardInfo card1 = 1;
+	Data.CardInfo card2 = 2;
+}
+
+// Encapsulates:
+// MSG_NEW_TURN
+message NewTurn
+{
+	uint32 turn_player = 1;
+}
+
+// Encapsulates:
+// MSG_NEW_PHASE
+message NewPhase
+{
+	uint32 phase = 1;
+}
+
+// Encapsulates:
+// MSG_FIELD_DISABLED
+// NOTE: clears all other disabled zones
+message DisableZones
+{
+	repeated Data.Place places = 1;
+}
+
+// Encapsulates:
+// MSG_SUMMONING
+// MSG_SUMMONED
+// MSG_SPSUMMONING
+// MSG_SPSUMMONED
+// MSG_FLIPSUMMONING
+// MSG_FLIPSUMMONED
+message SummonCard
+{
+	enum SummonType
+	{
+		SUMMON_NORMAL = 0;
+		SUMMON_SPECIAL = 1;
+		SUMMON_FLIP = 2;
+	}
+	SummonType type = 1;
+	
+	// Card being summoned
+	// NOTE: Only set when core message is SUMMONING
+	Data.CardInfo card = 2;
+}
+
+// Encapsulates:
+// MSG_CHAINING
+// MSG_CHAINED
+// MSG_CHAIN_SOLVING
+// MSG_CHAIN_SOLVED
+// MSG_CHAIN_END
+// MSG_CHAIN_NEGATED
+// MSG_CHAIN_DISABLED
+message ChainAction
+{
+	enum ActionType
+	{
+		ACTION_CHAINING = 0;
+		ACTION_CHAINED = 1;
+		ACTION_CHAIN_SOLVING = 2;
+		ACTION_CHAIN_SOLVED = 3;
+		ACTION_CHAIN_END = 4;
+		ACTION_CHAIN_NEGATED = 5;
+		ACTION_CHAIN_DISABLED = 6;
+	}
+	ActionType type = 1;
+	
+	// Card that started the chain
+	Data.CardInfo card = 2;
+	
+	// Used by MSG_CHAINING (ACTION_CHAINING)
+	Data.Place place = 3; // Place where the chain started
+	Data.EffectDesc ed = 4; // Effect that started the chain
+	
+	// NOTE: ACTION_CHAIN_END does not set this
+	uint32 chain_number = 5;
+}
+
+// Encapsulates:
+// MSG_RANDOM_SELECTED
+// MSG_BECOME_TARGET
+// MSG_EQUIP
+// MSG_UNEQUIP
+// MSG_CARD_TARGET
+// MSG_CANCEL_TARGET
+message SelectedCards
+{
+	enum SelectionType
+	{
+		// Randomly selected cards (dont create relation)
+		SELECTION_RANDOM = 0;
+		SELECTION_BECOME = 1;
+		
+		// Cards selected by another card (creates relation)
+		SELECTION_CARD_TARGET = 2;
+		SELECTION_CARD_EQUIP = 3;
+		
+		// Cards unselected by another card (removes relation)
+		SELECTION_CARD_DETARGET = 4;
+		//SELECTION_CARD_UNEQUIP = 5; // NOTE: UNUSED but implemented on duelclient.cpp
+	}
+	SelectionType type = 1;
+
+	//bool targeter_player = 2; // NOTE: UNUSED
+
+	Data.CardInfo targeting_card = 3;
+	repeated Data.CardInfo cards = 4;
+}
+
+// Encapsulates:
+// MSG_DRAW
+message Draw
+{
+	uint32 player = 1;
+	repeated Data.CardInfo cards = 2;
+}
+
+// Encapsulates:
+// MSG_DAMAGE
+// MSG_RECOVER
+// MSG_LPUPDATE
+// MSG_PAY_LPCOST
+message LpChange
+{
+	enum ChangeType
+	{
+		CHANGE_DAMAGE = 0; // substract
+		CHANGE_RECOVER = 1; // sums
+		CHANGE_BECOME = 2; // sets value
+		CHANGE_PAY = 3; // substract
+	}
+	ChangeType type = 1;
+	
+	uint32 player = 2;
+	uint32 amount = 3;
+}
+
+// Encapsulates:
+// MSG_ADD_COUNTER
+// MSG_REMOVE_COUNTER
+message CounterChange
+{
+	enum ChangeType
+	{
+		CHANGE_ADD = 0;
+		CHANGE_REMOVE = 1;
+	}
+	ChangeType type = 1;
+	
+	Data.Place place = 2;
+	Data.Counter counter = 3;
+}
+
+// Encapsulates:
+// MSG_ATTACK
+// MSG_BATTLE
+message OnAttack
+{
+	enum AttackStatus
+	{
+		STATUS_ATTACK_DECLARATION = 0;
+		STATUS_ENTERING_BATTLE_STEP = 1;
+	}
+	AttackStatus status = 1;
+
+	Data.CardInfo attacker = 2;
+	// NOTE: can be empty, in which case is a direct attack
+	Data.CardInfo attack_target = 3;
+}
+
+// Encapsulates:
+// MSG_TOSS_COIN
+// MSG_TOSS_DICE
+// MSG_HAND_RES
+message Result
+{
+	enum ResultType
+	{
+		RESULT_TOSS_COIN = 0;
+		RESULT_TOSS_DICE = 1;
+		RESULT_RPS = 2;
+	}
+	ResultType type = 1;
+
+	// NOTE: unused with RESULT_RPS
+	uint32 player = 2;
+
+	// results of dices or coin tosses
+	// in case of RPS, both player hand result
+	repeated uint32 results = 3;
+}
+
+// Encapsulates:
+// MSG_ATTACK_DISABLED
+// MSG_DAMAGE_STEP_START
+// MSG_DAMAGE_STEP_END
+// MSG_SWAP_GRAVE_DECK
+// MSG_REVERSE_DECK
+message MiscAction
+{
+	enum ActionType
+	{
+		// Attack of the attacker card was negated
+		ACTION_ATTACK_NEGATED = 0;
+		// Entering and exiting Damage Step
+		ACTION_DAMAGE_STEP_START = 1;
+		ACTION_DAMAGE_STEP_END = 2;
+		// A card missed its timing (when: you can)
+		ACTION_MISSED_TIMING = 3;
+		// Misc
+		ACTION_SWAP_GY_WITH_DECK = 4; // by the effect of: Exchange of the Spirit
+		ACTION_REVERSE_DECK = 5; // by the effect of: Convulsion of Nature
+	}
+	ActionType type = 1;
+	
+	uint32 player = 2;
+	
+	// NOTE: used by ACTION_MISSED_TIMING
+	Data.CardInfo card = 3;
+}
+
+// Encapsulates:
+// MSG_CARD_HINT
+message CardHint
+{
+// TODO: rework hints
+	Data.CardInfo card = 1;
+	uint32 type = 2;
+	uint64 data = 3;
+}
+
+// Encapsulates:
+// MSG_PLAYER_HINT
+message PlayerHint
+{
+// TODO: rework hints
+	uint32 player = 1;
+	uint32 type = 2;
+	uint64 data = 3;
+}
+
+// Encapsulates:
+// MSG_TAG_SWAP
+message SwapPlayer
+{
+	uint32 player = 1;
+	uint32 main_deck_count = 2;
+	Data.CardInfo decktop = 3;
+	repeated Data.CardInfo hand_cards = 4;
+	repeated Data.CardInfo extra_cards = 5;
+}
