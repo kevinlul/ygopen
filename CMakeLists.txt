@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Find all dependencies
+find_package(Protobuf 3 REQUIRED)
+
 # option(YGOPEN_COMMON_USE_SYSTEM_JSON "Use system's JSON for Modern C++" ON)
 # if(YGOPEN_COMMON_USE_SYSTEM_JSON)
 # 	find_package(nlohmann_json REQUIRED)
@@ -19,6 +21,7 @@ add_library(ygopen STATIC)
 
 # Add libraries from dependencies
 target_link_libraries(ygopen PUBLIC
+	protobuf::libprotobuf-lite
 	nlohmann_json::nlohmann_json
 )
 
@@ -63,3 +66,26 @@ target_sources(ygopen PUBLIC
 	${CSR}/pod_card.hpp
 )
 unset(CSR)
+
+# Add protobuf generated source files
+protobuf_generate_cpp(PROTOBUF_SRCS PROTOBUF_HDRS
+	core_data.proto
+	core_msg_request.proto
+	core_msg_information.proto
+	core_msg.proto
+)
+
+set_source_files_properties(${PROTOBUF_SRCS} PROPERTIES
+	COMPILE_OPTIONS $<${CLANG_OR_GNU}:-Wno-maybe-uninitialized>
+)
+
+target_include_directories(ygopen PUBLIC
+	${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_sources(ygopen PRIVATE
+	${PROTOBUF_SRCS}
+	${PROTOBUF_HDRS}
+)
+
+add_subdirectory(codec)
