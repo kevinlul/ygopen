@@ -83,9 +83,8 @@ target_include_directories(ygopen PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_sources(ygopen PRIVATE
-	${PROTOBUF_SRCS}
-	${PROTOBUF_HDRS}
+target_sources(ygopen
+	PRIVATE ${PROTOBUF_SRCS}
 )
 
 add_subdirectory(codec)
