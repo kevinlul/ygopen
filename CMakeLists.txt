@@ -41,7 +41,6 @@ target_compile_options(ygopen PRIVATE
 set(CSR ${CMAKE_CURRENT_SOURCE_DIR})
 target_sources(ygopen PRIVATE
 	${CSR}/banlist.cpp
-	${CSR}/core_auxiliary.cpp
 	${CSR}/core_interface.cpp
 	${CSR}/database_manager.cpp
 	${CSR}/deck.cpp
@@ -60,7 +59,6 @@ target_sources(ygopen PRIVATE
 
 target_sources(ygopen PUBLIC
 	${CSR}/banlist.hpp
-	${CSR}/core_auxiliary.hpp
 	${CSR}/core_interface.hpp
 	${CSR}/database_manager.hpp
 	${CSR}/deck.hpp
