@@ -30,7 +30,7 @@ void DatabaseManager::ReadCardData(sqlite3_stmt* stmt, CardData* cd, CardDataExt
 	cd->type = sqlite3_column_int(stmt, 4);
 	cd->attack = sqlite3_column_int(stmt, 5);
 	cd->defense = sqlite3_column_int(stmt, 6);
-	if(cd->type & TypeLink)
+	if(cd->type & TYPE_LINK)
 	{
 		cd->link_marker = cd->defense;
 		cd->defense = 0;

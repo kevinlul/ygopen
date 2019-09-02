@@ -1,19 +1,17 @@
-#ifndef __LOCATION_HPP__
-#define __LOCATION_HPP__
+#ifndef ENUM_LOCATION_HPP
+#define ENUM_LOCATION_HPP
 
-enum Location
-{
-	LocationMainDeck     = 0x1,
-	LocationHand         = 0x2,
-	LocationMonsterZone  = 0x4,
-	LocationSpellZone    = 0x8,
-	LocationGraveyard    = 0x10,
-	LocationBanished     = 0x20,
-	LocationExtraDeck    = 0x40,
-	LocationOverlay      = 0x80,
-	LocationOnField      = 0x0C,
-	LocationFieldZone    = 0x100,
-	LocationPendulumZone = 0x200
-};
+#define LOCATION_DECK    0x01
+#define LOCATION_HAND    0x02
+#define LOCATION_MZONE   0x04
+#define LOCATION_SZONE   0x08
+#define LOCATION_GRAVE   0x10
+#define LOCATION_REMOVED 0x20
+#define LOCATION_EXTRA   0x40
+#define LOCATION_OVERLAY 0x80
+#define LOCATION_ONFIELD 0x0C
+#define LOCATION_FZONE   0x100
+#define LOCATION_PZONE   0x200
+#define LOCATION_ALL     0x3FF
 
-#endif // __LOCATION_HPP__
+#endif // ENUM_LOCATION_HPP

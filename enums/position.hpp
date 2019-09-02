@@ -1,16 +1,13 @@
-#ifndef __POSITION_HPP__
-#define __POSITION_HPP__
+#ifndef ENUM_POSITION_HPP
+#define ENUM_POSITION_HPP
 
-enum Position
-{
-	PositionFaceUpAttack    = 0x1,
-	PositionFaceDownAttack  = 0x2,
-	PositionFaceUpDefense   = 0x4,
-	PositionFaceDownDefense = 0x8,
-	PositionFaceUp          = 0x5,
-	PositionFaceDown        = 0xA,
-	PositionAttack          = 0x3,
-	PositionDefense         = 0xC
-};
+#define POS_FACEUP_ATTACK    0x1
+#define POS_FACEDOWN_ATTACK  0x2
+#define POS_FACEUP_DEFENSE   0x4
+#define POS_FACEDOWN_DEFENSE 0x8
+#define POS_FACEUP           0x5
+#define POS_FACEDOWN         0xA
+#define POS_ATTACK           0x3
+#define POS_DEFENSE          0xC
 
-#endif // __POSITION_HPP__
+#endif // ENUM_POSITION_HPP

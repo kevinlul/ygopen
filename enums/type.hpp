@@ -1,33 +1,30 @@
-#ifndef __TYPE_HPP__
-#define __TYPE_HPP__
+#ifndef ENUM_TYPE_HPP
+#define ENUM_TYPE_HPP
 
-enum Type
-{
-	TypeMonster       = 0x1,
-	TypeSpell         = 0x2,
-	TypeTrap          = 0x4,
-	TypeNormal        = 0x10,
-	TypeEffect        = 0x20,
-	TypeFusion        = 0x40,
-	TypeRitual        = 0x80,
-	TypeTrapMonster   = 0x100,
-	TypeSpirit        = 0x200,
-	TypeUnion         = 0x400,
-	TypeDual          = 0x800, // Gemini
-	TypeTuner         = 0x1000,
-	TypeSynchro       = 0x2000,
-	TypeToken         = 0x4000,
-	TypeQuickPlay     = 0x10000,
-	TypeContinous     = 0x20000,
-	TypeEquip         = 0x40000,
-	TypeField         = 0x80000,
-	TypeCounter       = 0x100000,
-	TypeFlip          = 0x200000,
-	TypeToon          = 0x400000,
-	TypeXyz           = 0x800000,
-	TypePendulum      = 0x1000000,
-	TypeSpecialSummon = 0x2000000,
-	TypeLink          = 0x4000000
-};
+#define TYPE_MONSTER     0x1
+#define TYPE_SPELL       0x2
+#define TYPE_TRAP        0x4
+#define TYPE_NORMAL      0x10
+#define TYPE_EFFECT      0x20
+#define TYPE_FUSION      0x40
+#define TYPE_RITUAL      0x80
+#define TYPE_TRAPMONSTER 0x100
+#define TYPE_SPIRIT      0x200
+#define TYPE_UNION       0x400
+#define TYPE_GEMINI      0x800
+#define TYPE_TUNER       0x1000
+#define TYPE_SYNCHRO     0x2000
+#define TYPE_TOKEN       0x4000
+#define TYPE_QUICKPLAY   0x10000
+#define TYPE_CONTINUOUS  0x20000
+#define TYPE_EQUIP       0x40000
+#define TYPE_FIELD       0x80000
+#define TYPE_COUNTER     0x100000
+#define TYPE_FLIP        0x200000
+#define TYPE_TOON        0x400000
+#define TYPE_XYZ         0x800000
+#define TYPE_PENDULUM    0x1000000
+#define TYPE_SPSUMMON    0x2000000
+#define TYPE_LINK        0x4000000
 
-#endif // __TYPE_HPP__
+#endif // ENUM_TYPE_HPP
