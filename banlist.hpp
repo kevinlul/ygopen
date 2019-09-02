@@ -1,28 +1,24 @@
-#ifndef __BANLIST_HPP__
-#define __BANLIST_HPP__
-#include <set>
-#include <string>
-
-#include <nlohmann/json.hpp>
+#ifndef BANLIST_HPP
+#define BANLIST_HPP
+#include "banlist.pb.h"
+#include "serializable.hpp"
 
 namespace YGOpen
 {
 
-class Banlist
+class Deck;
+
+class Banlist : public Serializable<Banlist, Proto::Banlist>
 {
 public:
-	enum {MODE_BLACKLIST, MODE_WHITELIST};
-	std::set<uint32_t> whitelist;
-	std::set<uint32_t> semilimited;
-	std::set<uint32_t> limited;
-	std::set<uint32_t> forbidden;
-
-	int GetMode() const;
-	bool FromJSON(const nlohmann::json& j);
+	const std::string& GetId() const;
+	bool IsWhitelist() const;
+	const std::string& GetTitle() const;
+	const std::string& GetNotes() const;
 private:
-	int mode{MODE_BLACKLIST};
+	friend Deck;
 };
 
 } // namespace YGOpen
 
-#endif // __BANLIST_HPP__
+#endif // BANLIST_HPP

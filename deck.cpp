@@ -1,136 +1,49 @@
-#include <unordered_map>
-
 #include "deck.hpp"
-#include "database_manager.hpp"
+
+#include <unordered_map>
 #include "banlist.hpp"
 
 namespace YGOpen
 {
 
-uint32_t Deck::Verify(const DatabaseManager& dbm)
+Proto::DeckError Deck::CheckLimits(const Proto::DeckLimits& limits) const
 {
-	for(auto& card : main)
-	{
-		if(dbm.GetCardDataByCode(card) == nullptr)
-		{
-			verified = false;
-			return card;
-		}
+	Proto::DeckError error;
+#define F(deck, enumerator) \
+	if(pbMsg.deck##_size() < limits.deck().min()) \
+	{ \
+		auto ool = error.mutable_out_of_limits(); \
+		ool->set_deck_type(enumerator); \
+		ool->set_limit_type(Proto::DeckError::OutOfLimits::LT_UNDER); \
+		ool->set_expected(limits.deck().min()); \
+		ool->set_got(pbMsg.deck##_size()); \
+		return error; \
+	} \
+	if(pbMsg.main_size() > limits.deck().max()) \
+	{ \
+		auto ool = error.mutable_out_of_limits(); \
+		ool->set_deck_type(enumerator); \
+		ool->set_limit_type(Proto::DeckError::OutOfLimits::LT_OVER); \
+		ool->set_expected(limits.deck().max()); \
+		ool->set_got(pbMsg.deck##_size()); \
+		return error; \
 	}
-
-	for(auto& card : extra)
-	{
-		if(dbm.GetCardDataByCode(card) == nullptr)
-		{
-			verified = false;
-			return card;
-		}
-	}
-
-	for(auto& card : side)
-	{
-		if(dbm.GetCardDataByCode(card) == nullptr)
-		{
-			verified = false;
-			return card;
-		}
-	}
-
-	verified = true;
-	return 0;
+	F(main, Proto::DeckError::OutOfLimits::DT_MAIN_DECK)
+	F(extra, Proto::DeckError::OutOfLimits::DT_EXTRA_DECK)
+	F(side, Proto::DeckError::OutOfLimits::DT_SIDE_DECK)
+#undef F
+	error.set_no_error(true);
+	return error;
 }
 
-bool Deck::IsVerified() const
+Proto::DeckError Deck::CheckBanlist(const Banlist& banlist) const
 {
-	return verified;
-}
-
-unsigned int Deck::CheckUsability(const Banlist& bl, const int minmd, const int maxmd, const int mined, const int maxed, const int minsd, const int maxsd)
-{
-	if((int)main.size() < minmd || (int)main.size() > maxmd)
-	{
-		usable = false;
-		return 1;
-	}
-
-	if((int)extra.size() < mined || (int)extra.size() > maxed)
-	{
-		usable = false;
-		return 1;
-	}
-
-	if((int)side.size() < minsd || (int)side.size() > maxsd)
-	{
-		usable = false;
-		return 1;
-	}
-
-	std::unordered_map<unsigned int, int> deckCardCount;
-
-	for(auto& code : main)
-	{
-		if(deckCardCount.find(code) != deckCardCount.end())
-			deckCardCount.insert(std::make_pair(code, 0));
-		else
-			deckCardCount[code]++;
-	}
-
-	for(auto& code : extra)
-	{
-		if(deckCardCount.find(code) != deckCardCount.end())
-			deckCardCount.insert(std::make_pair(code, 0));
-		else
-			deckCardCount[code]++;
-	}
-
-	for(auto& code : side)
-	{
-		if(deckCardCount.find(code) != deckCardCount.end())
-			deckCardCount.insert(std::make_pair(code, 0));
-		else
-			deckCardCount[code]++;
-	}
-
-	for(auto& p : deckCardCount)
-	{
-		if(bl.forbidden.find(p.first) != bl.forbidden.end())
-		{
-			usable = false;
-			return p.first;
-		}
-
-		if(bl.limited.find(p.first) != bl.limited.end() && p.second > 1)
-		{
-			usable = false;
-			return p.first;
-		}
-
-		if(bl.semilimited.find(p.first) != bl.semilimited.end() && p.second > 2)
-		{
-			usable = false;
-			return p.first;
-		}
-
-		if(p.second > 3)
-		{
-			usable = false;
-			return p.first;
-		}
-
-		if(bl.GetMode() == Banlist::MODE_WHITELIST && bl.whitelist.find(p.first) == bl.whitelist.end())
-		{
-			usable = false;
-			return p.first;
-		}
-	}
-
-	usable = true;
-	return 0;
-}
-
-bool Deck::CanBeUsed() const
-{
-	return usable;
+	Proto::DeckError error;
+	
+	// TODO
+	
+	error.set_no_error(true);
+	return error;
 }
 
 } // namespace YGOpen

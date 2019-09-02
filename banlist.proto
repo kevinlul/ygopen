@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package YGOpen.Proto;
+
+message Banlist
+{
+	string id = 1;
+	repeated uint32 whitelist = 2;
+	repeated uint32 semilimited = 3;
+	repeated uint32 limited = 4;
+	repeated uint32 forbidden = 5;
+
+	// meta
+	string title = 6;
+	string notes = 7;
+}

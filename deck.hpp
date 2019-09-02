@@ -1,30 +1,22 @@
-#ifndef __DECK_HPP__
-#define __DECK_HPP__
-#include <vector>
+#ifndef DECK_HPP
+#define DECK_HPP
+#include "deck.pb.h"
+#include "serializable.hpp"
 
 namespace YGOpen
 {
 
-class DatabaseManager;
+// class DatabaseManager;
 class Banlist;
 
-class Deck
+class Deck : Serializable<Deck, Proto::Deck>
 {
 public:
-	std::vector<unsigned int> main;
-	std::vector<unsigned int> extra;
-	std::vector<unsigned int> side;
-
-	uint32_t Verify(const DatabaseManager& dbm);
-	bool IsVerified() const;
-
-	uint32_t CheckUsability(const Banlist& bl, const int minmd = 40, const int maxmd = 60, const int mined = 0, const int maxed = 15, const int minsd = 0, const int maxsd = 15);
-	bool CanBeUsed() const;
-private:
-	bool verified{}; // The deck doesn't have any missing cards
-	bool usable{}; // The deck doesn't have any banned/over limit card
+// 	Proto::DeckError CheckCards(const DatabaseManager& dbm) const;
+	Proto::DeckError CheckLimits(const Proto::DeckLimits& limits) const;
+	Proto::DeckError CheckBanlist(const Banlist& banlist) const;
 };
 
 } // namespace YGOpen
 
-#endif // __DECK_HPP__
+#endif // DECK_HPP

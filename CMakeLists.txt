@@ -21,7 +21,7 @@ add_library(ygopen STATIC)
 
 # Add libraries from dependencies
 target_link_libraries(ygopen PUBLIC
-	protobuf::libprotobuf-lite
+	protobuf::libprotobuf
 	nlohmann_json::nlohmann_json
 )
 
@@ -62,6 +62,7 @@ target_sources(ygopen PUBLIC
 	${CSR}/banlist.hpp
 	${CSR}/core_auxiliary.hpp
 	${CSR}/core_interface.hpp
+	${CSR}/database_manager.hpp
 	${CSR}/deck.hpp
 	${CSR}/pod_card.hpp
 )
@@ -69,10 +70,12 @@ unset(CSR)
 
 # Add protobuf generated source files
 protobuf_generate_cpp(PROTOBUF_SRCS PROTOBUF_HDRS
+	banlist.proto
 	core_data.proto
 	core_msg_request.proto
 	core_msg_information.proto
 	core_msg.proto
+	deck.proto
 )
 
 set_source_files_properties(${PROTOBUF_SRCS} PROPERTIES

@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package YGOpen.Proto;
+
+message Deck
+{
+	repeated uint32 main = 1;
+	repeated uint32 extra = 2;
+	repeated uint32 side = 3;
+
+	// meta
+	repeated uint32 useful = 4; // Useful cards on the deck
+	string title = 5; // Deck title
+	string banlist_id = 6; // Banlist ID where the deck should be used
+	string notes = 7; // Deck notes
+}
+
+message DeckLimits
+{
+	message Limit
+	{
+		int32 min = 1;
+		int32 max = 2;
+	}
+	Limit main = 1;
+	Limit extra = 2;
+	Limit side = 3;
+}
+
+message DeckError
+{
+	// The number of cards for the mentioned deck is out of the set limits
+	message OutOfLimits
+	{
+		enum DeckType
+		{
+			DT_MAIN_DECK = 0;
+			DT_SIDE_DECK = 1;
+			DT_EXTRA_DECK = 2;
+		}
+		DeckType deck_type = 1;
+		enum LimitType
+		{
+			LT_UNDER = 0;
+			LT_OVER = 1;
+		}
+		LimitType limit_type = 2;
+		
+		// optional
+		uint32 expected = 3; // number of cards expected "at least"
+		uint32 got = 4; // number of cards actually given
+	}
+
+	// The following card code could not be found on any database
+	message InvalidCard
+	{
+		uint32 code = 1;
+	}
+
+	// The following card code its a extra deck card but its on the main deck
+	message ExtraOnMain
+	{
+		uint32 code = 1;
+	}
+
+	// The following card code is on the banlist and cannot be used
+	message Banlisted
+	{
+		enum ReasonType
+		{
+			R_NOT_ON_WHITELIST = 0;
+			R_SEMILIMITED = 1;
+			R_LIMITED = 2;
+			R_FORBIDDEN = 3;
+		}
+		ReasonType type = 1;
+		
+		uint32 code = 2;
+	}
+
+	oneof Type
+	{
+		bool no_error = 1; // Deck is fine
+		bool empty_deck = 2; // The provided deck was empty
+		InvalidCard invalid_card = 3;
+		ExtraOnMain extra_on_main = 4;
+		OutOfLimits out_of_limits = 5;
+		Banlisted banlisted = 6;
+	}
+}
