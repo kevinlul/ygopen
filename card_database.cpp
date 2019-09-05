@@ -71,7 +71,8 @@ DETACH toMerge;
 
 static const char* SEARCH_STMT =
 R"(
-SELECT * FROM datas WHERE datas.id = ?;
+SELECT id,alias,setcode,type,atk,def,level,race,attribute
+FROM datas WHERE datas.id = ?;
 )";
 
 CardDatabase::CardDatabase() : CardDatabase(":memory:")
@@ -138,35 +139,19 @@ CardData CardDatabase::CardDataFromCode(unsigned int code, bool& found)
 	if(sqlite3_step(sStmt) == SQLITE_ROW)
 	{
 		cd.code = sqlite3_column_int(sStmt, 0);
-		// Core doesnt use 1 (`ot`)
-		cd.alias = sqlite3_column_int(sStmt, 2);
-		cd.setcode = sqlite3_column_int64(sStmt, 3);
-		cd.type = sqlite3_column_int(sStmt, 4);
-		cd.attack = sqlite3_column_int(sStmt, 5);
-		cd.defense = sqlite3_column_int(sStmt, 6);
-		if(cd.type & TYPE_LINK)
-		{
-			cd.link_marker = cd.defense;
-			cd.defense = 0;
-		}
-		else
-		{
-			cd.link_marker = 0;
-		}
-		unsigned int level = sqlite3_column_int(sStmt, 7);
-		if((level & 0x80000000) != 0) // Negative levels are handled too
-		{
-			level = -level;
-			cd.level = -(level & 0xFF);
-		}
-		else
-		{
-			cd.level = level & 0xFF;
-		}
-		cd.lscale = (level >> 24) & 0xFF;
-		cd.rscale = (level >> 16) & 0xFF;
-		cd.race = sqlite3_column_int(sStmt, 8);
-		cd.attribute = sqlite3_column_int(sStmt, 9);
+		cd.alias = sqlite3_column_int(sStmt, 1);
+		cd.setcode = sqlite3_column_int64(sStmt, 2);
+		cd.type = sqlite3_column_int(sStmt, 3);
+		cd.attack = sqlite3_column_int(sStmt, 4);
+		cd.defense = sqlite3_column_int(sStmt, 5);
+		cd.link_marker = (cd.type & TYPE_LINK) ? cd.defense : 0;
+		cd.defense = (cd.type & TYPE_LINK) ? 0 : cd.defense;
+		const auto dbLevel = sqlite3_column_int(sStmt, 6);
+		cd.level = dbLevel & 0x800000FF;
+		cd.lscale = (dbLevel >> 24) & 0xFF;
+		cd.rscale = (dbLevel >> 16) & 0xFF;
+		cd.race = sqlite3_column_int(sStmt, 7);
+		cd.attribute = sqlite3_column_int(sStmt, 8);
 		found = true;
 	}
 	else
