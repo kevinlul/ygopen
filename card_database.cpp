@@ -131,9 +131,9 @@ bool CardDatabase::Merge(std::string_view absFilePath)
 	return true;
 }
 
-CardData CardDatabase::CardDataFromCode(unsigned int code, bool& found)
+OCG_CardData CardDatabase::CardDataFromCode(unsigned int code, bool& found)
 {
-	CardData cd;
+	OCG_CardData cd;
 	sqlite3_reset(sStmt);
 	sqlite3_bind_int(sStmt, 1, code);
 	if(sqlite3_step(sStmt) == SQLITE_ROW)

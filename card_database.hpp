@@ -3,7 +3,7 @@
 #include <string_view>
 #include <unordered_map>
 
-#include "pod_card.hpp"
+#include "ocgapi.h"
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -19,14 +19,13 @@ public:
 	
 	// Opens or creates a disk database
 	CardDatabase(std::string_view absFilePath);
-	
 	~CardDatabase();
 	
 	// Add a new database to the amalgation
 	bool Merge(std::string_view absFilePath);
 	
 	// Retrieve card ready to be used by the core API
-	CardData CardDataFromCode(unsigned int code, bool& found);
+	OCG_CardData CardDataFromCode(unsigned int code, bool& found);
 protected:
 	sqlite3* db{nullptr};
 private:

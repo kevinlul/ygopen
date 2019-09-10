@@ -44,6 +44,8 @@ target_sources(ygopen PRIVATE
 	${CSR}/card_database.cpp
 	${CSR}/core_interface.cpp
 	${CSR}/deck.cpp
+	${CSR}/ocgapi_funcs.h
+	${CSR}/serializable.hpp
 )
 
 set(SQLITE3_SOURCE ${CSR}/sqlite3.c ${CSR}/sqlite3.h)
@@ -62,7 +64,7 @@ target_sources(ygopen PUBLIC
 	${CSR}/card_database.hpp
 	${CSR}/core_interface.hpp
 	${CSR}/deck.hpp
-	${CSR}/pod_card.hpp
+	${CSR}/ocgapi.h
 )
 unset(CSR)
 
