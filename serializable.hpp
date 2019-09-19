@@ -51,7 +51,7 @@ public:
 		return str;
 	}
 	
-	PbMsg& GetMsg() const
+	const PbMsg& GetMsg() const
 	{
 		return pbMsg;
 	}
