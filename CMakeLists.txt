@@ -23,6 +23,7 @@ add_library(ygopen STATIC)
 target_link_libraries(ygopen PUBLIC
 	protobuf::libprotobuf
 	nlohmann_json::nlohmann_json
+	${CMAKE_DL_LIBS}
 )
 
 # Set compiler flags
@@ -84,6 +85,7 @@ set_source_files_properties(${PROTOBUF_SRCS} PROPERTIES
 
 target_include_directories(ygopen PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_sources(ygopen
