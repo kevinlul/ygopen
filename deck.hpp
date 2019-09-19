@@ -6,13 +6,13 @@
 namespace YGOpen
 {
 
-// class DatabaseManager;
+// class CardDatabase;
 class Banlist;
 
-class Deck : Serializable<Deck, Proto::Deck>
+class Deck : public Serializable<Deck, Proto::Deck>
 {
 public:
-// 	Proto::DeckError CheckCards(const DatabaseManager& dbm) const;
+// 	Proto::DeckError CheckCards(const CardDatabase& dbm) const;
 	Proto::DeckError CheckLimits(const Proto::DeckLimits& limits) const;
 	Proto::DeckError CheckBanlist(const Banlist& banlist) const;
 };
