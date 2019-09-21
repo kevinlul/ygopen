@@ -233,9 +233,10 @@ public:
 	}
 private:
 	template<typename T>
-	void write_base(T val)
+	void write_base(const T& val)
 	{
-		std::memcpy(cp, &val, sizeof(T));
+		T valWAddr = val;
+		std::memcpy(cp, &valWAddr, sizeof(T));
 	}
 };
 
