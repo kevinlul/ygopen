@@ -1,6 +1,7 @@
 #include "card_database.hpp"
 
 #include <stdexcept> // std::runtime_error
+#include <string>
 #include <sqlite3.h>
 
 #include "enums/type.hpp"

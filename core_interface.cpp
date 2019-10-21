@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <stdexcept> // std::runtime_error
+#include <string>
 
 namespace YGOpen
 {
